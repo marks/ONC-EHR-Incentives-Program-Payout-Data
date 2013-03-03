@@ -2,8 +2,8 @@ def dstk_geocode(string)
   # mongoimport drops leading "0" in zip codes; we need to geocode with the leading "0" though
   original_zip = string.split(" ").last
   if original_zip.to_s.length < 5
-    zip5 = "0#{original_zip}"
-    string.gsub(/ \d{4}$\z/,zip5)
+    zip5 = " 0#{original_zip}"
+    string.gsub!(/ #{original_zip}\Z/,zip5)
   end
 
   address_to_lookup = string.gsub(/[^a-zA-Z\d\s,]/," ") # replace anything that is not alphanumeric, a space, or a comma, with a blank space.

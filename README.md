@@ -12,7 +12,7 @@ Procedure
   1. Import CSV from ONC into MongoDB: `mongoimport --type csv -d onc -c ProvidersPaidByEHRProgram_Dec2012_HOSP_FINAL --headerline --file data/ProvidersPaidByEHRProgram_Dec2012_HOSP_FINAL.csv`
   2. Added 2d geospatial index: `mongo onc --eval "db.ProvidersPaidByEHRProgram_Dec2012_HOSP_FINAL.ensureIndex({'geo.data.geometry.location':'2d'})"`
   3. Geocoded locations using `ruby geocode.rb`
-  4. Exported relevant information to CSV using `mongoexport --csv -d onc -c ProvidersPaidByEHRProgram_Dec2012_HOSP_FINAL -o data/ProvidersPaidByEHRProgram_Dec2012_HOSP_FINAL-geocoded.csv -f "PROVIDER NPI,PROVIDER CCN,PROVIDER STATE,PROVIDER CITY,PROVIDER  ADDRESS,PROVIDER ZIP 5 CD,PROVIDER ZIP 4 CD,PROVIDER PHONE NUM,PROVIDER PHONE EXT,PROGRAM YEAR 2011,PROGRAM YEAR 2012,geo.provider,geo.updated_at,geo.data.types.0,geo.data.geometry.location.lat,geo.data.geometry.location.lng,geo.data.formatted_address"`
+  4. Exported relevant information to CSV using `mongoexport --csv -d onc -c ProvidersPaidByEHRProgram_Dec2012_HOSP_FINAL -o data/ProvidersPaidByEHRProgram_Dec2012_HOSP_FINAL-geocoded.csv -f "PROVIDER NPI,PROVIDER CCN,PROVIDER - ORG NAME,PROVIDER STATE,PROVIDER CITY,PROVIDER  ADDRESS,PROVIDER ZIP 5 CD,PROVIDER ZIP 4 CD,PROVIDER PHONE NUM,PROVIDER PHONE EXT,PROGRAM YEAR 2011,PROGRAM YEAR 2012,geo.provider,geo.updated_at,geo.data.types.0,geo.data.geometry.location.lat,geo.data.geometry.location.lng,geo.data.formatted_address"`
 
 2. **New mongo collection for eligible providers (~106,000 rows)**
   1. Import CSV from ONC into MongoDB: `mongoimport --type csv -d onc -c ProvidersPaidByEHRProgram_Dec2012_EP_FINAL --headerline --file data/ProvidersPaidByEHRProgram_Dec2012_EP_FINAL.csv`

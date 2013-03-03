@@ -10,6 +10,7 @@ puts "Number of hospitals in collection w/o geolocation: #{hospitals_without_geo
 
 hospitals_without_geo.each do |h|
   geo_results = dstk_geocode("#{h["PROVIDER / ORG NAME"]}, #{h["PROVIDER  ADDRESS"]}, #{h["PROVIDER CITY"]}, #{h["PROVIDER STATE"]} #{h["PROVIDER ZIP 5 CD"]}")
+  h.rename(:"PROVIDER / ORG NAME",:"PROVIDER - ORG NAME") # rename field so it is mongoexport-able
   h.update_attribute("geo",geo_results) if geo_results
 end
 

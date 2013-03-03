@@ -6,7 +6,7 @@ Bundler.require
 require './helpers.rb'
 
 # configure data science toolkit host.
-DSTK_HOST = "ec2-54-235-43-111.compute-1.amazonaws.com" # "www.datasciencetoolkit.org"
+DSTK_HOST = "www.datasciencetoolkit.org" # "www.datasciencetoolkit.org"
 
 # configure and set up MongoDB connection
 mongo_client = Mongo::MongoClient.new("localhost", 27017)

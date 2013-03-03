@@ -1,0 +1,53 @@
+!!!
+%html
+  %head
+    %title ONC EHR Incentive Payouts Visualization
+    %link{:href => "http://cdn.leafletjs.com/leaflet-0.4.5/leaflet.css", :rel => "stylesheet"}/
+    /[if lte IE 8] <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.4.5/leaflet.ie.css" />
+    %script{:src => "http://cdn.leafletjs.com/leaflet-0.4.5/leaflet.js"}
+    %meta{:content => "width=device-width, initial-scale=1.0", :name => "viewport"}/
+    %link{:href => "/Leaflet.markercluster/MarkerCluster.css", :rel => "stylesheet"}/
+    %link{:href => "/Leaflet.markercluster/MarkerCluster.Default.css", :rel => "stylesheet"}/
+    /[if lte IE 8] <link rel="stylesheet" href="../dist/MarkerCluster.Default.ie.css" />
+    %script{:src => "/Leaflet.markercluster/leaflet.markercluster-src.js"}
+    %script{:src => "http://code.jquery.com/jquery-1.9.1.min.js"}
+
+
+    %style
+      :plain
+        #map {width: 800px; height: 600px; border: 1px solid #ccc;}
+  %body
+    #map
+    :javascript
+      $(document).ready(function() {
+        var map;
+        map = new L.Map('map', {
+          layers: [new L.tileLayer('http://{s}.tile.cloudmade.com/{key}/999/256/{z}/{x}/{y}.png', {
+            maxZoom: 18,
+            attribution: '© 2013 <a target="_blank" href="http://cloudmade.com">CloudMade</a> - Map data <a target="_blank" href="http://creativecommons.org/licenses/by-sa/2.0/">CCBYSA</a> 2013 <a target="_blank" href="http://openstreetmap.org">OpenStreetMap.org</a> contributors - <a target="_blank" href="http://cloudmade.com/terms_conditions">Terms of Use</a>',
+            key: 'ed5940a5e0724173aba9da0d77368912'
+          })]
+        });
+
+        $.getJSON("#{@data_url}", function(data){
+          var markers = new L.MarkerClusterGroup();
+          var geoJsonLayer = L.geoJson(data, {
+            onEachFeature: function (feature, layer) {
+              props = feature.properties
+              layer.bindPopup(
+                "<strong>" + props["PROVIDER / ORG NAME"]+"</strong>" +
+                "<br />"+props["PROVIDER  ADDRESS"] +
+                "<br />"+props["PROVIDER CITY"]+", " + props["PROVIDER STATE"] + " " + props["PROVIDER ZIP 5 CD"] +
+                "<br /><br /> Phone: " + props["PROVIDER PHONE NUM"] +
+                "<br /><br /> <a href=https://npiregistry.cms.hhs.gov/NPPESRegistry/NPIRegistryHome.do target=_blank>NPI</a>: " + props["PROVIDER NPI"] + " / <a href=http://www.qualitycheck.org/consumer/searchQCR.aspx target=_blank>CCN</a>: " + props["PROVIDER CCN"]
+              );
+            }
+          });
+          markers.addLayer(geoJsonLayer);
+
+          map.addLayer(markers);
+          map.fitBounds(markers.getBounds());
+
+        })
+
+      });

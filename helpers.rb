@@ -19,3 +19,9 @@ def dstk_geocode(string)
     return nil
   end
 end
+
+def to_geojson_point(hash)
+  coordinates = [hash["geo"]["data"]["geometry"]["location"]["lng"],hash["geo"]["data"]["geometry"]["location"]["lat"]]
+  hash.delete("geo") # do not want to transmit hash["geo"] as part of properties hash
+  {"type" => "Feature", "id" => hash["_id"].to_s, "properties" => hash, "geometry" => {"type" => "Point", "coordinates" => coordinates}}
+end

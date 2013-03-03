@@ -15,7 +15,7 @@ end
 
 # GEOCODE ELIGIBLE PROVIDERS (~106k)
 puts "Number of providers in collection: #{Provider.count}"
-providers_without_geo = Provider.find("geo" => nil)
+providers_without_geo = Provider.where("geo" => nil)
 puts "Number of providers in collection w/o geolocation: #{providers_without_geo.count}"
 
 providers_without_geo.each do |p|

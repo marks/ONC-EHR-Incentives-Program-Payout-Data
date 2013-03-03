@@ -4,32 +4,40 @@ require 'open-uri'
 require './helpers'
 require './models'
 
-class MUMaps < Sinatra::Base
+configure do
+  enable :sessions
+  set :raise_errors, false
+  set :show_exceptions, false
+  set :cache, Dalli::Client.new
+end
 
-  get '/' do
-    @data_url = '/db/onc/ProvidersPaidByEHRProgram_Dec2012_HOSP_FINAL.geojson'
-    haml :geojson
-  end
+get '/' do
+  @data_url = '/db/onc/ProvidersPaidByEHRProgram_Dec2012_HOSP_FINAL.geojson'
+  haml :geojson
+end
 
-  get '/db/onc/ProvidersPaidByEHRProgram_Dec2012_HOSP_FINAL.geojson' do
-    content_type :json
+get '/db/onc/ProvidersPaidByEHRProgram_Dec2012_HOSP_FINAL.geojson' do
+  content_type :json
+  geojson ||= settings.cache.fetch("hospitals") do
     geojson = Hash.new
     geojson["type"] = "FeatureCollection"
     geojson["features"] = Hospital.where("geo" => {"$ne" => nil}).map {|h| to_geojson_point(h)}
-    return geojson.to_json
+    settings.cache.set("hospitals", geojson, 86400)
+    geojson
   end
 
-  get '/providers' do
-    @data_url = '/db/onc/ProvidersPaidByEHRProgram_Dec2012_EP_FINAL.geojson'
-    haml :geojson
-  end
+  return geojson.to_json
+end
 
-  get '/db/onc/ProvidersPaidByEHRProgram_Dec2012_EP_FINAL.geojson' do
-    content_type :json
-    geojson = Hash.new
-    geojson["type"] = "FeatureCollection"
-    geojson["features"] = Provider.where("geo" => {"$ne" => nil}).limit(5000).map {|p| to_geojson_point(p)}
-    return geojson.to_json
-  end
+get '/providers' do
+  @data_url = '/db/onc/ProvidersPaidByEHRProgram_Dec2012_EP_FINAL.geojson'
+  haml :geojson
+end
 
+get '/db/onc/ProvidersPaidByEHRProgram_Dec2012_EP_FINAL.geojson' do
+  content_type :json
+  geojson = Hash.new
+  geojson["type"] = "FeatureCollection"
+  geojson["features"] = Provider.where("geo" => {"$ne" => nil}).limit(5000).map {|p| to_geojson_point(p)}
+  return geojson.to_json
 end

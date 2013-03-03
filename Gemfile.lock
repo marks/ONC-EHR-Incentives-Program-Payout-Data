@@ -12,10 +12,12 @@ GEM
     bson_ext (1.8.2)
       bson (~> 1.8.2)
     builder (3.0.4)
+    dalli (2.6.2)
     eventmachine (1.0.1)
     haml (3.1.7)
     i18n (0.6.4)
     json (1.7.7)
+    memcachier (0.0.2)
     mime-types (1.21)
     mongoid (3.1.2)
       activemodel (~> 3.2)
@@ -53,8 +55,10 @@ PLATFORMS
 
 DEPENDENCIES
   bson_ext
+  dalli
   haml
   json
+  memcachier
   mongoid
   rest-client
   sinatra

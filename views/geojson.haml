@@ -1,7 +1,7 @@
 !!!
 %html
   %head
-    %title ONC EHR Incentive Payouts Visualization
+    %title ONC EHR Incentive Payouts Visualization by @Skram of Social Health Insights
     %link{:href => "http://cdn.leafletjs.com/leaflet-0.4.5/leaflet.css", :rel => "stylesheet"}/
     /[if lte IE 8] <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.4.5/leaflet.ie.css" />
     %script{:src => "http://cdn.leafletjs.com/leaflet-0.4.5/leaflet.js"}
@@ -11,8 +11,6 @@
     /[if lte IE 8] <link rel="stylesheet" href="../dist/MarkerCluster.Default.ie.css" />
     %script{:src => "/Leaflet.markercluster/leaflet.markercluster-src.js"}
     %script{:src => "http://code.jquery.com/jquery-1.9.1.min.js"}
-
-
     %style
       :plain
         #map {width: 800px; height: 600px; border: 1px solid #ccc;}
@@ -34,20 +32,19 @@
           var geoJsonLayer = L.geoJson(data, {
             onEachFeature: function (feature, layer) {
               props = feature.properties
-              layer.bindPopup(
-                "<strong>" + props["PROVIDER / ORG NAME"]+"</strong>" +
-                "<br />"+props["PROVIDER  ADDRESS"] +
-                "<br />"+props["PROVIDER CITY"]+", " + props["PROVIDER STATE"] + " " + props["PROVIDER ZIP 5 CD"] +
-                "<br /><br /> Phone: " + props["PROVIDER PHONE NUM"] +
-                "<br /><br /> <a href=https://npiregistry.cms.hhs.gov/NPPESRegistry/NPIRegistryHome.do target=_blank>NPI</a>: " + props["PROVIDER NPI"] + " / <a href=http://www.qualitycheck.org/consumer/searchQCR.aspx target=_blank>CCN</a>: " + props["PROVIDER CCN"]
-              );
+              popup = ""
+              popup += "<strong>" + props["PROVIDER / ORG NAME"]+"</strong>"
+              popup += "<br />"+props["PROVIDER  ADDRESS"]
+              popup += "<br />"+props["PROVIDER CITY"]+", " + props["PROVIDER STATE"] + " " + props["PROVIDER ZIP 5 CD"]
+              popup += "<br /><br /> Phone: " + props["PROVIDER PHONE NUM"]
+              popup += "<br /><br /> <a href=https://npiregistry.cms.hhs.gov/NPPESRegistry/NPIRegistryHome.do target=_blank>NPI</a>: " + props["PROVIDER NPI"] + " / <a href=http://www.qualitycheck.org/consumer/searchQCR.aspx target=_blank>CCN</a>: " + props["PROVIDER CCN"]
+
+              layer.bindPopup(popup)
             }
           });
           markers.addLayer(geoJsonLayer);
-
           map.addLayer(markers);
           map.fitBounds(markers.getBounds());
-
         })
 
       });

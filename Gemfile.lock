@@ -4,16 +4,10 @@ GEM
     bson (1.8.2)
     bson_ext (1.8.2)
       bson (~> 1.8.2)
-    cloudmate (0.0.2)
-      faraday (~> 0.8.4)
-      faraday_middleware (~> 0.9.0)
-    faraday (0.8.6)
-      multipart-post (~> 1.1)
-    faraday_middleware (0.9.0)
-      faraday (>= 0.7.4, < 0.9)
+    cloudmade (0.2.0)
+    json (1.7.7)
     mongo (1.8.2)
       bson (~> 1.8.2)
-    multipart-post (1.2.0)
     system_timer (1.2.4)
 
 PLATFORMS
@@ -21,6 +15,7 @@ PLATFORMS
 
 DEPENDENCIES
   bson_ext
-  cloudmate
+  cloudmade
+  json
   mongo
   system_timer

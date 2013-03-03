@@ -2,15 +2,18 @@
 %html
   %head
     %title ONC EHR Incentive Payouts Visualization by @Skram of Social Health Insights
-    %link{:href => "http://cdn.leafletjs.com/leaflet-0.4.5/leaflet.css", :rel => "stylesheet"}/
+    %link{:href => "http://cdn.leafletjs.com/leaflet-0.4.5/leaflet.css", :rel => "stylesheet"}
     /[if lte IE 8] <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.4.5/leaflet.ie.css" />
     %script{:src => "http://cdn.leafletjs.com/leaflet-0.4.5/leaflet.js"}
-    %meta{:content => "width=device-width, initial-scale=1.0", :name => "viewport"}/
-    %link{:href => "/Leaflet.markercluster/MarkerCluster.css", :rel => "stylesheet"}/
-    %link{:href => "/Leaflet.markercluster/MarkerCluster.Default.css", :rel => "stylesheet"}/
+    %meta{:content => "width=device-width, initial-scale=1.0", :name => "viewport"}
+    %link{:href => "/Leaflet.markercluster/MarkerCluster.css", :rel => "stylesheet"}
+    %link{:href => "/Leaflet.markercluster/MarkerCluster.Default.css", :rel => "stylesheet"}
     /[if lte IE 8] <link rel="stylesheet" href="../dist/MarkerCluster.Default.ie.css" />
     %script{:src => "/Leaflet.markercluster/leaflet.markercluster-src.js"}
-    %script{:src => "http://code.jquery.com/jquery-1.9.1.min.js"}
+    %script{:src => "http://s3.amazonaws.com/mappyhealth-public/bootstrap/js/jquery.js"}
+    %script{:src => "http://s3.amazonaws.com/mappyhealth-public/showLoading/jquery.showLoading.min.js"}
+    %link{:href => "http://s3.amazonaws.com/mappyhealth-public/showLoading/showLoading.css", :rel => "stylesheet"}
+
     %style
       :plain
         #map {width: 800px; height: 600px; border: 1px solid #ccc;}
@@ -27,6 +30,7 @@
           })]
         });
 
+        $("#map").showLoading();
         $.getJSON("#{@data_url}", function(data){
           var markers = new L.MarkerClusterGroup();
           var geoJsonLayer = L.geoJson(data, {
@@ -45,6 +49,10 @@
           markers.addLayer(geoJsonLayer);
           map.addLayer(markers);
           map.fitBounds(markers.getBounds());
+          $("#map").hideLoading();
         })
 
       });
+    %a{:href => "https://github.com/marks/ONC-EHR-Incentives-Program-Payout-Data"}
+      %img{:alt => "Fork me on GitHub", :target => "_blank", :src => "https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png", :style => "position: absolute; top: 0; right: 0; border: 0;"}/
+

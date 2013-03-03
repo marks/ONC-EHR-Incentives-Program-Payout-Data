@@ -2,7 +2,9 @@ def dstk_geocode(string)
   # mongoimport drops leading "0" in zip codes; we need to geocode with the leading "0" though
   original_zip = string.split(" ").last
   if original_zip.to_s.length < 5
-    zip5 = " 0#{original_zip}"
+    zeros_to_add = ""
+    (5 - original_zip.to_s.length).times {zeros_to_add += "0"} # Integer*"0" doesn't seem to work
+    zip5 = " #{zeros_to_add}#{original_zip}"
     string.gsub!(/ #{original_zip}\Z/,zip5)
   end
 

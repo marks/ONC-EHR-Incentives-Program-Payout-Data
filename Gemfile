@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'cloudmade'
+gem 'rest-client'
 gem 'json'
 gem 'mongo'
 gem 'bson_ext'

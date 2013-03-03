@@ -18,7 +18,9 @@ end
 
 get '/db/onc/ProvidersPaidByEHRProgram_Dec2012_HOSP_FINAL.geojson' do
   content_type :json
-  geojson ||= settings.cache.fetch("hospitals") do
+
+  cache_key = "hospitals"
+  @geojson ||= settings.cache.fetch(cache_key) do
     geojson = Hash.new
     geojson["type"] = "FeatureCollection"
     geojson["features"] = Hospital.where("geo" => {"$ne" => nil}).map {|h| to_geojson_point(h)}
@@ -26,7 +28,7 @@ get '/db/onc/ProvidersPaidByEHRProgram_Dec2012_HOSP_FINAL.geojson' do
     geojson
   end
 
-  return geojson.to_json
+  return @geojson.to_json
 end
 
 get '/providers' do

@@ -1,3 +1,3 @@
-require './web_app'
+require './web_app.rb'
 
 run MUMaps.new

@@ -37,7 +37,7 @@
             onEachFeature: function (feature, layer) {
               props = feature.properties
               popup = ""
-              popup += "<strong>" + props["PROVIDER / ORG NAME"]+"</strong>"
+              popup += "<strong>" + props["PROVIDER - ORG NAME"]+"</strong>"
               popup += "<br />"+props["PROVIDER  ADDRESS"]
               popup += "<br />"+props["PROVIDER CITY"]+", " + props["PROVIDER STATE"] + " " + props["PROVIDER ZIP 5 CD"]
               popup += "<br /><br /> Phone: " + props["PROVIDER PHONE NUM"]

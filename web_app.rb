@@ -56,6 +56,6 @@ get '/db/onc/ProvidersPaidByEHRProgram_Dec2012_EP_FINAL.geojson' do
   content_type :json
   geojson = Hash.new
   geojson["type"] = "FeatureCollection"
-  geojson["features"] = Provider.where("geo" => {"$ne" => nil}).map {|p| to_geojson_point(p)}
+  geojson["features"] = Provider.where("PROVIDER STATE" => "Texas").map {|p| to_geojson_point(p)}
   return geojson.to_json
 end

@@ -20,25 +20,18 @@
   %body
     #map
     :javascript
-      $(document).ready(function() {
-        var map;
-        map = new L.Map('map', {
-          layers: [new L.tileLayer('http://{s}.tile.cloudmade.com/{key}/999/256/{z}/{x}/{y}.png', {
-            maxZoom: 18,
-            attribution: '© 2013 <a target="_blank" href="http://cloudmade.com">CloudMade</a> - Map data <a target="_blank" href="http://creativecommons.org/licenses/by-sa/2.0/">CCBYSA</a> 2013 <a target="_blank" href="http://openstreetmap.org">OpenStreetMap.org</a> contributors - <a target="_blank" href="http://cloudmade.com/terms_conditions">Terms of Use</a>',
-            key: 'ed5940a5e0724173aba9da0d77368912'
-          })]
-        });
+      var map;
 
+      function load_geojson_as_cluster(data_url){
         $("#map").showLoading();
-        $.getJSON("#{PUBLIC_HOST}#{@data_url}", function(data){
+        $.getJSON(data_url, function(data){
           var markers = new L.MarkerClusterGroup();
           var geoJsonLayer = L.geoJson(data, {
             onEachFeature: function (feature, layer) {
               props = feature.properties
               popup = ""
               if(props["PROVIDER - ORG NAME"]){popup += "<strong>" + props["PROVIDER - ORG NAME"]+"</strong>"}
-              if(props["PROVIDER NAME"]){popup += "<strong>" + props["PROVIDER - ORG NAME"]+"</strong>"}
+              if(props["PROVIDER NAME"]){popup += "<strong>" + props["PROVIDER NAME"]+"</strong>"}
               popup += "<br />"+props["PROVIDER  ADDRESS"]
               popup += "<br />"+props["PROVIDER CITY"]+", " + props["PROVIDER STATE"] + " " + props["PROVIDER ZIP 5 CD"]
               popup += "<br /><br /> Phone: " + props["PROVIDER PHONE NUM"]
@@ -52,7 +45,17 @@
           map.fitBounds(markers.getBounds());
           $("#map").hideLoading();
         })
+      }
 
+      $(document).ready(function() {
+        map = new L.Map('map', {
+          layers: [new L.tileLayer('http://{s}.tile.cloudmade.com/{key}/999/256/{z}/{x}/{y}.png', {
+            maxZoom: 18,
+            attribution: '© 2013 <a target="_blank" href="http://cloudmade.com">CloudMade</a> - Map data <a target="_blank" href="http://creativecommons.org/licenses/by-sa/2.0/">CCBYSA</a> 2013 <a target="_blank" href="http://openstreetmap.org">OpenStreetMap.org</a> contributors - <a target="_blank" href="http://cloudmade.com/terms_conditions">Terms of Use</a>',
+            key: 'ed5940a5e0724173aba9da0d77368912'
+          })]
+        });
+        load_geojson_as_cluster("#{PUBLIC_HOST}#{@data_url}")
       });
     %a{:href => "https://github.com/marks/ONC-EHR-Incentives-Program-Payout-Data"}
       %img{:alt => "Fork me on GitHub", :target => "_blank", :src => "https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png", :style => "position: absolute; top: 0; right: 0; border: 0;"}/

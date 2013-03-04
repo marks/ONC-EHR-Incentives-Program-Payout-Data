@@ -43,19 +43,19 @@ get '/db/onc/ProvidersPaidByEHRProgram_Dec2012_HOSP_FINAL.geojson' do
   return @geojson.to_json
 end
 
-get '/providers' do
-  if settings.production?
-    @data_url = '/data/ProvidersPaidByEHRProgram_Dec2012_EP_FINAL.geojson'
-  else
-    @data_url = '/db/onc/ProvidersPaidByEHRProgram_Dec2012_EP_FINAL.geojson'
-  end
-  haml :geojson
-end
-
-get '/db/onc/ProvidersPaidByEHRProgram_Dec2012_EP_FINAL.geojson' do
-  content_type :json
-  geojson = Hash.new
-  geojson["type"] = "FeatureCollection"
-  geojson["features"] = Provider.where("PROVIDER STATE" => "Texas").map {|p| to_geojson_point(p)}
-  return geojson.to_json
-end
+# WAY TOO much data to show all providers at once
+# get '/providers' do
+#   if settings.production?
+#     @data_url = '/data/ProvidersPaidByEHRProgram_Dec2012_EP_FINAL.geojson'
+#   else
+#     @data_url = '/db/onc/ProvidersPaidByEHRProgram_Dec2012_EP_FINAL.geojson'
+#   end
+#   haml :geojson
+# end
+# get '/db/onc/ProvidersPaidByEHRProgram_Dec2012_EP_FINAL.geojson' do
+#   content_type :json
+#   geojson = Hash.new
+#   geojson["type"] = "FeatureCollection"
+#   geojson["features"] = Provider.where("PROVIDER STATE" => "Texas").map {|p| to_geojson_point(p)}
+#   return geojson.to_json
+# end

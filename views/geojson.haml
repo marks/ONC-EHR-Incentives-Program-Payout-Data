@@ -67,7 +67,7 @@
       });
 
       $("#dropdown").change(function(){
-        load_geojson_as_cluster("#{PUBLIC_HOST}"+$(this).val(),true)
+        load_geojson_as_cluster($(this).val(),true)
       });
     %a{:href => "https://github.com/marks/ONC-EHR-Incentives-Program-Payout-Data"}
       %img{:alt => "Fork me on GitHub", :target => "_blank", :src => "https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png", :style => "position: absolute; top: 0; right: 0; border: 0;"}/

@@ -169,7 +169,7 @@
               popup += "<br />"+props["PROVIDER CITY"]+", " + props["PROVIDER STATE"] + " " + props["PROVIDER ZIP 5 CD"]
               popup += "<br /><br /> Phone: " + props["PROVIDER PHONE NUM"]
               popup += "<br /><br /> <a href=https://npiregistry.cms.hhs.gov/NPPESRegistry/NPIRegistryHome.do target=_blank>NPI</a>: " + props["PROVIDER NPI"]
-              if(props["PROVIDER CCN"]){ popup += "<a href=http://www.qualitycheck.org/consumer/searchQCR.aspx target=_blank>CCN</a>: " + props["PROVIDER CCN"]}
+              if(props["PROVIDER CCN"]){ popup += " | <a href=http://www.qualitycheck.org/consumer/searchQCR.aspx target=_blank>CCN</a>: " + props["PROVIDER CCN"]}
               layer.bindPopup(popup)
             }
           });

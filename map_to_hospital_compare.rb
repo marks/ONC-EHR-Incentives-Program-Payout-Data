@@ -9,7 +9,7 @@ puts "Number of hospitals in collection w/o hospital compare mapping: #{hospital
 
 hospitals_without_mapping.each do |h|
   # first, let's look for matches
-  full_text_search = "#{h["PROVIDER - ORG NAME"]} #{h["PROVIDER CITY"]} #{h["PROVIDER ZIP 5 CD"]}"
+  full_text_search = cleanup_string("#{h["PROVIDER - ORG NAME"]} #{h["PROVIDER CITY"]} #{h["PROVIDER ZIP 5 CD"]}")
   compare_results = JSON.parse(RestClient.get("#{HOSPITAL_COMPARE_GENERAL_ENDPOINT}?$q=#{URI.escape(full_text_search)}"))
   if compare_results.size == 0
     puts "No mapping found for #{h["PROVIDER - ORG NAME"]} (NPI = #{h["PROVIDER NPI"]})"

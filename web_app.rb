@@ -16,7 +16,7 @@ configure :development do
 end
 
 configure :production do
-  PUBLIC_HOST = "http://s3.amazonaws.com/hitech-vis/"
+  PUBLIC_HOST = "http://s3.amazonaws.com/hitech-vis"
 end
 
 get '/' do

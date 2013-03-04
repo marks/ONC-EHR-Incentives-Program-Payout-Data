@@ -12,7 +12,11 @@ configure do
 end
 
 get '/' do
-  @data_url = '/db/onc/ProvidersPaidByEHRProgram_Dec2012_HOSP_FINAL.geojson'
+  if settings.environment.production?
+    @data_url = '/data/ProvidersPaidByEHRProgram_Dec2012_HOSP_FINAL.geojson'
+  else
+    @data_url = '/db/onc/ProvidersPaidByEHRProgram_Dec2012_HOSP_FINAL.geojson'
+  end
   haml :geojson
 end
 
@@ -32,7 +36,11 @@ get '/db/onc/ProvidersPaidByEHRProgram_Dec2012_HOSP_FINAL.geojson' do
 end
 
 get '/providers' do
-  @data_url = '/db/onc/ProvidersPaidByEHRProgram_Dec2012_EP_FINAL.geojson'
+  if settings.environment.production?
+    @data_url = '/data/ProvidersPaidByEHRProgram_Dec2012_EP_FINAL.geojson'
+  else
+    @data_url = '/db/onc/ProvidersPaidByEHRProgram_Dec2012_EP_FINAL.geojson'
+  end
   haml :geojson
 end
 
@@ -40,6 +48,6 @@ get '/db/onc/ProvidersPaidByEHRProgram_Dec2012_EP_FINAL.geojson' do
   content_type :json
   geojson = Hash.new
   geojson["type"] = "FeatureCollection"
-  geojson["features"] = Provider.where("geo" => {"$ne" => nil}).limit(5000).map {|p| to_geojson_point(p)}
+  geojson["features"] = Provider.where("geo" => {"$ne" => nil}).map {|p| to_geojson_point(p)}
   return geojson.to_json
 end

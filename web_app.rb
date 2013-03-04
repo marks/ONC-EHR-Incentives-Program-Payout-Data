@@ -25,7 +25,7 @@ get '/' do
   else
     @data_url = '/db/onc/ProvidersPaidByEHRProgram_Dec2012_HOSP_FINAL.geojson'
   end
-  haml :geojson
+  haml :layout
 end
 
 get '/db/onc/ProvidersPaidByEHRProgram_Dec2012_HOSP_FINAL.geojson' do

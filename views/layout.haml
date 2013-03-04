@@ -1,0 +1,155 @@
+!!!
+/[if IE 8] <html class="no-js lt-ie9" lang="en">
+/ [if gt IE 8]><!
+%html.no-js{:lang => "en"}
+  / <![endif]
+  %head
+    %meta{:charset => "utf-8"}/
+    %meta{:content => "width=device-width", :name => "viewport"}/
+    %title Hitech Vis - Social Health Insights
+    %link{:href => "#{PUBLIC_HOST}/zurb-foundation-4.0.3/css/normalize.css", :rel => "stylesheet"}/
+    %link{:href => "#{PUBLIC_HOST}/zurb-foundation-4.0.3/css/foundation.css", :rel => "stylesheet"}/
+    %script{:src => "#{PUBLIC_HOST}/zurb-foundation-4.0.3/js/vendor/custom.modernizr.js"}
+    %link{:href => "http://cdn.leafletjs.com/leaflet-0.4.5/leaflet.css", :rel => "stylesheet"}
+    /[if lte IE 8] <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.4.5/leaflet.ie.css" />
+    %script{:src => "http://cdn.leafletjs.com/leaflet-0.4.5/leaflet.js"}
+    %meta{:content => "width=device-width, initial-scale=1.0", :name => "viewport"}
+    %link{:href => "#{PUBLIC_HOST}/Leaflet.markercluster/MarkerCluster.css", :rel => "stylesheet"}
+    %link{:href => "#{PUBLIC_HOST}/Leaflet.markercluster/MarkerCluster.Default.css", :rel => "stylesheet"}
+    /[if lte IE 8] <link rel="stylesheet" href="../dist/MarkerCluster.Default.ie.css" />
+    %script{:src => "#{PUBLIC_HOST}/Leaflet.markercluster/leaflet.markercluster-src.js"}
+    %script{:src => "http://s3.amazonaws.com/mappyhealth-public/bootstrap/js/jquery.js"}
+    %script{:src => "http://s3.amazonaws.com/mappyhealth-public/showLoading/jquery.showLoading.min.js"}
+    %link{:href => "http://s3.amazonaws.com/mappyhealth-public/showLoading/showLoading.css", :rel => "stylesheet"}
+    %style
+      :plain
+        #map {width: 100%; height: 600px; border: 1px solid #ccc;}
+
+  %body
+    %nav.top-bar
+      %ul.title-area
+        / Title Area
+        %li.name
+          %h1
+            %a{:href => "#"}
+              HITECH & Other ONC Visualizations
+        %li.toggle-topbar.menu-icon
+          %a{:href => "#"}
+            %span menu
+      %section.top-bar-section
+        / Right Nav Section
+        %ul.right
+          %li.divider
+          %li.has-dropdown
+            %a{:href => "#"} A menu item
+            %ul.dropdown
+              %li
+                %a{:href => "#"} Dropdown Option 1
+              %li
+                %a{:href => "#"} Dropdown Option 2
+              %li
+                %a{:href => "#"} Dropdown Option 3
+          %li.divider
+          %li
+            %a{:href => "#", :style => "padding:10px;"}
+              %iframe{:allowtransparency => "true", :frameborder => "0", :height => "20", :scrolling => "0", :src => "http://ghbtns.com/github-btn.html?user=marks&repo=ONC-EHR-Incentives-Program-Payout-Data&type=fork", :width => "62"}
+
+    .row
+      %br/
+      %br/
+      .large-4.columns
+        %h5 About
+        %p This started as a weekend project sparked by a Twitter conversation between @Skram and @Cascadia. A better description will go here.
+
+      .large-8.columns
+        %h3 A map!
+        %select#dropdown{:name => "dropdown"}
+          %option{:value => "#{PUBLIC_HOST}#{@data_url}"} All US Hospitals
+          - STATES.each do |state|
+            %option{:value => "#{PUBLIC_HOST}/data/by_state/provider-#{state}.geojson"}= "#{state} Providers"
+        %br/
+        %br/
+        #map
+
+
+    %footer.row
+      .large-12.columns
+        %hr/
+        .row
+          .large-12.columns
+            %ul.inline-list.right
+              %li
+                %a{:href => "http://github.com/marks/ONC-EHR-Incentives-Program-Payout-Data", :target => "_blank"} Github repo
+              %li
+                %a{:href => "http://www.cms.gov/Regulations-and-Guidance/Legislation/EHRIncentivePrograms/DataAndReports.html"} Raw HHS/CMS data
+              %li
+                %a{:href => "#"} MappyHealth (health and disaster tracking on Twitter)
+
+    :javascript
+      document.write('<script src=' +
+      ('__proto__' in {} ? '#{PUBLIC_HOST}/zurb-foundation-4.0.3/js/vendor/zepto' : '#{PUBLIC_HOST}/zurb-foundation-4.0.3/js/vendor/jquery') +
+      '.js><\/script>')
+    %script{:src => "#{PUBLIC_HOST}/zurb-foundation-4.0.3/js/foundation.min.js"}
+    %script{:src => "#{PUBLIC_HOST}/zurb-foundation-4.0.3/js/foundation/foundation.js"}
+    %script{:src => "#{PUBLIC_HOST}/zurb-foundation-4.0.3/js/foundation/foundation.alerts.js"}
+    %script{:src => "#{PUBLIC_HOST}/zurb-foundation-4.0.3/js/foundation/foundation.clearing.js"}
+    %script{:src => "#{PUBLIC_HOST}/zurb-foundation-4.0.3/js/foundation/foundation.cookie.js"}
+    %script{:src => "#{PUBLIC_HOST}/zurb-foundation-4.0.3/js/foundation/foundation.dropdown.js"}
+    %script{:src => "#{PUBLIC_HOST}/zurb-foundation-4.0.3/js/foundation/foundation.forms.js"}
+    %script{:src => "#{PUBLIC_HOST}/zurb-foundation-4.0.3/js/foundation/foundation.joyride.js"}
+    %script{:src => "#{PUBLIC_HOST}/zurb-foundation-4.0.3/js/foundation/foundation.magellan.js"}
+    %script{:src => "#{PUBLIC_HOST}/zurb-foundation-4.0.3/js/foundation/foundation.orbit.js"}
+    %script{:src => "#{PUBLIC_HOST}/zurb-foundation-4.0.3/js/foundation/foundation.placeholder.js"}
+    %script{:src => "#{PUBLIC_HOST}/zurb-foundation-4.0.3/js/foundation/foundation.reveal.js"}
+    %script{:src => "#{PUBLIC_HOST}/zurb-foundation-4.0.3/js/foundation/foundation.section.js"}
+    %script{:src => "#{PUBLIC_HOST}/zurb-foundation-4.0.3/js/foundation/foundation.tooltips.js"}
+    %script{:src => "#{PUBLIC_HOST}/zurb-foundation-4.0.3/js/foundation/foundation.topbar.js"}
+    :javascript
+      $(document).foundation();
+
+      var map;
+      var markers;
+
+      function load_geojson_as_cluster(data_url,fit_bounds){
+        $("#map").showLoading();
+        $.getJSON(data_url, function(data){
+          // clear all markers
+          if(typeof(markers) != "undefined"){map.removeLayer(markers);}
+
+          markers = new L.MarkerClusterGroup();
+          var geoJsonLayer = L.geoJson(data, {
+            onEachFeature: function (feature, layer) {
+              props = feature.properties
+              popup = ""
+              if(props["PROVIDER - ORG NAME"]){popup += "<strong>" + props["PROVIDER - ORG NAME"]+"</strong>"}
+              if(props["PROVIDER NAME"]){popup += "<strong>" + props["PROVIDER NAME"]+"</strong>"}
+              popup += "<br />"+props["PROVIDER  ADDRESS"]
+              popup += "<br />"+props["PROVIDER CITY"]+", " + props["PROVIDER STATE"] + " " + props["PROVIDER ZIP 5 CD"]
+              popup += "<br /><br /> Phone: " + props["PROVIDER PHONE NUM"]
+              popup += "<br /><br /> <a href=https://npiregistry.cms.hhs.gov/NPPESRegistry/NPIRegistryHome.do target=_blank>NPI</a>: " + props["PROVIDER NPI"]
+              if(props["PROVIDER CCN"]){ popup += "<a href=http://www.qualitycheck.org/consumer/searchQCR.aspx target=_blank>CCN</a>: " + props["PROVIDER CCN"]}
+              layer.bindPopup(popup)
+            }
+          });
+          markers.addLayer(geoJsonLayer);
+          map.addLayer(markers);
+          if(fit_bounds == true){map.fitBounds(markers.getBounds());}
+          $("#map").hideLoading();
+        })
+      }
+
+      $(document).ready(function() {
+        map = new L.Map('map', {
+          layers: [new L.tileLayer('http://{s}.tile.cloudmade.com/{key}/999/256/{z}/{x}/{y}.png', {
+            maxZoom: 18,
+            attribution: '© 2013 <a target="_blank" href="http://cloudmade.com">CloudMade</a> - Map data <a target="_blank" href="http://creativecommons.org/licenses/by-sa/2.0/">CCBYSA</a> 2013 <a target="_blank" href="http://openstreetmap.org">OpenStreetMap.org</a> contributors - <a target="_blank" href="http://cloudmade.com/terms_conditions">Terms of Use</a>',
+            key: 'ed5940a5e0724173aba9da0d77368912'
+          })]
+        });
+        load_geojson_as_cluster("#{PUBLIC_HOST}#{@data_url}",true)
+      });
+
+      $("#dropdown").change(function(){
+        load_geojson_as_cluster($(this).val(),true)
+      });
+

@@ -4,12 +4,12 @@ require 'open-uri'
 require './helpers'
 require './models'
 
-configure do
+# configure do
   enable :sessions
   set :raise_errors, false
   set :show_exceptions, false
   set :cache, Dalli::Client.new
-end
+# end
 
 get '/' do
   @data_url = '/db/onc/ProvidersPaidByEHRProgram_Dec2012_HOSP_FINAL.geojson'

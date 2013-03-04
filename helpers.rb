@@ -12,7 +12,7 @@ def dstk_geocode(string)
     string.gsub!(/ #{original_zip}\Z/,zip5)
   end
 
-  address_to_lookup = cleanup_string
+  address_to_lookup = cleanup_string(string)
   print "Geocoding: #{address_to_lookup}"
   geo_results = JSON.parse(RestClient.get("http://#{DSTK_HOST}/maps/api/geocode/json?sensor=false&address="+URI.encode(address_to_lookup)))
   if geo_results["status"] == "OK"

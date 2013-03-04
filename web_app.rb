@@ -4,12 +4,12 @@ require 'open-uri'
 require './helpers'
 require './models'
 
-# configure do
+configure do
   enable :sessions
   set :raise_errors, false
   set :show_exceptions, false
   set :cache, Dalli::Client.new
-# end
+end
 
 get '/' do
   @data_url = '/db/onc/ProvidersPaidByEHRProgram_Dec2012_HOSP_FINAL.geojson'
@@ -24,7 +24,7 @@ get '/db/onc/ProvidersPaidByEHRProgram_Dec2012_HOSP_FINAL.geojson' do
     geojson = Hash.new
     geojson["type"] = "FeatureCollection"
     geojson["features"] = Hospital.where("geo" => {"$ne" => nil}).map {|h| to_geojson_point(h)}
-    settings.cache.set("hospitals", geojson, 86400)
+    settings.cache.set("hospitals", geojson, 4000)
     geojson
   end
 

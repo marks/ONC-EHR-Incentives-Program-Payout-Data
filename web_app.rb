@@ -12,7 +12,7 @@ configure do
 end
 
 get '/' do
-  if settings.environment.production?
+  if settings.production?
     @data_url = '/data/ProvidersPaidByEHRProgram_Dec2012_HOSP_FINAL.geojson'
   else
     @data_url = '/db/onc/ProvidersPaidByEHRProgram_Dec2012_HOSP_FINAL.geojson'
@@ -36,7 +36,7 @@ get '/db/onc/ProvidersPaidByEHRProgram_Dec2012_HOSP_FINAL.geojson' do
 end
 
 get '/providers' do
-  if settings.environment.production?
+  if settings.production?
     @data_url = '/data/ProvidersPaidByEHRProgram_Dec2012_EP_FINAL.geojson'
   else
     @data_url = '/db/onc/ProvidersPaidByEHRProgram_Dec2012_EP_FINAL.geojson'

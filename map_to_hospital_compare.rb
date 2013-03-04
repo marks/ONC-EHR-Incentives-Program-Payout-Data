@@ -16,13 +16,13 @@ hospitals_without_mapping.each do |h|
   elsif compare_results.size > 1
     puts "More than one match found for #{h["PROVIDER - ORG NAME"]} (NPI = #{h["PROVIDER NPI"]})"
   else # one single match... probably a good sign!
+    puts "One single match found for #{h["PROVIDER - ORG NAME"]} (NPI = #{h["PROVIDER NPI"]})!"
     compare_data = {
       "map_source" => "Socrata full text search w/ name+city+zip",
       "map_last_updated" => Time.now,
       "general" => compare_results.first
     }
     h.update_attribute("compare",compare_data)
-    puts "One single match found for #{h["PROVIDER - ORG NAME"]} (NPI = #{h["PROVIDER NPI"]})!"
   end
 
 end

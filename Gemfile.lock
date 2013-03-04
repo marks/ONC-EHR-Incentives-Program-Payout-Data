@@ -32,6 +32,7 @@ GEM
       rack
     rack-test (0.6.2)
       rack (>= 1.0)
+    rake (10.0.3)
     rest-client (1.6.7)
       mime-types (>= 1.16)
     sinatra (1.3.4)
@@ -60,6 +61,7 @@ DEPENDENCIES
   json
   memcachier
   mongoid
+  rake
   rest-client
   sinatra
   sinatra-reloader

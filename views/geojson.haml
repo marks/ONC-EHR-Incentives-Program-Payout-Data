@@ -6,10 +6,10 @@
     /[if lte IE 8] <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.4.5/leaflet.ie.css" />
     %script{:src => "http://cdn.leafletjs.com/leaflet-0.4.5/leaflet.js"}
     %meta{:content => "width=device-width, initial-scale=1.0", :name => "viewport"}
-    %link{:href => "/Leaflet.markercluster/MarkerCluster.css", :rel => "stylesheet"}
-    %link{:href => "/Leaflet.markercluster/MarkerCluster.Default.css", :rel => "stylesheet"}
+    %link{:href => "#{PUBLIC_HOST}/Leaflet.markercluster/MarkerCluster.css", :rel => "stylesheet"}
+    %link{:href => "#{PUBLIC_HOST}/Leaflet.markercluster/MarkerCluster.Default.css", :rel => "stylesheet"}
     /[if lte IE 8] <link rel="stylesheet" href="../dist/MarkerCluster.Default.ie.css" />
-    %script{:src => "/Leaflet.markercluster/leaflet.markercluster-src.js"}
+    %script{:src => "#{PUBLIC_HOST}/Leaflet.markercluster/leaflet.markercluster-src.js"}
     %script{:src => "http://s3.amazonaws.com/mappyhealth-public/bootstrap/js/jquery.js"}
     %script{:src => "http://s3.amazonaws.com/mappyhealth-public/showLoading/jquery.showLoading.min.js"}
     %link{:href => "http://s3.amazonaws.com/mappyhealth-public/showLoading/showLoading.css", :rel => "stylesheet"}
@@ -31,7 +31,7 @@
         });
 
         $("#map").showLoading();
-        $.getJSON("#{@data_url}", function(data){
+        $.getJSON("#{PUBLIC_HOST}#{@data_url}", function(data){
           var markers = new L.MarkerClusterGroup();
           var geoJsonLayer = L.geoJson(data, {
             onEachFeature: function (feature, layer) {

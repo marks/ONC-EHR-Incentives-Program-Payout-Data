@@ -11,6 +11,14 @@ configure do
   set :cache, Dalli::Client.new
 end
 
+configure :development do
+  PUBLIC_HOST = ""
+end
+
+configure :production do
+  PUBLIC_HOST = "http://s3.amazonaws.com/hitech-vis/"
+end
+
 get '/' do
   if settings.production?
     @data_url = '/data/ProvidersPaidByEHRProgram_Dec2012_HOSP_FINAL.geojson'

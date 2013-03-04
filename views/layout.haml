@@ -6,7 +6,7 @@
   %head
     %meta{:charset => "utf-8"}/
     %meta{:content => "width=device-width", :name => "viewport"}/
-    %title Hitech Vis - Social Health Insights
+    %title Making “Meaningful Use” of Meaningful Use Data - by Social Health Insights using HHS/ONC/CMS Open Data
     %link{:href => "#{PUBLIC_HOST}/zurb-foundation-4.0.3/css/normalize.css", :rel => "stylesheet"}/
     %link{:href => "#{PUBLIC_HOST}/zurb-foundation-4.0.3/css/foundation.css", :rel => "stylesheet"}/
     %script{:src => "#{PUBLIC_HOST}/zurb-foundation-4.0.3/js/vendor/custom.modernizr.js"}
@@ -21,10 +21,18 @@
     %script{:src => "http://s3.amazonaws.com/mappyhealth-public/bootstrap/js/jquery.js"}
     %script{:src => "http://s3.amazonaws.com/mappyhealth-public/showLoading/jquery.showLoading.min.js"}
     %link{:href => "http://s3.amazonaws.com/mappyhealth-public/showLoading/showLoading.css", :rel => "stylesheet"}
-    %style
-      :plain
-        #map {width: 100%; height: 600px; border: 1px solid #ccc;}
+    :javascript
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-31592977-6']);
+      _gaq.push(['_setDomainName', 'socialhealthinsights.com']);
+      _gaq.push(['_setAllowLinker', true]);
+      _gaq.push(['_trackPageview']);
 
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
   %body
     %nav.top-bar
       %ul.title-area
@@ -32,23 +40,24 @@
         %li.name
           %h1
             %a{:href => "#"}
-              HITECH & Other ONC Visualizations
+              Making
+              %em "Meaningful Use"
+              of Meaningful Use Data
         %li.toggle-topbar.menu-icon
           %a{:href => "#"}
             %span menu
       %section.top-bar-section
-        / Right Nav Section
         %ul.right
           %li.divider
           %li.has-dropdown
-            %a{:href => "#"} A menu item
+            %a{:href => "#"} Links
             %ul.dropdown
               %li
-                %a{:href => "#"} Dropdown Option 1
+                %a{:href => "http://www.cms.gov/Regulations-and-Guidance/Legislation/EHRIncentivePrograms/DataAndReports.html", :target => "_blank"} Public Use CMS Data
               %li
-                %a{:href => "#"} Dropdown Option 2
+                %a{:href => "http://www.socialhealthinsights.com", :target => "_blank"} Social Health Insights
               %li
-                %a{:href => "#"} Dropdown Option 3
+                %a{:href => "http://www.mappyhealth.com", :target => "_blank"} MappyHealth
           %li.divider
           %li
             %a{:href => "#", :style => "padding:10px;"}
@@ -59,17 +68,40 @@
       %br/
       .large-4.columns
         %h5 About
-        %p This started as a weekend project sparked by a Twitter conversation between @Skram and @Cascadia. A better description will go here.
+        %p
+          The Office of the National Coordinator for Health Information Technology (ONC) released raw data of providers and hospitals attesting to
+          %a{:href => "http://www.cms.gov/Regulations-and-Guidance/Legislation/EHRIncentivePrograms/Meaningful_Use.html", :target => "_blank"} Meaningful Use
+          under the Health Information Technology for Economic and Clinical Health Act
+          = precede "(" do
+            = succeed ")." do
+              %a{:href => "http://www.healthit.gov/policy-researchers-implementers/final-rules-regulations", :target => "_blank"}HITECH
+          As
+          %a{:href => "http://www.healthit.gov", :target => "_blank"}healthit.gov
+          data has been made more and more open we saw opportunity to start the development of intuitive data visualizations showing the progress of this important piece of legislation. The following map provides you the ability to see the number of providers and hospitals that have attested to Meaningful Use as available in the ONC data set. We will keep this updated as the ONC updates their data set. This is only the beginning.
+        %p
+          We envision a mash-up of various open data sets including but not limited to quality data, social data, and others to provide further insight. This is open source and on Github so please do help us keep the innovation going and let us know what you have done by tweeting to
+          %a{:href => "http://twitter.com/skram", :target => "_blank"}@skram
+          ,
+          %a{:href => "http://twitter.com/geek_nurse", :target => "_blank"}@geek_nurse
+          ,
+          %a{:href => "http://twitter.com/n2informaticsRN", :target => "_blank"}@n2informaticsRN
+          , or
+          = succeed "." do
+            %a{:href => "http://twitter.com/mappyhealth", :target => "_blank"}@mappyhealth
+        %p
+          This started as a weekend project sparked by a Twitter conversation between @Skram (Mark at Social Health Insights) and
+          %a{:href => "http://twitter.com/Cascadia", :target => "_blank"}@Cascadia
+          (Sherry at ONC who pointed us toward the right data set).
 
       .large-8.columns
-        %h3 A map!
+        %h3 Visualizations
         %select#dropdown{:name => "dropdown"}
           %option{:value => "#{PUBLIC_HOST}#{@data_url}"} All US Hospitals
           - STATES.each do |state|
             %option{:value => "#{PUBLIC_HOST}/data/by_state/provider-#{state}.geojson"}= "#{state} Providers"
         %br/
         %br/
-        #map
+        #map{:style => "width: 100%; height: 600px; border: 1px solid #ccc;"}
 
 
     %footer.row

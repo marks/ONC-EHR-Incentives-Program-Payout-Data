@@ -8,7 +8,7 @@ puts "Number of hospitals in collection: #{Hospital.count}"
 hospitals_without_mapping = Hospital.where("compare.general.provider_number" => nil)
 puts "Number of hospitals in collection w/o hospital compare mapping: #{hospitals_without_mapping.count}"
 
-hospitals_without_mapping.skip(1000).each do |h|
+hospitals_without_mapping.skip(400).each do |h|
   # first, let's look for matches
   full_text_search = cleanup_string("#{h["PROVIDER - ORG NAME"]} #{h["PROVIDER CITY"]} #{h["PROVIDER ZIP 5 CD"]}")
   request_url = "#{HOSPITAL_COMPARE_GENERAL_ENDPOINT}$q=#{URI.escape(full_text_search)}"

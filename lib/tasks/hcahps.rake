@@ -2,9 +2,7 @@ namespace :hcahps do
 
   desc "Fetch from Socrata API for https://data.medicare.gov/dataset/Survey-of-Patients-Hospital-Experiences-HCAHPS-/rj76-22dk"
   task :ingest do
-    SOCRATA_APP_TOKEN = "c1qN0TO6e65zh9oxVD6XrVJyT"
     SOCRATA_ENDPOINT = "http://data.medicare.gov/resource/rj76-22dk.json"
-    SOCRATA_ENDPOINT += "?$$app_token=#{SOCRATA_APP_TOKEN}"
 
     # MAP ELIGIBLE HOSPITALS (~2k)
     puts "Number of hospitals in collection: #{Hospital.count}"
@@ -13,8 +11,8 @@ namespace :hcahps do
 
     hospitals_without_hcahps.each do |h|
       ensure_proper_ccn_format(h)
-      request_url = "#{SOCRATA_ENDPOINT}&provider_number=#{h["PROVIDER CCN"]}"
-      hcahps_results = JSON.parse(RestClient.get(request_url))
+      request_url = "#{SOCRATA_ENDPOINT}?provider_number=#{h["PROVIDER CCN"]}"
+      hcahps_results = JSON.parse(RestClient.get(request_url, {"X-App-Token" => SOCRATA_APP_TOKEN}))
       if hcahps_results.size == 0
         puts "No hcahps data found for #{h["PROVIDER - ORG NAME"]} (CCN = #{h["PROVIDER CCN"]})"
       elsif hcahps_results.size > 1

@@ -1,8 +1,9 @@
 require './web_app'
 
 SOCRATA_APP_TOKEN = "c1qN0TO6e65zh9oxVD6XrVJyT"
-HOSPITAL_COMPARE_GENERAL_ENDPOINT = "http://data.medicare.gov/resource/v287-28n3.json?" # aka https://data.medicare.gov/dataset/Hospital-General-Information/v287-28n3
-# HOSPITAL_COMPARE_GENERAL_ENDPOINT += "?app_token=#{SOCRATA_APP_TOKEN}&"
+# HOSPITAL_COMPARE_GENERAL_ENDPOINT = "http://data.medicare.gov/resource/v287-28n3.json?" # aka https://data.medicare.gov/dataset/Hospital-General-Information/v287-28n3
+HOSPITAL_COMPARE_GENERAL_ENDPOINT += "?$$app_token=#{SOCRATA_APP_TOKEN}&"
+
 # MAP ELIGIBLE HOSPITALS (~2k)
 puts "Number of hospitals in collection: #{Hospital.count}"
 hospitals_without_mapping = Hospital.where("compare.general.provider_number" => nil)

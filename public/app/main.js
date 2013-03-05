@@ -24,8 +24,8 @@ function load_geojson_as_cluster(data_url,fit_bounds){
         popup += "<br />"+props["PROVIDER  ADDRESS"]
         popup += "<br />"+props["PROVIDER CITY"]+", " + props["PROVIDER STATE"] + " " + props["PROVIDER ZIP 5 CD"]
         popup += "<br /><br /> Phone: " + props["PROVIDER PHONE NUM"]
-        popup += "<br /><br /> <a href=https://npiregistry.cms.hhs.gov/NPPESRegistry/NPIRegistryHome.do target=_blank>NPI</a>: " + props["PROVIDER NPI"]
-        if(props["PROVIDER CCN"]){ popup += " | <a href=http://www.qualitycheck.org/consumer/searchQCR.aspx target=_blank>CCN</a>: " + props["PROVIDER CCN"]}
+        popup += "<br /><br /> NPI: " + "<a href='https://npiregistry.cms.hhs.gov/NPPESRegistry/DisplayProviderDetails.do?searchNpi=1114922341&city=&firstName=&orgName=&searchType=org&state=&npi="+props["PROVIDER NPI"]+"&orgDba=&lastName=&zip=' target=_blank>"+props["PROVIDER NPI"]+"</a>"
+        if(props["PROVIDER CCN"]){ popup += " | CCN: <a href='http://www.qualitycheck.org/consumer/searchresults.aspx?nm="+props["PROVIDER CCN"]+"' target=_blank>" + props["PROVIDER CCN"] + "</a>"}
         layer.bindPopup(popup)
 
         layer.on('click', onFeatureClick);
@@ -38,13 +38,13 @@ function load_geojson_as_cluster(data_url,fit_bounds){
   })
 }
 
-// function onFeatureClick(e){
-//   features_clicked.push(e.target.feature)
-//   clicked_feature = $(features_clicked).last()
-//   hcahps_url = hcahps_endpt+"&provider_number="+clicked_feature[0].properties["PROVIDER CCN"]
-//   console.log(hcahps_url)
-//   $.getJSON(hcahps_url, function(data){
-//     console.log(data)
-//   })
-// }
+function onFeatureClick(e){
+  features_clicked.push(e.target.feature)
+  clicked_feature = $(features_clicked).last()
+  // hcahps_url = hcahps_endpt+"&provider_number="+clicked_feature[0].properties["PROVIDER CCN"]
+  // console.log(hcahps_url)
+  // $.getJSON(hcahps_url, function(data){
+  //   console.log(data)
+  // })
+}
 

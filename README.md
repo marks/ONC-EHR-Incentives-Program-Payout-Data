@@ -1,5 +1,10 @@
 A repo for working with data from [ONC's EHR Incentive Programs Data and Program Reports page.](http://www.cms.gov/Regulations-and-Guidance/Legislation/EHRIncentivePrograms/DataAndReports.html) after a tweet from [@Cascadia](https://twitter.com/cascadia/status/307973508833615873) and subsequent chat through direct messages inspired me to do something with the data.
 
+Screenshot
+----------
+![iPad (Landscape) Screenshot](public/screenshots/ipad-landscape-2013-03-04 at 9.19.43 PM.png "iPad (Landscape) Screenshot")
+*Screenshot last updated 3/4/2013 at 9pm EST*
+
 Notes
 -----
 * All files in this repo's `data` directory are from [ONC's EHR Incentive Programs Data and Program Reports page](http://www.cms.gov/Regulations-and-Guidance/Legislation/EHRIncentivePrograms/DataAndReports.html). They are included only for convenience to fellow developers looking to get up and running with a copy of the data.

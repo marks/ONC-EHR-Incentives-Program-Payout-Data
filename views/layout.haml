@@ -21,6 +21,7 @@
     %script{:src => "http://s3.amazonaws.com/mappyhealth-public/bootstrap/js/jquery.js"}
     %script{:src => "http://s3.amazonaws.com/mappyhealth-public/showLoading/jquery.showLoading.min.js"}
     %link{:href => "http://s3.amazonaws.com/mappyhealth-public/showLoading/showLoading.css", :rel => "stylesheet"}
+    %script{:src => "#{PUBLIC_HOST}/app/main.js"}
     :javascript
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', 'UA-31592977-6']);
@@ -149,36 +150,9 @@
     :javascript
       $(document).foundation();
 
-      var map;
-      var markers;
-
-      function load_geojson_as_cluster(data_url,fit_bounds){
-        $("#map").showLoading();
-        $.getJSON(data_url, function(data){
-          // clear all markers
-          if(typeof(markers) != "undefined"){map.removeLayer(markers);}
-
-          markers = new L.MarkerClusterGroup();
-          var geoJsonLayer = L.geoJson(data, {
-            onEachFeature: function (feature, layer) {
-              props = feature.properties
-              popup = ""
-              if(props["PROVIDER - ORG NAME"]){popup += "<strong>" + props["PROVIDER - ORG NAME"]+"</strong>"}
-              if(props["PROVIDER NAME"]){popup += "<strong>" + props["PROVIDER NAME"]+"</strong>"}
-              popup += "<br />"+props["PROVIDER  ADDRESS"]
-              popup += "<br />"+props["PROVIDER CITY"]+", " + props["PROVIDER STATE"] + " " + props["PROVIDER ZIP 5 CD"]
-              popup += "<br /><br /> Phone: " + props["PROVIDER PHONE NUM"]
-              popup += "<br /><br /> <a href=https://npiregistry.cms.hhs.gov/NPPESRegistry/NPIRegistryHome.do target=_blank>NPI</a>: " + props["PROVIDER NPI"]
-              if(props["PROVIDER CCN"]){ popup += " | <a href=http://www.qualitycheck.org/consumer/searchQCR.aspx target=_blank>CCN</a>: " + props["PROVIDER CCN"]}
-              layer.bindPopup(popup)
-            }
-          });
-          markers.addLayer(geoJsonLayer);
-          map.addLayer(markers);
-          if(fit_bounds == true){map.fitBounds(markers.getBounds());}
-          $("#map").hideLoading();
-        })
-      }
+      $("#dropdown").change(function(){
+        load_geojson_as_cluster($(this).val(),true)
+      });
 
       $(document).ready(function() {
         map = new L.Map('map', {
@@ -190,8 +164,3 @@
         });
         load_geojson_as_cluster("#{PUBLIC_HOST}#{@data_url}",true)
       });
-
-      $("#dropdown").change(function(){
-        load_geojson_as_cluster($(this).val(),true)
-      });
-

@@ -2,6 +2,7 @@ namespace :hcahps do
 
   desc "Fetch from Socrata API for https://data.medicare.gov/dataset/Survey-of-Patients-Hospital-Experiences-HCAHPS-/rj76-22dk"
   task :ingest do
+    SOCRATA_APP_TOKEN = "c1qN0TO6e65zh9oxVD6XrVJyT"
     SOCRATA_ENDPOINT = "http://data.medicare.gov/resource/rj76-22dk.json"
 
     # MAP ELIGIBLE HOSPITALS (~2k)

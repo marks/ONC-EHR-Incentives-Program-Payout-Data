@@ -1,7 +1,12 @@
 // the plain is to have all custom JS that supports the main site function here
 // document.ready calls will stay in layout.haml/page level code, for now
 
-var map, markers, feature_last_clicked;
+// for leaflet mapping
+var map, markers;
+
+// for additional features
+var features_clicked = []
+var hcahps_endpt = "http://data.medicare.gov/resource/rj76-22dk.json?" // https://data.medicare.gov/dataset/Survey-of-Patients-Hospital-Experiences-HCAHPS-/rj76-22dk
 
 function load_geojson_as_cluster(data_url,fit_bounds){
   $("#map").showLoading();
@@ -33,6 +38,13 @@ function load_geojson_as_cluster(data_url,fit_bounds){
   })
 }
 
-function onFeatureClick(e){
-  feature_last_clicked = e.target.feature
-}
+// function onFeatureClick(e){
+//   features_clicked.push(e.target.feature)
+//   clicked_feature = $(features_clicked).last()
+//   hcahps_url = hcahps_endpt+"&provider_number="+clicked_feature[0].properties["PROVIDER CCN"]
+//   console.log(hcahps_url)
+//   $.getJSON(hcahps_url, function(data){
+//     console.log(data)
+//   })
+// }
+

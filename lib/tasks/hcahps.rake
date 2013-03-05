@@ -12,8 +12,8 @@ namespace :hcahps do
     puts "Number of hospitals in collection w/o HCAHPS: #{hospitals_without_hcahps.count}"
 
     hospitals_without_hcahps.each do |h|
-      provider_number = "0#{h["PROVIDER CCN"]}" # for whatever reason, there is a 0 preceeding the CCN in HCAHPS and other datasets
-      request_url = "#{SOCRATA_ENDPOINT}&provider_number=#{provider_number}"
+      ensure_proper_ccn_format(h)
+      request_url = "#{SOCRATA_ENDPOINT}&provider_number=#{h["PROVIDER CCN"]}"
       hcahps_results = JSON.parse(RestClient.get(request_url))
       if hcahps_results.size == 0
         puts "No hcahps data found for #{h["PROVIDER - ORG NAME"]} (CCN = #{h["PROVIDER CCN"]})"

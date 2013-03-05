@@ -30,3 +30,12 @@ def to_geojson_point(doc)
   hash.delete("geo")  # do not want to transmit hash["geo"] as part of properties hash
   {"type" => "Feature", "id" => hash["_id"].to_s, "properties" => hash, "geometry" => {"type" => "Point", "coordinates" => coordinates}}
 end
+
+def ensure_proper_ccn_format(h)
+  original_ccn = h["PROVIDER CCN"]
+  if original_ccn.to_s.length < 6
+    zeros_to_add = ""
+    (6 - original_ccn.to_s.length).times {zeros_to_add += "0"} # Integer*"0" doesn't seem to work
+    h.update_attribute("PROVIDER CCN","#{zeros_to_add}#{original_ccn}")
+  end
+end

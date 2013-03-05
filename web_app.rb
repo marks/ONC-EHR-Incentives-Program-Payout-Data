@@ -6,6 +6,7 @@ require './models'
 
 configure do
   enable :sessions
+  set :session_secret, rand(36**10).to_s(36)
   set :raise_errors, false
   set :show_exceptions, false
   set :cache, Dalli::Client.new

@@ -22,6 +22,8 @@
     %script{:src => "http://s3.amazonaws.com/mappyhealth-public/showLoading/jquery.showLoading.min.js"}
     %link{:href => "http://s3.amazonaws.com/mappyhealth-public/showLoading/showLoading.css", :rel => "stylesheet"}
     %script{:src => "#{PUBLIC_HOST}/app/main.js"}
+    %link{:href => "#{PUBLIC_HOST}/app/main.css", :rel => "stylesheet"}
+
     :javascript
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', 'UA-31592977-6']);
@@ -110,6 +112,20 @@
         %ul.inline-list.right
           %li
             %a.tiny.secondary.button{:href => "#", :onclick => "map.locate({setView:true})"} Zoom into my current location
+        .clear
+      .large-8.columns
+        #table
+          %table{:width => "100%"}
+            %thead
+              %tr
+                %th
+                  Measure
+                  %br
+                  %em (Source)
+            %tbody
+              %tr.instructions
+                %td{:"colspan" => "3"}
+                  %em To populate this table with facility data, select a marker on the map
 
     %footer.row
       .large-12.columns

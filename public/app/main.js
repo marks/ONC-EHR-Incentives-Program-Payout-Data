@@ -27,7 +27,6 @@ function load_geojson_as_cluster(data_url,fit_bounds){
         popup += "<br /><br /> NPI: " + "<a href='https://npiregistry.cms.hhs.gov/NPPESRegistry/DisplayProviderDetails.do?searchNpi=1114922341&city=&firstName=&orgName=&searchType=org&state=&npi="+props["PROVIDER NPI"]+"&orgDba=&lastName=&zip=' target=_blank>"+props["PROVIDER NPI"]+"</a>"
         if(props["PROVIDER CCN"]){ popup += " | CCN: <a href='http://www.qualitycheck.org/consumer/searchresults.aspx?nm="+props["PROVIDER CCN"]+"' target=_blank>" + props["PROVIDER CCN"] + "</a>"}
         layer.bindPopup(popup)
-
         layer.on('click', onFeatureClick);
       }
     });
@@ -40,11 +39,22 @@ function load_geojson_as_cluster(data_url,fit_bounds){
 
 function onFeatureClick(e){
   features_clicked.push(e.target.feature)
-  clicked_feature = $(features_clicked).last()
-  // hcahps_url = hcahps_endpt+"&provider_number="+clicked_feature[0].properties["PROVIDER CCN"]
-  // console.log(hcahps_url)
-  // $.getJSON(hcahps_url, function(data){
-  //   console.log(data)
-  // })
+
+  $("#table tbody .instructions").hide();
+
+  $.each(features_clicked, function(n,feature){
+    hcahps_props = feature.properties.hcahps
+    column_title = hcahps_props.hospital_name
+    $("#table thead tr").append("<th>"+column_title+"<br /><span style='font-weight:400'>Last updated at "+hcahps_props._updated_at+"</span></th>");
+
+    $.each( hcahps_props, function(k, v){
+      // if(k[0] == "_"){break;} // skip keys that begin with underscore
+      // if(k == "_source" || k == "_updated_at"){break;}
+      key = k.split("_").join(" ")
+      if(k.split("_")[0] == "percent"){v = "<div class=progress><span class=meter style='width: "+v+"%'>&nbsp;"+v+"</span></div>"}
+      $("#table tbody").append("<tr><td>"+key+"</td><td>"+v+"</td><td></td></tr>")
+    });
+  })
+
 }
 

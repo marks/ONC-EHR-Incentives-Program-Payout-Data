@@ -13,7 +13,7 @@ namespace :hcahps do
     hospitals_without_hcahps.each do |h|
       ensure_proper_ccn_format(h)
       request_url = "#{SOCRATA_ENDPOINT}?provider_number=#{h["PROVIDER CCN"]}"
-      hcahps_results = JSON.parse(RestClient.get(request_url, {"X-App-Token" => SOCRATA_APP_TOKEN}))
+      hcahps_results = JSON.parse(RestClient.get(request_url))#, {"X-App-Token" => SOCRATA_APP_TOKEN}))
       if hcahps_results.size == 0
         puts "No hcahps data found for #{h["PROVIDER - ORG NAME"]} (CCN = #{h["PROVIDER CCN"]})"
       elsif hcahps_results.size > 1

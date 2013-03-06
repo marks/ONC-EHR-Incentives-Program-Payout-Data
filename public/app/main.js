@@ -39,6 +39,7 @@ function load_geojson_as_cluster(data_url,fit_bounds){
 
 function onFeatureClick(e){
   features_clicked.push(e.target.feature)
+  updateComparisonTable()
 }
 
 function updateComparisonTable(){

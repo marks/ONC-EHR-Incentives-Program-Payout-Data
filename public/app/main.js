@@ -43,19 +43,19 @@ function onFeatureClick(e){
 }
 
 function constructComparisonTable(){
-  $("#table table").html("")
-  $("#table table").html("<thead><tr><th>Measure</tr></thead><tbody></tbody>")
+  $("#comparison_tables").html("") // clear the comparison table div
   $.each(features_clicked, function(n,feature){
+    $("#comparison_tables").append("<table id='table"+n+"' width='100%'></table>")
+    $("#table"+n).html("<thead></thead><tbody></tbody>")
     hcahps_props = feature.properties.hcahps
     column_title = hcahps_props.hospital_name
-
-    $("#table thead tr").append("<th>"+column_title+"<br /><span style='font-weight:400'>Last updated at "+hcahps_props._updated_at+"</span></th>");
+    $("#table"+n+" thead").append("<tr><th><strong>Measure<strong></th><th><strong>"+column_title+"<strong><br />Last updated at "+hcahps_props._updated_at+"</th></tr>");
     $.each( hcahps_props, function(k, v){
       // if(k[0] == "_"){break;} // skip keys that begin with underscore
       // if(k == "_source" || k == "_updated_at"){break;}
       key = k.split("_").join(" ")
       if(k.split("_")[0] == "percent"){v = "<div class=progress><span class=meter style='width: "+v+"%'>&nbsp;"+v+"</span></div>"}
-      $("#table tbody").append("<tr><td>"+key+"</td><td>"+v+"</td><td></td></tr>")
+      $("#table"+n+" tbody").append("<tr><td>"+key+"</td><td>"+v+"</td><td></td></tr>")
     });
 
   })

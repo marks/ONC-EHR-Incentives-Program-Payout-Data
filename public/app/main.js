@@ -42,7 +42,6 @@ function constructComparisonTable(){
   $("#comparison_tables").html("") // clear the comparison table div
   $.each(features_clicked, function(n,feature){
     provider_url = "/db/onc/ProvidersPaidByEHRProgram_Dec2012_HOSP_FINAL/find_by_ccn/"+feature.properties["PROVIDER CCN"]+".json"
-    console.log(provider_url)
     $.getJSON(provider_url, function(data){
       if(data == null){
         // do nothing

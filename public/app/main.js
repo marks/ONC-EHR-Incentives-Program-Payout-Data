@@ -39,16 +39,17 @@ function load_geojson_as_cluster(data_url,fit_bounds){
 
 function onFeatureClick(e){
   features_clicked.push(e.target.feature)
-  updateComparisonTable()
+  constructComparisonTable()
 }
 
-function updateComparisonTable(){
-  $("#table tbody .instructions").hide();
+function constructComparisonTable(){
+  $("#table table").html("")
+  $("#table table").html("<thead><tr><th>Measure</tr></thead><tbody></tbody>")
   $.each(features_clicked, function(n,feature){
     hcahps_props = feature.properties.hcahps
     column_title = hcahps_props.hospital_name
-    $("#table thead tr").append("<th>"+column_title+"<br /><span style='font-weight:400'>Last updated at "+hcahps_props._updated_at+"</span></th>");
 
+    $("#table thead tr").append("<th>"+column_title+"<br /><span style='font-weight:400'>Last updated at "+hcahps_props._updated_at+"</span></th>");
     $.each( hcahps_props, function(k, v){
       // if(k[0] == "_"){break;} // skip keys that begin with underscore
       // if(k == "_source" || k == "_updated_at"){break;}
@@ -56,6 +57,7 @@ function updateComparisonTable(){
       if(k.split("_")[0] == "percent"){v = "<div class=progress><span class=meter style='width: "+v+"%'>&nbsp;"+v+"</span></div>"}
       $("#table tbody").append("<tr><td>"+key+"</td><td>"+v+"</td><td></td></tr>")
     });
+
   })
 }
 

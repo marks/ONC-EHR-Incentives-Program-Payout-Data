@@ -114,18 +114,10 @@
             %a.tiny.secondary.button{:href => "#", :onclick => "map.locate({setView:true})"} Zoom into my current location
         .clear
       .large-8.columns
+        %p
+          %em Select a marker on the map above to populate a comparison table below.
         #table
           %table{:width => "100%"}
-            %thead
-              %tr
-                %th
-                  Measure
-                  %br
-                  %em (Source)
-            %tbody
-              %tr.instructions
-                %td{:"colspan" => "3"}
-                  %em To populate this table with facility data, select a marker on the map
 
     %footer.row
       .large-12.columns

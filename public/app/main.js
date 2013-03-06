@@ -39,9 +39,10 @@ function load_geojson_as_cluster(data_url,fit_bounds){
 
 function onFeatureClick(e){
   features_clicked.push(e.target.feature)
+}
 
+function updateComparisonTable(){
   $("#table tbody .instructions").hide();
-
   $.each(features_clicked, function(n,feature){
     hcahps_props = feature.properties.hcahps
     column_title = hcahps_props.hospital_name
@@ -55,6 +56,5 @@ function onFeatureClick(e){
       $("#table tbody").append("<tr><td>"+key+"</td><td>"+v+"</td><td></td></tr>")
     });
   })
-
 }
 

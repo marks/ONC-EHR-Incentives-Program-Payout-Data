@@ -24,10 +24,10 @@ def dstk_geocode(string)
   end
 end
 
-def to_geojson_point(doc)
+def to_geojson_point(doc,keys_to_exclude = [])
   hash = doc.as_document.to_hash
   coordinates = [hash["geo"]["data"]["geometry"]["location"]["lng"],hash["geo"]["data"]["geometry"]["location"]["lat"]]
-  hash.delete("geo")  # do not want to transmit hash["geo"] as part of properties hash
+  keys_to_exclude.each{|k| hash.delete(k)}
   {"type" => "Feature", "id" => hash["_id"].to_s, "properties" => hash, "geometry" => {"type" => "Point", "coordinates" => coordinates}}
 end
 

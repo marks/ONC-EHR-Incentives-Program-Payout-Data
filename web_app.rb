@@ -21,9 +21,9 @@ end
 
 get '/' do
   if settings.production? # static asset from AWS S3/CF
-    @data_url = '/data/ProvidersPaidByEHRProgram_Dec2012_HOSP_FINAL.geojson'
+    @default_data_url = '/data/ProvidersPaidByEHRProgram_Dec2012_HOSP_FINAL.geojson'
   else
-    @data_url = '/db/onc/ProvidersPaidByEHRProgram_Dec2012_HOSP_FINAL.geojson'
+    @default_data_url = '/db/onc/ProvidersPaidByEHRProgram_Dec2012_HOSP_FINAL.geojson'
   end
   haml :main
 end
@@ -34,4 +34,10 @@ get '/db/onc/ProvidersPaidByEHRProgram_Dec2012_HOSP_FINAL.geojson' do
   geojson["type"] = "FeatureCollection"
   geojson["features"] = Hospital.where("geo" => {"$ne" => nil}).map {|h| to_geojson_point(h,["geo","hcahps"])}
   return geojson.to_json
+end
+
+get '/db/onc/ProvidersPaidByEHRProgram_Dec2012_HOSP_FINAL/:provider_ccn.json' do
+  content_type :json
+  provider = Hospital.limit(1).where("PROVIDER CCN" => params[:provider_ccn])[0].to_json
+  return provider.to_json
 end

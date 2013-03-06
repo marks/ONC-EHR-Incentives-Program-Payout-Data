@@ -16,7 +16,7 @@
     %meta{:content => "width=device-width, initial-scale=1.0", :name => "viewport"}
     %link{:href => "#{PUBLIC_HOST}/Leaflet.markercluster/MarkerCluster.css", :rel => "stylesheet"}
     %link{:href => "#{PUBLIC_HOST}/Leaflet.markercluster/MarkerCluster.Default.css", :rel => "stylesheet"}
-    /[if lte IE 8] <link rel="stylesheet" href="../dist/MarkerCluster.Default.ie.css" />
+    /[if lte IE 8] <link rel="stylesheet" href="#{PUBLIC_HOST}/Leaflet.markercluster/MarkerCluster.Default.ie.css" />
     %script{:src => "#{PUBLIC_HOST}/Leaflet.markercluster/leaflet.markercluster-src.js"}
     %script{:src => "http://s3.amazonaws.com/mappyhealth-public/bootstrap/js/jquery.js"}
     %script{:src => "http://s3.amazonaws.com/mappyhealth-public/showLoading/jquery.showLoading.min.js"}
@@ -174,5 +174,5 @@
             key: 'ed5940a5e0724173aba9da0d77368912'
           })]
         });
-        load_geojson_as_cluster("#{@data_url}",true)
+        load_geojson_as_cluster("#{@default_data_url}",true)
       });

@@ -36,8 +36,17 @@ get '/db/onc/ProvidersPaidByEHRProgram_Dec2012_HOSP_FINAL.geojson' do
   return geojson.to_json
 end
 
-get '/db/onc/ProvidersPaidByEHRProgram_Dec2012_HOSP_FINAL/:provider_ccn.json' do
+get '/db/onc/ProvidersPaidByEHRProgram_Dec2012_HOSP_FINAL/find_by_ccn/:provider_ccn.json' do
   content_type :json
-  provider = Hospital.limit(1).where("PROVIDER CCN" => params[:provider_ccn])[0].to_json
-  return provider.to_json
+  providers = Hospital.limit(1).where("PROVIDER CCN" => params[:provider_ccn].to_s)
+  return nil if providers.empty?
+
+  provider = providers[0].as_document.to_hash
+  provider.delete("geo")
+  # HCAHPS-specific
+  provider["hcahps"]["source"] = "API endpoint of https://data.medicare.gov/dataset/Survey-of-Patients-Hospital-Experiences-HCAHPS-/rj76-22dk ; Data last fetched at #{provider["hcahps"]["_updated_at"]}"
+  provider["hcahps"].delete("_updated_at")
+  provider["hcahps"].delete("_source")
+
+  return provider.nil? ? nil.to_json : provider.to_json
 end

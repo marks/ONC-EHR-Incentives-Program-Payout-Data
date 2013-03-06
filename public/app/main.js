@@ -41,18 +41,24 @@ function onFeatureClick(e){
 function constructComparisonTable(){
   $("#comparison_tables").html("") // clear the comparison table div
   $.each(features_clicked, function(n,feature){
-    $.getJson("#{PUBLIC_HOST}/db/onc/ProvidersPaidByEHRProgram_Dec2012_HOSP_FINAL/"+feature["PROVIDER CCN"]+".json", function(data){
-      $("#comparison_tables").append("<table id='table"+n+"' width='100%'></table>")
-      $("#table"+n).html("<thead></thead><tbody></tbody>")
-      hcahps_props = data.hcahps
-      column_title = hcahps_props.hospital_name
-      $("#table"+n+" thead").append("<tr><th><strong>Measure<strong></th><th><strong>"+column_title+"<strong><br />Last updated at "+hcahps_props._updated_at+"</th></tr>");
-      $.each( hcahps_props, function(k, v){
-        key = k.split("_").join(" ")
-        if(k.split("_")[0] == "percent"){v = "<div class=progress><span class=meter style='width: "+v+"%'>&nbsp;"+v+"</span></div>"}
-        $("#table"+n+" tbody").append("<tr><td>"+key+"</td><td>"+v+"</td><td></td></tr>")
-      });
+    provider_url = "/db/onc/ProvidersPaidByEHRProgram_Dec2012_HOSP_FINAL/find_by_ccn/"+feature.properties["PROVIDER CCN"]+".json"
+    console.log(provider_url)
+    $.getJSON(provider_url, function(data){
+      if(data == null){
+        alert("no data")
+      } else {
+        hcahps_props = data.hcahps
+        table_selector = "#table-ccn"+hcahps_props.provider_number
+        $("#comparison_tables").append("<table id='table-ccn"+hcahps_props.provider_number+"'></table>")
+        $(table_selector).html("<thead></thead><tbody></tbody>")
+        $(table_selector+" thead").append("<tr><th data-sort-initial='true'>Measure</th><th>Values for: "+hcahps_props.hospital_name+"</th></tr>");
+        $.each( hcahps_props, function(k, v){
+          key = k.split("_").join(" ")
+          if(k.match(/percent/)){v = "<div class=progress><span class=meter style='width: "+v+"%'>&nbsp;"+v+"</span></div>"}
+          $(table_selector+" tbody").append("<tr><td>"+key+"</td><td>"+v+"</td><td></td></tr>")
+        });
+        $(table_selector).footable();
+      }
     });
   })
 }
-

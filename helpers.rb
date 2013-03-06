@@ -33,9 +33,9 @@ end
 
 def ensure_proper_ccn_format(h)
   original_ccn = h["PROVIDER CCN"]
+  zeros_to_add = ""
   if original_ccn.to_s.length < 6
-    zeros_to_add = ""
     (6 - original_ccn.to_s.length).times {zeros_to_add += "0"} # Integer*"0" doesn't seem to work
-    h.update_attribute("PROVIDER CCN","#{zeros_to_add}#{original_ccn}")
   end
+  h.update_attribute("PROVIDER CCN","#{zeros_to_add}#{original_ccn}")
 end

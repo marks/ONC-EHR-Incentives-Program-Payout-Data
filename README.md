@@ -25,3 +25,5 @@ Procedure
   3. Geocoded locations using `bundle exec rake geocode`
   4. Exported relevant information to CSV using `mongoexport --csv -d onc -c ProvidersPaidByEHRProgram_Dec2012_EP_FINAL -o public/data/ProvidersPaidByEHRProgram_Dec2012_EP_FINAL-geocoded.csv -f "PROVIDER NPI,PROVIDER STATE,PROVIDER CITY,PROVIDER  ADDRESS,PROVIDER ZIP 5 CD,PROVIDER ZIP 4 CD,PROVIDER PHONE NUM,PROVIDER PHONE EXT,PROGRAM YEAR,geo.provider,geo.updated_at,geo.data.types.0,geo.data.geometry.location.lat,geo.data.geometry.location.lng,geo.data.formatted_address"`
 
+Dump to local bson: `mongodump -d onc -c ProvidersPaidByEHRProgram_Dec2012_HOSP_FINAL`
+Restore to mongohq: mongorestore -h linus.mongohq.com --port XXXX -d XXXXX -u mark -p ProvidersPaidByEHRProgram_Dec2012_HOSP_FINAL.bson

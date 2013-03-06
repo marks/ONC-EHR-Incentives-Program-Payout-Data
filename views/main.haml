@@ -24,6 +24,9 @@
     %script{:src => "#{PUBLIC_HOST}/app/main.js"}
     %link{:href => "#{PUBLIC_HOST}/app/main.css", :rel => "stylesheet"}
 
+    %link{:href => "#{PUBLIC_HOST}/bradvin-FooTable-master/css/footable-0.1.css", :rel => "stylesheet", :type => "text/css"}/
+    %script{:src => "#{PUBLIC_HOST}/bradvin-FooTable-master/js/footable-0.1.js", :type => "text/javascript"}
+    %script{:src => "#{PUBLIC_HOST}/bradvin-FooTable-master/js/footable.sortable.js", :type => "text/javascript"}
     :javascript
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', 'UA-31592977-6']);
@@ -114,8 +117,12 @@
             %a.tiny.secondary.button{:href => "#", :onclick => "map.locate({setView:true})"} Zoom into my current location
         .clear
       .large-8.columns
+        %h5 Compare Facilities
         %p
-          %em Select a marker on the map above to populate a comparison table below.
+          %em To compare facility measures, select a marker on the map above to populate a table below with data.
+          %br
+          At this time, only US Hospital providers are supported at this time and we show data from
+          %a{:href => "http://www.cms.gov/Medicare/Quality-Initiatives-Patient-Assessment-Instruments/HospitalQualityInits/HospitalHCAHPS.html", :target => "_blank"} HCAHPS: Patients' Perspectives of Care Survey
         #comparison_tables
 
     %footer.row

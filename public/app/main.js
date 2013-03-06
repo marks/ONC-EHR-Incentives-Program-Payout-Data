@@ -45,7 +45,7 @@ function constructComparisonTable(){
     console.log(provider_url)
     $.getJSON(provider_url, function(data){
       if(data == null){
-        alert("no data")
+        // do nothing
       } else {
         hcahps_props = data.hcahps
         table_selector = "#table-ccn"+hcahps_props.provider_number

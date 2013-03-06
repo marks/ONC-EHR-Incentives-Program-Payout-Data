@@ -9,7 +9,6 @@ configure do
   set :session_secret, rand(36**10).to_s(36)
   set :raise_errors, false
   set :show_exceptions, false
-  set :cache, Dalli::Client.new
 end
 
 configure :development do
@@ -17,15 +16,13 @@ configure :development do
 end
 
 configure :production do
-  PUBLIC_HOST = "http://s3.amazonaws.com/hitech-vis"
+  PUBLIC_HOST = "http://cf.hitech.socialhealthinsights.com"
 end
 
 get '/' do
-  if settings.production?
-    # static asset from S3/cf
+  if settings.production? # static asset from AWS S3/CF
     @data_url = '/data/ProvidersPaidByEHRProgram_Dec2012_HOSP_FINAL.geojson'
   else
-    # dynamic
     @data_url = '/db/onc/ProvidersPaidByEHRProgram_Dec2012_HOSP_FINAL.geojson'
   end
   haml :main
@@ -33,15 +30,8 @@ end
 
 get '/db/onc/ProvidersPaidByEHRProgram_Dec2012_HOSP_FINAL.geojson' do
   content_type :json
-
-  cache_key = "hospitals"
-  @geojson ||= settings.cache.fetch(cache_key) do
-    geojson = Hash.new
-    geojson["type"] = "FeatureCollection"
-    geojson["features"] = Hospital.where("geo" => {"$ne" => nil}).map {|h| to_geojson_point(h,["geo","hcahps"])}
-    settings.cache.set("hospitals", geojson, 4000)
-    geojson
-  end
-
-  return @geojson.to_json
+  geojson = Hash.new
+  geojson["type"] = "FeatureCollection"
+  geojson["features"] = Hospital.where("geo" => {"$ne" => nil}).map {|h| to_geojson_point(h,["geo","hcahps"])}
+  return geojson.to_json
 end

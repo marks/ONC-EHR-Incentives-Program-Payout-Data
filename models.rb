@@ -2,7 +2,7 @@ Mongoid.load!("config/mongoid.yml")
 
 class Hospital
   include Mongoid::Document
-  index({ "PROVIDER CCN" => 1})
+  index({ "PROVIDER CCN" => 1},{ unique: true, name: "PROVIDER_CCN_index" })
   index({ "PROVIDER NPI" => 1})
   index({ "PROVIDER STATE" => 1})
   index({ "geo.data.geometry.location" => "2d"})

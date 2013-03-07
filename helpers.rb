@@ -39,3 +39,19 @@ def ensure_proper_ccn_format(h)
   end
   h.update_attribute("PROVIDER CCN","#{zeros_to_add}#{original_ccn}")
 end
+
+def fetch_whole_socrata_dataset(endpoint, token, per_page = 1000)
+  all_results = []
+  page = 1
+  request_url = "#{endpoint}?$limit=#{per_page}&$offset=#{per_page*page}"
+  page_results = JSON.parse(RestClient.get(request_url), {"X-App-Token" => token})
+  until page_results.empty?
+    all_results = all_results + page_results
+    puts "Added #{page_results.size} results from page #{page} for a total of #{all_results.size}"
+    page = page + 1
+    request_url = "#{SOCRATA_ENDPOINT}?$limit=#{per_page}&$offset=#{per_page*page}"
+    page_results = JSON.parse(RestClient.get(request_url), {"X-App-Token" => SOCRATA_APP_TOKEN})
+  end
+  puts "Collected a total of #{all_results.size}"
+  return all_results
+end

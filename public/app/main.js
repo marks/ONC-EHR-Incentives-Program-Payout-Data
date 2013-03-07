@@ -49,7 +49,7 @@ function constructComparisonTable(){
       } else {
         hcahps_props = data.hcahps
         table_selector = "#table-ccn"+hcahps_props.provider_number
-        $("#comparison_tables").append("<table id='table-ccn"+hcahps_props.provider_number+"'></table>")
+        $("#comparison_tables").append("<table id='table-ccn"+hcahps_props.provider_number+"' class='footable'></table>")
         $(table_selector).html("<thead></thead><tbody></tbody>")
         $(table_selector+" thead").append("<tr><th data-sort-initial='true'>Measure</th><th>Values for: "+hcahps_props.hospital_name+"</th></tr>");
         $.each( hcahps_props, function(k, v){

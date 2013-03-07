@@ -1,7 +1,6 @@
-SOCRATA_ENDPOINT = "http://data.medicare.gov/resource/rj76-22dk.json"
-SOCRATA_APP_TOKEN = "c1qN0TO6e65zh9oxVD6XrVJyT"
-
 namespace :hcahps do
+  SOCRATA_ENDPOINT = "http://data.medicare.gov/resource/rj76-22dk.json"
+  SOCRATA_APP_TOKEN = "c1qN0TO6e65zh9oxVD6XrVJyT"
 
   desc "Fetch HCAHPS hospital data from Socrata API for hospitals that are already in our system (aka received incentive payments)"
   task :ingest do

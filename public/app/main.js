@@ -49,13 +49,14 @@ function constructComparisonTable(){
       } else {
         hcahps_props = data.hcahps
         table_selector = "#table-ccn"+hcahps_props.provider_number
-        $("#comparison_tables").append("<table id='table-ccn"+hcahps_props.provider_number+"' class='footable'></table>")
+        $("#comparison_tables").append("<table id='table-ccn"+hcahps_props.provider_number+"' class=''></table>")
         $(table_selector).html("<thead></thead><tbody></tbody>")
-        $(table_selector+" thead").append("<tr><th data-sort-initial='true'>Measure</th><th>Values for: "+hcahps_props.hospital_name+"</th></tr>");
+        $(table_selector+" thead").append("<tr><th data-sort-initial='true'>Measure</th><th data-type='numeric'>Values for: "+hcahps_props.hospital_name+"</th></tr>");
         $.each( hcahps_props, function(k, v){
+          value = v
           key = k.split("_").join(" ")
-          if(k.match(/percent/)){v = "<div class=progress><span class=meter style='width: "+v+"%'>&nbsp;"+v+"</span></div>"}
-          $(table_selector+" tbody").append("<tr><td>"+key+"</td><td>"+v+"</td><td></td></tr>")
+          if(k.match(/percent/)){value = "<div class=progress><span class=meter style='width: "+value+"%'>&nbsp;"+value+"</span></div>"}
+          $(table_selector+" tbody").append("<tr><td>"+key+"</td><td data-value='"+v+"'>"+value+"</td></tr>")
         });
         $(table_selector).footable();
       }

@@ -44,4 +44,13 @@ namespace :hcahps do
     puts "#{Hospital.count} hospitals in db"
   end
 
+  desc "Calculate HCAHPS national averages for each value and store in a hcahps_averages collection"
+  task :calculate_national_averages do
+    # find out what fields we need to calculate averages for
+    array_of_fields = Hospital.where("hcahps" => {"$ne" => nil}).first["hcahps"].keys
+    array_of_fields.each do |field|
+      Hospital.mr_compute_descriptive_stats_excluding_nulls("hcahps.#{field}")
+    end
+  end
+
 end

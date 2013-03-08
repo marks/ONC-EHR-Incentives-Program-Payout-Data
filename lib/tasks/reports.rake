@@ -5,20 +5,40 @@ namespace :reports do
 
   namespace :hospitals do
     task :simple_counts do
+
+      # Global criteria
+      has_geo_crtieria = {"geo" => {"$ne" => nil}}
+      has_hcahps_criteria = {"hcahps" => {"$ne" => nil}}
+      has_general_criteria = {"general" => {"$ne" => nil}}
+
+
+
       # A) We started by analyzing locations receiving EHR incentive payment (www.cms.gov/Regulations-and-Guidance/Legislation/EHRIncentivePrograms/DataAndReports.html)
-      # Documents with root data values other than "PROVIDER CCN" and embedded documents are part of this group
-      num_recvd_incentive = Hospital.where("PROVIDER NPI" => {"$ne" => nil})
-      puts "num_recvd_incentive = #{num_recvd_incentive.count}"
-      num_recvd_incentive_and_have_geo = num_recvd_incentive.where("geo" => {"$ne" => nil})
-      puts "  num_recvd_incentive_and_have_geo = #{num_recvd_incentive_and_have_geo.count}"
-      num_recvd_incentive_and_have_hcahps = num_recvd_incentive.where("hcahps" => {"$ne" => nil})
-      puts "  num_recvd_incentive_and_have_hcahps = #{num_recvd_incentive_and_have_hcahps.count}"
-      num_recvd_incentive_and_have_general = num_recvd_incentive.where("general" => {"$ne" => nil})
-      puts "  num_recvd_incentive_and_have_general = #{num_recvd_incentive_and_have_general.count}"
+      # Documents with a root-level key of "PROGRAM YEAR 2012" DID receive incentive payments
+      recvd_incentive_criteria = {"PROGRAM YEAR 2012" => {"$ne" => nil}}
+      recvd_incentive = Hospital.where(recvd_incentive_criteria)
+      puts "# recvd_incentive = #{recvd_incentive.count}"
+      recvd_incentive_and_have_geo = recvd_incentive.where(has_geo_crtieria)
+      puts "  # recvd_incentive_and_have_geo = #{recvd_incentive_and_have_geo.count}"
+      recvd_incentive_and_have_hcahps = recvd_incentive.where(has_hcahps_criteria)
+      puts "  # recvd_incentive_and_have_hcahps = #{recvd_incentive_and_have_hcahps.count}"
+      recvd_incentive_and_have_general = recvd_incentive.where(has_general_criteria)
+      puts "  # recvd_incentive_and_have_general = #{recvd_incentive_and_have_general.count}"
 
-      # B) Then we added in HCAHPS data (data.medicare.gov/dataset/Survey-of-Patients-Hospital-Experiences-HCAHPS-/rj76-22dk)
+      print "\n"
 
-      # C) Then we added in General Hospital data (https://data.medicare.gov/dataset/Hospital-General-Information/v287-28n3)
+      # Documents without a root-level key of "PROGRAM YEAR 2012" did NOT recieve incentive payments
+      didnt_recv_incentive_criteria = {"PROGRAM YEAR 2012" => nil}
+      didnt_recv_incentive = Hospital.where(didnt_recv_incentive_criteria)
+      puts "# didnt_recv_incentive = #{didnt_recv_incentive.count}"
+      didnt_recv_incentive_and_have_geo = didnt_recv_incentive.where(has_geo_crtieria)
+      puts "  # didnt_recv_incentive_and_have_geo = #{didnt_recv_incentive_and_have_geo.count}"
+      didnt_recv_incentive_and_have_hcahps = didnt_recv_incentive.where(has_hcahps_criteria)
+      puts "  # didnt_recv_incentive_and_have_hcahps = #{didnt_recv_incentive_and_have_hcahps.count}"
+      didnt_recv_incentive_and_have_general = didnt_recv_incentive.where(has_general_criteria)
+      puts "  # didnt_recv_incentive_and_have_general = #{didnt_recv_incentive_and_have_general.count}"
+
+
     end
   end
 

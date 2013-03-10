@@ -34,7 +34,7 @@ namespace :reports do
       puts
 
       puts "B) Then we added HCAHPS data from https://data.medicare.gov/dataset/Survey-of-Patients-Hospital-Experiences-HCAHPS-/rj76-22dk"
-      have_hcahps = Hospital.where(has_hcahps)
+      have_hcahps = Hospital.where(has_hcahps_criteria)
       puts "  # have_hcahps = #{have_hcahps.count}"
       puts
 

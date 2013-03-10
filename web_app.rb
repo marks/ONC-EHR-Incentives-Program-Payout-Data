@@ -32,6 +32,10 @@ get '/db/onc/ProvidersPaidByEHRProgram_Dec2012_HOSP_FINAL.geojson' do
   content_type :json
   geojson = Hash.new
   geojson["type"] = "FeatureCollection"
+  # hospitals that did receive incentives
+  # recvd_incentives = Hospital.any_of("PROGRAM YEAR 2012" => 2012, "PROGRAM YEAR 2011" => 2011).where("geo" => {"$ne" => nil}).map {|h| to_geojson_point(h,["geo","hcahps"])}
+  # hospitals that did not receive incentives and has geo location
+  # didnt_recv_incentives = Hospital.where("PROGRAM YEAR 2012" => nil, "PROGRAM YEAR 2011" => 2011).where("geo" => {"$ne" => nil}).map {|h| to_geojson_point(h,["geo","hcahps"])}
   geojson["features"] = Hospital.where("geo" => {"$ne" => nil}).map {|h| to_geojson_point(h,["geo","hcahps"])}
   return geojson.to_json
 end

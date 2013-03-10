@@ -14,7 +14,7 @@ var incentiveTrueIcon = L.icon({
 
 var incentiveFalseIcon = L.icon({
     // http://mapicons.nicolasmollet.com/markers/health-education/health/hospital/?custom_color=ff0004
-    iconUrl: PUBLIC_HOST+'/mapicons.nicolasmollet.com/hospital-building-green.png',
+    iconUrl: PUBLIC_HOST+'/mapicons.nicolasmollet.com/hospital-building-red.png',
     iconSize: [32, 37],
     iconAnchor: [15, 37],
     popupAnchor: [2,-37]
@@ -40,6 +40,7 @@ function load_geojson_as_cluster(data_url,fit_bounds){
         popup += "<br /><br /> NPI: " + "<a href='https://npiregistry.cms.hhs.gov/NPPESRegistry/DisplayProviderDetails.do?searchNpi=1114922341&city=&firstName=&orgName=&searchType=org&state=&npi="+props["PROVIDER NPI"]+"&orgDba=&lastName=&zip=' target=_blank>"+props["PROVIDER NPI"]+"</a>"
         if(props["PROVIDER CCN"]){ popup += " | CCN: <a href='http://www.qualitycheck.org/consumer/searchresults.aspx?nm="+props["PROVIDER CCN"]+"' target=_blank>" + props["PROVIDER CCN"] + "</a>"}
         popup += "<br /><br />Incentive Program Year(s): "
+        if(props["PROGRAM YEAR"] != undefined){popup += "<span class='radius secondary label'>"+props["PROGRAM YEAR"]+"</span> "       }
         if(props["PROGRAM YEAR 2011"] == 2011){popup += "<span class='radius secondary label'>2011</span> "       }
         if(props["PROGRAM YEAR 2012"] == 2012){ popup += " <span class='radius secondary label'>2012</span>"       }
         if(props["PROGRAM YEAR 2011"] == 2011 || props["PROGRAM YEAR 2012"] == 2012){

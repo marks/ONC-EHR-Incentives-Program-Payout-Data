@@ -12,8 +12,8 @@ namespace :reports do
 
       puts "A) We started by analyzing locations receiving EHR incentive payment from www.cms.gov/Regulations-and-Guidance/Legislation/EHRIncentivePrograms/DataAndReports.html"
       # Documents with a root-level key of "PROGRAM YEAR 2012" DID receive incentive payments
-      recvd_incentive_criteria = {"PROGRAM YEAR 2012" => {"$ne" => nil}}
-      recvd_incentive = Hospital.where(recvd_incentive_criteria)
+      recvd_incentive_criteria = [{"PROGRAM YEAR 2011" => 2011},{"PROGRAM YEAR 2012" => 2012}]
+      recvd_incentive = Hospital.any_of(recvd_incentive_criteria)
       puts "  # recvd_incentive = #{recvd_incentive.count}"
       recvd_incentive_and_have_geo = recvd_incentive.where(has_geo_crtieria)
       puts "    # recvd_incentive_and_have_geo = #{recvd_incentive_and_have_geo.count}"
@@ -22,7 +22,7 @@ namespace :reports do
       recvd_incentive_and_have_general = recvd_incentive.where(has_general_criteria)
       puts "    # recvd_incentive_and_have_general = #{recvd_incentive_and_have_general.count}"
       # Documents without a root-level key of "PROGRAM YEAR 2012" did NOT recieve incentive payments
-      didnt_recv_incentive_criteria = {"PROGRAM YEAR 2012" => nil}
+      didnt_recv_incentive_criteria = {"PROGRAM YEAR 2012" => nil, "PROGRAM YEAR 2011" => nil}
       didnt_recv_incentive = Hospital.where(didnt_recv_incentive_criteria)
       puts "  # didnt_recv_incentive = #{didnt_recv_incentive.count}"
       didnt_recv_incentive_and_have_geo = didnt_recv_incentive.where(has_geo_crtieria)

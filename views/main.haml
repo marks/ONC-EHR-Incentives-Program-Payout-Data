@@ -7,6 +7,8 @@
     %meta{:charset => "utf-8"}/
     %meta{:content => "width=device-width", :name => "viewport"}/
     %title Making "Meaningful Use" of HHS Data - by Social Health Insights using HHS / HealthIT.gov Open Data
+    :javascript
+      var PUBLIC_HOST = "#{PUBLIC_HOST}"
     %link{:href => "#{PUBLIC_HOST}/zurb-foundation-4.0.3/css/normalize.css", :rel => "stylesheet"}/
     %link{:href => "#{PUBLIC_HOST}/zurb-foundation-4.0.3/css/foundation.css", :rel => "stylesheet"}/
     %script{:src => "#{PUBLIC_HOST}/zurb-foundation-4.0.3/js/vendor/custom.modernizr.js"}
@@ -112,6 +114,8 @@
         %br
         %ul.inline-list.right
           %li
+            %img{:src => "#{PUBLIC_HOST}/"}
+          %li
             %a.tiny.secondary.button{:href => "#", :onclick => "map.locate({setView:true})"} Zoom into my current location
         .clear
       .large-8.columns
@@ -165,7 +169,6 @@
     %script{:src => "#{PUBLIC_HOST}/zurb-foundation-4.0.3/js/foundation/foundation.tooltips.js"}
     %script{:src => "#{PUBLIC_HOST}/zurb-foundation-4.0.3/js/foundation/foundation.topbar.js"}
     :javascript
-      var PUBLIC_HOST = "#{PUBLIC_HOST}"
       $(document).foundation();
 
       $("#dropdown").change(function(){

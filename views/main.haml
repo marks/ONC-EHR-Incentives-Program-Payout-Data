@@ -114,10 +114,20 @@
         %br
         %ul.inline-list.right
           %li
-            %img{:src => "#{PUBLIC_HOST}/"}
-          %li
             %a.tiny.secondary.button{:href => "#", :onclick => "map.locate({setView:true})"} Zoom into my current location
         .clear
+      .large-8.columns
+        %h5 Map Legend
+        %ul.inline-list
+          %li
+            %img.left{:src => "#{PUBLIC_HOST}/mapicons.nicolasmollet.com/hospital-building-green.png"}
+            &nbsp;&nbsp;
+            Received MU/HITECH incentive payments in 2011 and/or 2012
+          %li
+            %img.left{:src => "#{PUBLIC_HOST}/mapicons.nicolasmollet.com/hospital-building-red.png"}
+            &nbsp;&nbsp;
+            Did not receive any MU/HITECH incentive payments in 2011 or 2012
+
       .large-8.columns
         %h5 Compare Facilities
         %p

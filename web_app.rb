@@ -21,21 +21,17 @@ end
 
 get '/' do
   if settings.production? # static asset from AWS S3/CF
-    @default_data_url = '/data/ProvidersPaidByEHRProgram_Dec2012_HOSP_FINAL.geojson'
+    @default_data_url = '/data/all_hospitals_with_geo.geojson'
   else
-    @default_data_url = '/db/onc/ProvidersPaidByEHRProgram_Dec2012_HOSP_FINAL.geojson'
+    @default_data_url = '/db/onc/ProvidersPaidByEHRProgram_Dec2012_HOSP_FINAL/all_hospitals_with_geo.geojson'
   end
   haml :main
 end
 
-get '/db/onc/ProvidersPaidByEHRProgram_Dec2012_HOSP_FINAL.geojson' do
+get '/db/onc/ProvidersPaidByEHRProgram_Dec2012_HOSP_FINAL/all_hospitals_with_geo.geojson' do
   content_type :json
   geojson = Hash.new
   geojson["type"] = "FeatureCollection"
-  # hospitals that did receive incentives
-  # recvd_incentives = Hospital.any_of("PROGRAM YEAR 2012" => 2012, "PROGRAM YEAR 2011" => 2011).where("geo" => {"$ne" => nil}).map {|h| to_geojson_point(h,["geo","hcahps"])}
-  # hospitals that did not receive incentives and has geo location
-  # didnt_recv_incentives = Hospital.where("PROGRAM YEAR 2012" => nil, "PROGRAM YEAR 2011" => 2011).where("geo" => {"$ne" => nil}).map {|h| to_geojson_point(h,["geo","hcahps"])}
   geojson["features"] = Hospital.where("geo" => {"$ne" => nil}).map {|h| to_geojson_point(h,["geo","hcahps"])}
   return geojson.to_json
 end

@@ -31,24 +31,42 @@ function load_geojson_as_cluster(data_url,fit_bounds){
     var geoJsonLayer = L.geoJson(data, {
       onEachFeature: function (feature, layer) {
         props = feature.properties
+        // set icon (green or red) depending on incentive receive status
+        if(props["PROGRAM YEAR 2011"] == 2011){layer.setIcon(incentiveTrueIcon) }
+        else if(props["PROGRAM YEAR 2012"] == 2012){layer.setIcon(incentiveTrueIcon) }
+        else if(props["PROGRAM YEAR"] != undefined){layer.setIcon(incentiveTrueIcon) }
+        else {layer.setIcon(incentiveFalseIcon)}
+
+        // set up pop up text. ALWAYS give preference to incentive received dataset but fall back on general info dataset
+        // TODO - this needs some major refactoring / DRYing
         popup = ""
-        if(props["PROVIDER - ORG NAME"]){popup += "<strong>" + props["PROVIDER - ORG NAME"]+"</strong>"}
-        if(props["PROVIDER NAME"]){popup += "<strong>" + props["PROVIDER NAME"]+"</strong>"}
-        popup += "<br />"+props["PROVIDER  ADDRESS"]
-        popup += "<br />"+props["PROVIDER CITY"]+", " + props["PROVIDER STATE"] + " " + props["PROVIDER ZIP 5 CD"]
-        popup += "<br /><br /> Phone: " + props["PROVIDER PHONE NUM"]
-        popup += "<br /><br /> NPI: " + "<a href='https://npiregistry.cms.hhs.gov/NPPESRegistry/DisplayProviderDetails.do?searchNpi=1114922341&city=&firstName=&orgName=&searchType=org&state=&npi="+props["PROVIDER NPI"]+"&orgDba=&lastName=&zip=' target=_blank>"+props["PROVIDER NPI"]+"</a>"
-        if(props["PROVIDER CCN"]){ popup += " | CCN: <a href='http://www.qualitycheck.org/consumer/searchresults.aspx?nm="+props["PROVIDER CCN"]+"' target=_blank>" + props["PROVIDER CCN"] + "</a>"}
+
+        // provider name
+        if(props["PROVIDER - ORG NAME"]){popup += "<strong>" + props["PROVIDER - ORG NAME"]+"</strong>"} // incentive dataset
+        else if(props["PROVIDER NAME"]){popup += "<strong>" + props["PROVIDER NAME"]+"</strong>"} // incentive
+        else if(props.general["hospital_name"]){popup += "<strong>" + props.general["hospital_name"]+"</strong>"}
+
+        // provider address
+        if(props["PROVIDER  ADDRESS"] && props["PROVIDER CITY"] && props["PROVIDER STATE"] && props["PROVIDER ZIP 5 CD"]){
+          popup += "<br />"+props["PROVIDER  ADDRESS"]
+          popup += "<br />"+props["PROVIDER CITY"]+", " + props["PROVIDER STATE"] + " " + props["PROVIDER ZIP 5 CD"]
+        }
+        else if(props.general["address_1"] && props.general["city"] && props.general["state"] && props.general["zip_code"]){
+          popup += "<br />"+props.general["address_1"]
+          popup += "<br />"+props.general["city"]+", " + props.general["state"] + " " + props.general["zip_code"]
+        }
+        // phone number
+        if(props["PROVIDER PHONE NUM"]){popup += "<br /><br /> Phone: " + props["PROVIDER PHONE NUM"]}
+        else if(props.general && props.general["phone_number"]){popup += "<br /><br /> Phone: " + props.general["phone_number"]}
+        // other attributes (NPI, CCN, Incentive Program Years)
+        if(props["PROVIDER NPI"]){popup += "<br /><br /> NPI: " + "<a href='https://npiregistry.cms.hhs.gov/NPPESRegistry/DisplayProviderDetails.do?searchNpi=1114922341&city=&firstName=&orgName=&searchType=org&state=&npi="+props["PROVIDER NPI"]+"&orgDba=&lastName=&zip=' target=_blank>"+props["PROVIDER NPI"]+"</a>"}
+        if(props["PROVIDER CCN"]){ popup += "<br /><br /> CCN: <a href='http://www.qualitycheck.org/consumer/searchresults.aspx?nm="+props["PROVIDER CCN"]+"' target=_blank>" + props["PROVIDER CCN"] + "</a>"}
+          // incentive years
         popup += "<br /><br />Incentive Program Year(s): "
         if(props["PROGRAM YEAR"] != undefined){popup += "<span class='radius secondary label'>"+props["PROGRAM YEAR"]+"</span> "       }
         if(props["PROGRAM YEAR 2011"] == 2011){popup += "<span class='radius secondary label'>2011</span> "       }
         if(props["PROGRAM YEAR 2012"] == 2012){ popup += " <span class='radius secondary label'>2012</span>"       }
-        if(props["PROGRAM YEAR 2011"] == 2011 || props["PROGRAM YEAR 2012"] == 2012){
-          layer.setIcon(incentiveTrueIcon)
-        }
-        else {
-          layer.setIcon(incentiveFalseIcon)
-        }
+
         layer.bindPopup(popup)
         layer.on('click', onFeatureClick);
       }

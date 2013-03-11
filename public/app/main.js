@@ -79,6 +79,11 @@ function load_geojson_as_cluster(data_url,fit_bounds){
 }
 
 function onFeatureClick(e){
+  if(e.target.feature.properties["PROVIDER CCN"]){ label = "CCN_"+e.target.feature.properties["PROVIDER CCN"] }
+  else if(e.target.feature.properties["PROVIDER NPI"]) { label = "NPI_"+e.target.feature.properties["PROVIDER NPI"] }
+  else { label = "Unknown" }
+  _gaq.push(['_trackEvent', 'Map', 'Click', label]);
+
   features_clicked.push(e.target.feature)
   constructComparisonTable()
 }

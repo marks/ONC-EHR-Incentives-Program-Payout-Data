@@ -71,6 +71,7 @@ function load_geojson_as_cluster(data_url,fit_bounds){
         layer.on('click', onFeatureClick);
       }
     });
+    markers.on('clusterclick', onClusterClick);
     markers.addLayer(geoJsonLayer);
     map.addLayer(markers);
     if(fit_bounds == true){map.fitBounds(markers.getBounds());}
@@ -82,10 +83,16 @@ function onFeatureClick(e){
   if(e.target.feature.properties["PROVIDER CCN"]){ label = "CCN_"+e.target.feature.properties["PROVIDER CCN"] }
   else if(e.target.feature.properties["PROVIDER NPI"]) { label = "NPI_"+e.target.feature.properties["PROVIDER NPI"] }
   else { label = "Unknown" }
-  _gaq.push(['_trackEvent', 'Map', 'Click', label]);
+  _gaq.push(['_trackEvent', 'Map', 'Click (Feature)', label]);
 
   features_clicked.push(e.target.feature)
   constructComparisonTable()
+}
+
+function onClusterClick(e){
+  if(e.layer.getAllChildMarkers().length){label = e.layer.getAllChildMarkers().length + " children"}
+  else{ label = "Unknown children"}
+  _gaq.push(['_trackEvent', 'Map', 'Click (Cluster)', label]);
 }
 
 function constructComparisonTable(){

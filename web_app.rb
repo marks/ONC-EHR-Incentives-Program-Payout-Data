@@ -33,7 +33,7 @@ assets do
     '/app/main.js'
   ]
 
-  js :foundation_all, '/static/foundation_all.js', [
+  js :foundation_all, '/static/foundation_all.min.js', [
     "/zurb-foundation-4.0.3/js/foundation.min.js",
     "/zurb-foundation-4.0.3/js/foundation/foundation.js",
     "/zurb-foundation-4.0.3/js/foundation/foundation.alerts.js",

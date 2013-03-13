@@ -155,7 +155,7 @@
       ('__proto__' in {} ? '#{PUBLIC_HOST}/zurb-foundation-4.0.3/js/vendor/zepto' : '#{PUBLIC_HOST}/zurb-foundation-4.0.3/js/vendor/jquery') +
       '.js><\/script>')
     - if settings.production?
-      %script{:src => "#{PUBLIC_HOST}/static/foundation_all.js"}
+      %script{:src => "#{PUBLIC_HOST}/static/foundation_all.min.js"}
     - else
       != js :foundation_all
     :javascript

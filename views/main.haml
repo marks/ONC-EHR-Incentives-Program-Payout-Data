@@ -4,30 +4,19 @@
 %html.no-js{:lang => "en"}
   / <![endif]
   %head
+    %title Making "Meaningful Use" of HHS Data - by Social Health Insights using HHS / HealthIT.gov Open Data
     %meta{:charset => "utf-8"}/
     %meta{:content => "width=device-width", :name => "viewport"}/
-    %title Making "Meaningful Use" of HHS Data - by Social Health Insights using HHS / HealthIT.gov Open Data
+    %meta{:content => "width=device-width, initial-scale=1.0", :name => "viewport"}/
+
     :javascript
       var PUBLIC_HOST = "#{PUBLIC_HOST}"
-    %link{:href => "#{PUBLIC_HOST}/zurb-foundation-4.0.3/css/normalize.css", :rel => "stylesheet"}/
-    %link{:href => "#{PUBLIC_HOST}/zurb-foundation-4.0.3/css/foundation.css", :rel => "stylesheet"}/
-    %script{:src => "#{PUBLIC_HOST}/zurb-foundation-4.0.3/js/vendor/custom.modernizr.js"}
-    %link{:href => "http://cdn.leafletjs.com/leaflet-0.5.1/leaflet.css", :rel => "stylesheet"}
-    /[if lte IE 8] <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5.1/leaflet.ie.css" />
-    %script{:src => "http://cdn.leafletjs.com/leaflet-0.5.1/leaflet.js"}
-    %meta{:content => "width=device-width, initial-scale=1.0", :name => "viewport"}
-    %link{:href => "#{PUBLIC_HOST}/Leaflet.markercluster/MarkerCluster.css", :rel => "stylesheet"}
-    %link{:href => "#{PUBLIC_HOST}/Leaflet.markercluster/MarkerCluster.Default.css", :rel => "stylesheet"}
-    /[if lte IE 8] <link rel="stylesheet" href="/Leaflet.markercluster/MarkerCluster.Default.ie.css" />
-    %script{:src => "#{PUBLIC_HOST}/Leaflet.markercluster/leaflet.markercluster-src.js"}
     %script{:src => "http://s3.amazonaws.com/mappyhealth-public/bootstrap/js/jquery.js"}
     %script{:src => "http://s3.amazonaws.com/mappyhealth-public/showLoading/jquery.showLoading.min.js"}
     %link{:href => "http://s3.amazonaws.com/mappyhealth-public/showLoading/showLoading.css", :rel => "stylesheet"}
-    %script{:src => "#{PUBLIC_HOST}/app/main.js"}
-    %link{:href => "#{PUBLIC_HOST}/app/main.css", :rel => "stylesheet"}
-    %link{:href => "#{PUBLIC_HOST}/bradvin-FooTable-master/css/footable-0.1.css", :rel => "stylesheet", :type => "text/css"}/
-    %script{:src => "#{PUBLIC_HOST}/bradvin-FooTable-master/js/footable-0.1.js", :type => "text/javascript"}
-    %script{:src => "#{PUBLIC_HOST}/bradvin-FooTable-master/js/footable.sortable.js", :type => "text/javascript"}
+    != css :application, :media => 'screen'
+    != js :application
+
     :javascript
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', 'UA-31592977-6']);

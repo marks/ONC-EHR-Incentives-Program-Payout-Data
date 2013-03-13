@@ -11,6 +11,29 @@ configure do
   set :show_exceptions, false
 end
 
+assets do
+  css :application, '/static/min.css', [
+    '/zurb-foundation-4.0.3/css/normalize.css',
+    '/zurb-foundation-4.0.3/css/foundation.css',
+    '/leaflet-0.5.1/leaflet.css',
+    '/Leaflet.markercluster/MarkerCluster.css',
+    '/Leaflet.markercluster/MarkerCluster.Default.css',
+    '/bradvin-FooTable-master/css/footable-0.1.css',
+    '/stefanocudini-leaflet-search/leaflet-search.css',
+    '/app/main.css'
+  ]
+
+  js :application, '/static/min.js', [
+    '/zurb-foundation-4.0.3/js/vendor/custom.modernizr.js',
+    '/leaflet-0.5.1/leaflet.js',
+    '/Leaflet.markercluster/leaflet.markercluster-src.js',
+    '/bradvin-FooTable-master/js/footable-0.1.js',
+    '/bradvin-FooTable-master/js/footable.sortable.js',
+    '/stefanocudini-leaflet-search/leaflet-search.js',
+    '/app/main.js'
+  ]
+end
+
 configure :development do
   PUBLIC_HOST = ""
 end

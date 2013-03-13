@@ -8,14 +8,17 @@
     %meta{:charset => "utf-8"}/
     %meta{:content => "width=device-width", :name => "viewport"}/
     %meta{:content => "width=device-width, initial-scale=1.0", :name => "viewport"}/
-
     :javascript
       var PUBLIC_HOST = "#{PUBLIC_HOST}"
     %script{:src => "http://s3.amazonaws.com/mappyhealth-public/bootstrap/js/jquery.js"}
     %script{:src => "http://s3.amazonaws.com/mappyhealth-public/showLoading/jquery.showLoading.min.js"}
     %link{:href => "http://s3.amazonaws.com/mappyhealth-public/showLoading/showLoading.css", :rel => "stylesheet"}
-    != css :application, :media => 'screen'
-    != js :application
+    - if settings.production?
+      %script{:src => "#{PUBLIC_HOST}/static/min.js"}
+      %link{:href => "#{PUBLIC_HOST}/static/min.css", :rel => "stylesheet"}
+    - else
+      != css :application, :media => 'screen'
+      != js :application
 
     :javascript
       var _gaq = _gaq || [];

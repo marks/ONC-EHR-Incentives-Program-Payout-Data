@@ -32,6 +32,25 @@ assets do
     '/stefanocudini-leaflet-search/leaflet-search.js',
     '/app/main.js'
   ]
+
+  js :foundation_all, '/static/foundation_all.js', [
+    "/zurb-foundation-4.0.3/js/foundation.min.js",
+    "/zurb-foundation-4.0.3/js/foundation/foundation.js",
+    "/zurb-foundation-4.0.3/js/foundation/foundation.alerts.js",
+    "/zurb-foundation-4.0.3/js/foundation/foundation.clearing.js",
+    "/zurb-foundation-4.0.3/js/foundation/foundation.cookie.js",
+    "/zurb-foundation-4.0.3/js/foundation/foundation.dropdown.js",
+    "/zurb-foundation-4.0.3/js/foundation/foundation.forms.js",
+    "/zurb-foundation-4.0.3/js/foundation/foundation.joyride.js",
+    "/zurb-foundation-4.0.3/js/foundation/foundation.magellan.js",
+    "/zurb-foundation-4.0.3/js/foundation/foundation.orbit.js",
+    "/zurb-foundation-4.0.3/js/foundation/foundation.placeholder.js",
+    "/zurb-foundation-4.0.3/js/foundation/foundation.reveal.js",
+    "/zurb-foundation-4.0.3/js/foundation/foundation.section.js",
+    "/zurb-foundation-4.0.3/js/foundation/foundation.tooltips.js",
+    "/zurb-foundation-4.0.3/js/foundation/foundation.topbar.js"
+  ]
+
 end
 
 configure :development do

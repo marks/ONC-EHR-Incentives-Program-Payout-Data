@@ -6,7 +6,7 @@ class Hospital
   index({ "PROVIDER NPI" => 1},{ unique: true, name: "PROVIDER_NPI_index" })
   index({ "PROVIDER STATE" => 1})
   index({ "geo.data.geometry.location" => "2d"})
-  store_in collection: "ProvidersPaidByEHRProgram_Dec2012_HOSP_FINAL"
+  store_in collection: "ProvidersPaidByEHRProgram_June2013_EH"
 
   # Usage: Hospital.mr_compute_descriptive_stats_excluding_nulls("hcahps.percent_of_patients_who_reported_that_the_area_around_their_room_was_always_quiet_at_night_")
   def self.mr_compute_descriptive_stats_excluding_nulls(field_dot_notation = "hcahps.percent_of_patients_who_reported_that_the_area_around_their_room_was_always_quiet_at_night_")
@@ -64,7 +64,7 @@ class Provider
   index({ "PROVIDER NPI" => 1},{ unique: true, name: "PROVIDER_NPI_index" })
   index({ "PROVIDER STATE" => 1})
   index({ "geo.data.geometry.location" => "2d"})
-  store_in collection: "ProvidersPaidByEHRProgram_Dec2012_EP_FINAL"
+  store_in collection: "ProvidersPaidByEHRProgram_June2013_EP"
 end
 
 class DescriptiveStatistic

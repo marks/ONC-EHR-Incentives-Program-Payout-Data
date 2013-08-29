@@ -31,6 +31,7 @@ function load_geojson_as_cluster(data_url,fit_bounds){
     var geoJsonLayer = L.geoJson(data, {
       onEachFeature: function (feature, layer) {
         props = feature.properties
+        console.log(props)
         // set icon (green or red) depending on incentive receive status
         if(props["PROGRAM YEAR 2011"] == 2011){layer.setIcon(incentiveTrueIcon) }
         else if(props["PROGRAM YEAR 2012"] == 2012){layer.setIcon(incentiveTrueIcon) }

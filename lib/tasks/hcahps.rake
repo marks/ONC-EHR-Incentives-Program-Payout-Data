@@ -5,7 +5,7 @@ namespace :hcahps do
   desc "Fetch HCAHPS hospital data from Socrata API for hospitals that are already in our system (aka received incentive payments)"
   task :ingest do
 
-    # MAP ELIGIBLE HOSPITALS (~2k)
+    # MAP ELIGIBLE HOSPITALS
     puts "Number of hospitals in collection: #{Hospital.count}"
     hospitals_without_hcahps = Hospital.where("hcahps.provider_number" => nil)
     puts "Number of hospitals in collection w/o HCAHPS: #{hospitals_without_hcahps.count}"

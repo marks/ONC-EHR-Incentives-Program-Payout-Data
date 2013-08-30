@@ -60,4 +60,38 @@ namespace :hospitals do
   #  end
   #end
 
+  task :simple_counts do
+    has_geo_crtieria = {"geo" => {"$ne" => nil}}
+    has_hcahps_criteria = {"hcahps" => {"$ne" => nil}}
+    has_general_criteria = {"general" => {"$ne" => nil}}
+    never_recv_any_incentive_criteria = {"PROGRAM YEAR 2012" => nil, "PROGRAM YEAR 2011" => nil, "PROGRAM YEAR 2013" => nil}
+
+    puts "We started by analyzing hospitals that received incentive payments in program year 2011, 2012, or 2013. We then added all hospitals in the hospital compare (general information) data set, and added HCAHPS data for as many hospitals as we could, using their CCN as the look up variable."
+    # Documents with a root-level key of "PROGRAM YEAR 2012" DID receive incentive payments
+    puts "# of hospitals in db = #{Hospital.count}"
+    recvd_incentive_criteria = [{"PROGRAM YEAR 2011" => "TRUE"},{"PROGRAM YEAR 2012" => "TRUE"},{"PROGRAM YEAR 2013" => "TRUE"}]
+    recvd_incentive = Hospital.any_of(recvd_incentive_criteria)
+    puts "  # recvd_incentive = #{recvd_incentive.count}"
+    recvd_incentive_and_have_geo = recvd_incentive.where(has_geo_crtieria)
+    puts "    # recvd_incentive_and_have_geo = #{recvd_incentive_and_have_geo.count}"
+    recvd_incentive_and_have_hcahps = recvd_incentive.where(has_hcahps_criteria)
+    puts "    # recvd_incentive_and_have_hcahps = #{recvd_incentive_and_have_hcahps.count}"
+    recvd_incentive_and_have_general = recvd_incentive.where(has_general_criteria)
+    puts "    # recvd_incentive_and_have_general = #{recvd_incentive_and_have_general.count}"
+    # Documents without a root-level key of "PROGRAM YEAR 2012" did NOT recieve incentive payments
+    didnt_recv_incentive = Hospital.where(never_recv_any_incentive_criteria)
+    puts "  # didnt_recv_incentive = #{didnt_recv_incentive.count}"
+    didnt_recv_incentive_and_have_geo = didnt_recv_incentive.where(has_geo_crtieria)
+    puts "    # didnt_recv_incentive_and_have_geo = #{didnt_recv_incentive_and_have_geo.count}"
+    didnt_recv_incentive_and_have_hcahps = didnt_recv_incentive.where(has_hcahps_criteria)
+    puts "    # didnt_recv_incentive_and_have_hcahps = #{didnt_recv_incentive_and_have_hcahps.count}"
+    didnt_recv_incentive_and_have_general = didnt_recv_incentive.where(has_general_criteria)
+    puts "    # didnt_recv_incentive_and_have_general = #{didnt_recv_incentive_and_have_general.count}"
+    puts
+
+    puts "TOTAL HOSPITALS = #{Hospital.count}"
+
+  end
+
+
 end

@@ -12,7 +12,7 @@ namespace :reports do
 
       puts "A) We started by analyzing locations receiving EHR incentive payment from www.cms.gov/Regulations-and-Guidance/Legislation/EHRIncentivePrograms/DataAndReports.html"
       # Documents with a root-level key of "PROGRAM YEAR 2012" DID receive incentive payments
-      recvd_incentive_criteria = [{"PROGRAM YEAR 2011" => 2011},{"PROGRAM YEAR 2012" => 2012}]
+      recvd_incentive_criteria = [{"PROGRAM YEAR 2011" => "TRUE"},{"PROGRAM YEAR 2012" => "TRUE"},{"PROGRAM YEAR 2013" => "TRUE"}]
       recvd_incentive = Hospital.any_of(recvd_incentive_criteria)
       puts "  # recvd_incentive = #{recvd_incentive.count}"
       recvd_incentive_and_have_geo = recvd_incentive.where(has_geo_crtieria)

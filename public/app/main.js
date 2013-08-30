@@ -33,9 +33,9 @@ function load_geojson_as_cluster(data_url,fit_bounds){
         props = feature.properties
         console.log(props)
         // set icon (green or red) depending on incentive receive status
-        if(props["PROGRAM YEAR 2011"] == 2011){layer.setIcon(incentiveTrueIcon) }
-        else if(props["PROGRAM YEAR 2012"] == 2012){layer.setIcon(incentiveTrueIcon) }
-        else if(props["PROGRAM YEAR"] != undefined){layer.setIcon(incentiveTrueIcon) }
+        if(props["PROGRAM YEAR 2011"] == "TRUE"){layer.setIcon(incentiveTrueIcon) }
+        else if(props["PROGRAM YEAR 2012"] == "TRUE"){layer.setIcon(incentiveTrueIcon) }
+        else if(props["PROGRAM YEAR 2013"] == "TRUE"){layer.setIcon(incentiveTrueIcon) }
         else {layer.setIcon(incentiveFalseIcon)}
 
         // set up pop up text. ALWAYS give preference to incentive received dataset but fall back on general info dataset
@@ -64,9 +64,9 @@ function load_geojson_as_cluster(data_url,fit_bounds){
         if(props["PROVIDER NPI"]){popup += "<br />NPI: " + "<a href='https://npiregistry.cms.hhs.gov/NPPESRegistry/DisplayProviderDetails.do?searchNpi=1114922341&city=&firstName=&orgName=&searchType=org&state=&npi="+props["PROVIDER NPI"]+"&orgDba=&lastName=&zip=' target=_blank>"+props["PROVIDER NPI"]+"</a>"}
           // incentive years
         popup += "<br /><br />Incentive Program Year(s), if any: "
-        if(props["PROGRAM YEAR"] != undefined){popup += "<span class='radius secondary label'>"+props["PROGRAM YEAR"]+"</span> "       }
-        if(props["PROGRAM YEAR 2011"] == 2011){popup += "<span class='radius secondary label'>2011</span> "       }
-        if(props["PROGRAM YEAR 2012"] == 2012){ popup += " <span class='radius secondary label'>2012</span>"       }
+        if(props["PROGRAM YEAR 2011"] == "TRUE"){popup += "<span class='radius secondary label'>2011</span> " }
+        if(props["PROGRAM YEAR 2012"] == "TRUE"){ popup += " <span class='radius secondary label'>2012</span>" }
+        if(props["PROGRAM YEAR 2013"] == "TRUE"){ popup += " <span class='radius secondary label'>2013</span>" }
 
         layer.bindPopup(popup)
         layer.on('click', onFeatureClick);
@@ -99,7 +99,7 @@ function onClusterClick(e){
 function constructComparisonTable(){
   $("#comparison_tables").html("") // clear the comparison table div
   $.each(features_clicked, function(n,feature){
-    provider_url = "/db/onc/ProvidersPaidByEHRProgram_Dec2012_HOSP_FINAL/find_by_ccn/"+feature.properties["PROVIDER CCN"]+".json"
+    provider_url = "/db/onc/EH/find_by_ccn/"+feature.properties["PROVIDER CCN"]+".json"
     $.getJSON(provider_url, function(data){
       if(data == null){
         // do nothing

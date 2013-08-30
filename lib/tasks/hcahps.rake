@@ -29,28 +29,13 @@ namespace :hcahps do
     end
   end
 
-  desc "Add HCAHPS hospitals to datastore if they are not already in it (aka they havent received incentive payments)"
-  task :add_all_hcahps_to_db do
-    puts "#{Hospital.count} hospitals in db"
-    all_hcahps_results = fetch_whole_socrata_dataset(SOCRATA_ENDPOINT, SOCRATA_APP_TOKEN)
-    all_hcahps_results.each do |hcahps_hospital|
-      ccn = hcahps_hospital["provider_number"]
-      hcahps_data = {
-        "_source" => SOCRATA_ENDPOINT,
-        "_updated_at" => Time.now,
-      }.merge(hcahps_hospital)
-      Hospital.create("hcahps" => hcahps_data, "PROVIDER CCN" => ccn) if Hospital.where("PROVIDER CCN" => ccn).empty?
-    end
-    puts "#{Hospital.count} hospitals in db"
-  end
-
-  desc "Calculate HCAHPS national averages for each value and store in a hcahps_averages collection"
-  task :calculate_national_averages do
-    # find out what fields we need to calculate averages for
-    array_of_fields = Hospital.where("hcahps" => {"$ne" => nil}).first["hcahps"].keys
-    array_of_fields.each do |field|
-      Hospital.mr_compute_descriptive_stats_excluding_nulls("hcahps.#{field}")
-    end
-  end
+  #desc "Calculate HCAHPS national averages for each value and store in a hcahps_averages collection"
+  #task :calculate_national_averages do
+  #  # find out what fields we need to calculate averages for
+  #  array_of_fields = Hospital.where("hcahps" => {"$ne" => nil}).first["hcahps"].keys
+  #  array_of_fields.each do |field|
+  #    Hospital.mr_compute_descriptive_stats_excluding_nulls("hcahps.#{field}")
+  #  end
+  #end
 
 end

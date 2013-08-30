@@ -78,7 +78,7 @@ get '/db/onc/EH/all_hospitals_with_geo.geojson' do
   return geojson.to_json
 end
 
-get '/db/onc/EP/find_by_ccn/:provider_ccn.json' do
+get '/db/onc/EH/find_by_ccn/:provider_ccn.json' do
   content_type :json
   providers = Hospital.limit(1).where("PROVIDER CCN" => params[:provider_ccn].to_s)
   return nil if providers.empty?

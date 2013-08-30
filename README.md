@@ -14,13 +14,14 @@ Procedure
 ---------
 1. **New mongo collection for hospitals**
   1. Import CSV from ONC into MongoDB: `mongoimport --type csv -d onc -c ProvidersPaidByEHRProgram_June2013_EH --headerline --file public/data/ProvidersPaidByEHRProgram_June2013/ProvidersPaidByEHRProgram_June2013_EH-normalized.csv`
-  2. Added 2d geospatial index: `mongo onc --eval "db.ProvidersPaidByEHRProgram_June2013_EH.ensureIndex({'geo.data.geometry.location':'2d'})"`
+  2. Add 2d geospatial index: `mongo onc --eval "db.ProvidersPaidByEHRProgram_June2013_EH.ensureIndex({'geo.data.geometry.location':'2d'})"`
   3. Geocoded locations using `bundle exec rake geocode`
-  4. Exported relevant information to CSV using `mongoexport --csv -d onc -c ProvidersPaidByEHRProgram_June2013_EH -o public/data/ProvidersPaidByEHRProgram_June2013/ProvidersPaidByEHRProgram_June2013_EH-normalized-geocoded.csv -f "PROVIDER NPI,PROVIDER CCN,PROVIDER - ORG NAME,PROVIDER STATE,PROVIDER CITY,PROVIDER  ADDRESS,PROVIDER ZIP 5 CD,PROVIDER ZIP 4 CD,PROVIDER PHONE NUM,PROVIDER PHONE EXT,PROGRAM YEAR 2011,PROGRAM YEAR 2012,PROGRAM YEAR 2013,geo.provider,geo.updated_at,geo.data.types.0,geo.data.geometry.location.lat,geo.data.geometry.location.lng"`
-  5. Bring in additional data from the General Hospital Information data set on Socrata: `bundle exec rake hospital_general_info:add_all_hospitals_with_general_info`
-  6. Bring in additional data from the HCAHPS (Patient Experience) data set on Socrata: `bundle exec rake hcahps:ingest && bundle exec rake hcahps:add_all_hcahps_to_db`
+  4. Bring in additional data from the General Hospital Information data set on Socrata: `bundle exec rake hospital_general_info:add_all_hospitals_with_general_info`
+  5. Bring in additional data from the HCAHPS (Patient Experience) data set on Socrata: `bundle exec rake hcahps:ingest`
+  6. Exported relevant information to CSV using `mongoexport --csv -d onc -c ProvidersPaidByEHRProgram_June2013_EH -o public/data/ProvidersPaidByEHRProgram_June2013/ProvidersPaidByEHRProgram_June2013_EH-normalized-geocoded.csv -f "PROVIDER NPI,PROVIDER CCN,PROVIDER - ORG NAME,PROVIDER STATE,PROVIDER CITY,PROVIDER  ADDRESS,PROVIDER ZIP 5 CD,PROVIDER ZIP 4 CD,PROVIDER PHONE NUM,PROVIDER PHONE EXT,PROGRAM YEAR 2011,PROGRAM YEAR 2012,PROGRAM YEAR 2013,geo.provider,geo.updated_at,geo.data.types.0,geo.data.geometry.location.lat,geo.data.geometry.location.lng"`
 
-2. **New mongo collection for eligible providers (~106,000 rows)**
+
+2. **New mongo collection for eligible providers**
   1. Import CSV from ONC into MongoDB: `mongoimport --type csv -d onc -c ProvidersPaidByEHRProgram_June2013_EP --headerline --file public/data/ProvidersPaidByEHRProgram_June2013_EP.csv`
   2. Added 2d geospatial index: `mongo onc --eval "db.ProvidersPaidByEHRProgram_June2013_EH.ensureIndex({'geo.data.geometry.location':'2d'})"`
   3. Geocoded locations using `bundle exec rake geocode`

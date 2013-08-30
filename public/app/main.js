@@ -31,7 +31,6 @@ function load_geojson_as_cluster(data_url,fit_bounds){
     var geoJsonLayer = L.geoJson(data, {
       onEachFeature: function (feature, layer) {
         props = feature.properties
-        console.log(props)
         // set icon (green or red) depending on incentive receive status
         if(props["PROGRAM YEAR 2011"] == "TRUE"){layer.setIcon(incentiveTrueIcon) }
         else if(props["PROGRAM YEAR 2012"] == "TRUE"){layer.setIcon(incentiveTrueIcon) }
@@ -81,8 +80,10 @@ function load_geojson_as_cluster(data_url,fit_bounds){
 }
 
 function onFeatureClick(e){
-  if(e.target.feature.properties["PROVIDER CCN"]){ label = "CCN_"+e.target.feature.properties["PROVIDER CCN"] }
-  else if(e.target.feature.properties["PROVIDER NPI"]) { label = "NPI_"+e.target.feature.properties["PROVIDER NPI"] }
+  props = e.target.feature.properties
+  console.log(props)
+  if(props["PROVIDER CCN"]){ label = "CCN_"+e.target.feature.properties["PROVIDER CCN"] }
+  else if(props["PROVIDER NPI"]) { label = "NPI_"+e.target.feature.properties["PROVIDER NPI"] }
   else { label = "Unknown" }
   _gaq.push(['_trackEvent', 'Map', 'Click (Feature)', label]);
 

@@ -101,7 +101,7 @@
       .large-8.columns
         %h3 Visualizations
         %select#dropdown{:name => "dropdown"}
-          %option{:value => "#{PUBLIC_HOST}#{@data_url}"} ALL US Hospitals
+          %option{:value => "#{PUBLIC_HOST}#{@default_data_url}"} ALL US Hospitals
           - STATES.each do |state|
             %option{:value => "#{PUBLIC_HOST}/data/by_state/provider-#{state}.geojson"}= "#{state} Providers who received CMS HITECH incentives"
         %br/

@@ -41,7 +41,7 @@ namespace :hospitals do
       elsif hcahps_results.size > 1
         puts "More than one match found for #{provider_name} (CCN = #{h["PROVIDER CCN"]})"
       else
-        puts "Found HCAHPS data for #{provider_name} (CCN = #{provider_name})!"
+        puts "Found HCAHPS data for #{provider_name} (CCN = #{h["PROVIDER CCN"]})!"
         hcahps_data = {
             "_source" => request_url,
             "_updated_at" => Time.now,

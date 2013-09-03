@@ -65,26 +65,26 @@ namespace :hospitals do
   #end
 
   task :simple_report do
-    puts "We started by analyzing hospitals that received incentive payments in program year 2011, 2012, or 2013. We then added all hospitals in the hospital compare (general information) data set, and added HCAHPS data for as many hospitals as we could, using their CCN as the look up variable."
+    puts "We started by analyzing hospitals that received incentive payments in program year 2011, 2012, or 2013. We then added all hospitals in the hospital compare (general information) data set, and added HCAHPS data for as many hospitals as we could, using their CCN as the look-up variable."
     # Documents with a root-level key of "PROGRAM YEAR 2012" DID receive incentive payments
     puts "# of hospitals in db = #{Hospital.count}"
     recvd_incentive = Hospital.received_any_incentives
-    puts "  # recvd_incentive = #{recvd_incentive.count}"
+    puts "  # received an incentive* (* in any of 2011, 2012, _or_ 2013) = #{recvd_incentive.count}"
     recvd_incentive_and_have_geo = recvd_incentive.with_geo
-    puts "    # recvd_incentive_and_have_geo = #{recvd_incentive_and_have_geo.count}"
+    puts "    # received an incentive* and we were able to geocode = #{recvd_incentive_and_have_geo.count}"
     recvd_incentive_and_have_hcahps = recvd_incentive.with_hcahps
-    puts "    # recvd_incentive_and_have_hcahps = #{recvd_incentive_and_have_hcahps.count}"
+    puts "    # received an incentive* and we found HCAHPS data = #{recvd_incentive_and_have_hcahps.count}"
     recvd_incentive_and_have_general = recvd_incentive.with_general
-    puts "    # recvd_incentive_and_have_general = #{recvd_incentive_and_have_general.count}"
+    puts "    # received an incentive* and we found general information = #{recvd_incentive_and_have_general.count}"
     # Documents without a root-level key of "PROGRAM YEAR 2012" did NOT recieve incentive payments
     didnt_recv_incentive = Hospital.never_received_any_incentives
-    puts "  # didnt_recv_incentive = #{didnt_recv_incentive.count}"
+    puts "  # did not received an incentive*  = #{didnt_recv_incentive.count}"
     didnt_recv_incentive_and_have_geo = didnt_recv_incentive.with_geo
-    puts "    # didnt_recv_incentive_and_have_geo = #{didnt_recv_incentive_and_have_geo.count}"
+    puts "    # did not received an incentive* and we were able to geocode = #{didnt_recv_incentive_and_have_geo.count}"
     didnt_recv_incentive_and_have_hcahps = didnt_recv_incentive.with_hcahps
-    puts "    # didnt_recv_incentive_and_have_hcahps = #{didnt_recv_incentive_and_have_hcahps.count}"
+    puts "    # did not received an incentive* and we found HCAHPS data = #{didnt_recv_incentive_and_have_hcahps.count}"
     didnt_recv_incentive_and_have_general = didnt_recv_incentive.with_general
-    puts "    # didnt_recv_incentive_and_have_general = #{didnt_recv_incentive_and_have_general.count}"
+    puts "    # did not received an incentive* and we found general information = #{didnt_recv_incentive_and_have_general.count}"
     puts
 
     puts "TOTAL HOSPITALS = #{Hospital.count}"

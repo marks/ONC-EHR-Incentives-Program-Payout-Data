@@ -65,12 +65,12 @@ get '/' do
   if settings.production? # static asset from AWS S3/CF
     @default_data_url = '/data/ProvidersPaidByEHRProgram_June2013_EH-all_with_geo.geojson'
   else
-    @default_data_url = '/db/onc/EH/all_hospitals_with_geo.geojson'
+    @default_data_url = '/db/cms_incentives/EH/all_hospitals_with_geo.geojson'
   end
   haml :main
 end
 
-get '/db/onc/EH/all_hospitals_with_geo.geojson' do
+get '/db/cms_incentives/EH/all_hospitals_with_geo.geojson' do
   content_type :json
   geojson = Hash.new
   geojson["type"] = "FeatureCollection"
@@ -78,7 +78,7 @@ get '/db/onc/EH/all_hospitals_with_geo.geojson' do
   return geojson.to_json
 end
 
-get '/db/onc/EH/find_by_ccn/:provider_ccn.json' do
+get '/db/cms_incentives/EH/find_by_ccn/:provider_ccn.json' do
   content_type :json
   providers = Hospital.limit(1).where("PROVIDER CCN" => params[:provider_ccn].to_s)
   return nil if providers.empty?

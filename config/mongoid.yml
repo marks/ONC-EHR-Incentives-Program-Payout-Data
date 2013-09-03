@@ -1,7 +1,7 @@
 development:
   sessions:
     default:
-      database: onc
+      database: cms_incentives
       hosts:
         - localhost:27017
 production:

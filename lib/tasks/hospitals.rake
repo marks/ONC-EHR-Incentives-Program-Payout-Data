@@ -3,13 +3,16 @@ namespace :hospitals do
 
   desc "Add General Hospital Info to datastore if they are not already in it"
   task :ingest_general_info do
-
     puts "#{Hospital.count} hospitals in db"
-    all_hospitals = fetch_whole_socrata_dataset(SOCRATA_ENDPOINT, SOCRATA_APP_TOKEN)
+
+    socrata_endpoint = "http://data.medicare.gov/resource/v287-28n3.json"
+    all_hospitals = fetch_whole_socrata_dataset(socrata_endpoint, SOCRATA_APP_TOKEN)
+
+    puts "Ingesting new data"
     all_hospitals.each do |hospital|
       ccn = hospital["provider_number"]
       hospital_data = {
-        "_source" => "http://data.medicare.gov/resource/v287-28n3.json",
+        "_source" => socrata_endpoint,
         "_updated_at" => Time.now,
       }.merge(hospital)
       h = Hospital.where("PROVIDER CCN" => ccn)
@@ -25,30 +28,31 @@ namespace :hospitals do
 
   desc "Fetch HCAHPS hospital data from Socrata API for hospitals that are already in our system (aka received incentive payments)"
   task :ingest_hcahps do
+    socrata_endpoint = "http://data.medicare.gov/resource/rj76-22dk.json"
 
-    # MAP ELIGIBLE HOSPITALS
     puts "Number of hospitals in collection: #{Hospital.count}"
-    hospitals_without_hcahps = Hospital.where("hcahps.provider_number" => nil)
+    hospitals_without_hcahps = Hospital.without_hcahps
     puts "Number of hospitals in collection w/o HCAHPS: #{hospitals_without_hcahps.count}"
 
-    hospitals_without_hcahps.each do |h|
-      ensure_proper_ccn_format(h)
-      request_url = "http://data.medicare.gov/resource/rj76-22dk.json?provider_number=#{h["PROVIDER CCN"]}"
-      hcahps_results = JSON.parse(RestClient.get(request_url), {"X-App-Token" => SOCRATA_APP_TOKEN})
-      provider_name = h["PROVIDER - ORG NAME"].blank? ? h["general"]["hospital_name"] : h["PROVIDER - ORG NAME"]
-      if hcahps_results.size == 0
-        puts "No hcahps data found for #{provider_name} (CCN = #{h["PROVIDER CCN"]})"
-      elsif hcahps_results.size > 1
-        puts "More than one match found for #{provider_name} (CCN = #{h["PROVIDER CCN"]})"
+    hcahps_data = fetch_whole_socrata_dataset(socrata_endpoint, SOCRATA_APP_TOKEN)
+
+    puts "Ingesting new data"
+    hcahps_data.each do |hospital|
+      ccn = hospital["provider_number"]
+      hcahps_data = {
+        "_source" => socrata_endpoint,
+        "_updated_at" => Time.now,
+      }.merge(hospital)
+      h = Hospital.where("PROVIDER CCN" => ccn)
+      if h.empty?
+        Hospital.create("hcahps" => hcahps_data, "PROVIDER CCN" => ccn)
       else
-        puts "Found HCAHPS data for #{provider_name} (CCN = #{h["PROVIDER CCN"]})!"
-        hcahps_data = {
-            "_source" => request_url,
-            "_updated_at" => Time.now,
-        }.merge(hcahps_results.first)
-        h.update_attribute("hcahps",hcahps_data)
+        h.first.update_attribute("hcahps",hcahps_data)
       end
     end
+    
+    puts "#{Hospital.count} hospitals in db"
+    puts "Number of hospitals in collection w/o HCAHPS: #{Hospital.without_hcahps.count}"
   end
 
   #desc "Calculate HCAHPS national averages for each value and store in a hcahps_averages collection"
@@ -60,32 +64,26 @@ namespace :hospitals do
   #  end
   #end
 
-  task :simple_counts do
-    has_geo_crtieria = {"geo" => {"$ne" => nil}}
-    has_hcahps_criteria = {"hcahps" => {"$ne" => nil}}
-    has_general_criteria = {"general" => {"$ne" => nil}}
-    never_recv_any_incentive_criteria = {"PROGRAM YEAR 2012" => nil, "PROGRAM YEAR 2011" => nil, "PROGRAM YEAR 2013" => nil}
-
+  task :simple_report do
     puts "We started by analyzing hospitals that received incentive payments in program year 2011, 2012, or 2013. We then added all hospitals in the hospital compare (general information) data set, and added HCAHPS data for as many hospitals as we could, using their CCN as the look up variable."
     # Documents with a root-level key of "PROGRAM YEAR 2012" DID receive incentive payments
     puts "# of hospitals in db = #{Hospital.count}"
-    recvd_incentive_criteria = [{"PROGRAM YEAR 2011" => "TRUE"},{"PROGRAM YEAR 2012" => "TRUE"},{"PROGRAM YEAR 2013" => "TRUE"}]
-    recvd_incentive = Hospital.any_of(recvd_incentive_criteria)
+    recvd_incentive = Hospital.received_any_incentives
     puts "  # recvd_incentive = #{recvd_incentive.count}"
-    recvd_incentive_and_have_geo = recvd_incentive.where(has_geo_crtieria)
+    recvd_incentive_and_have_geo = recvd_incentive.with_geo
     puts "    # recvd_incentive_and_have_geo = #{recvd_incentive_and_have_geo.count}"
-    recvd_incentive_and_have_hcahps = recvd_incentive.where(has_hcahps_criteria)
+    recvd_incentive_and_have_hcahps = recvd_incentive.with_hcahps
     puts "    # recvd_incentive_and_have_hcahps = #{recvd_incentive_and_have_hcahps.count}"
-    recvd_incentive_and_have_general = recvd_incentive.where(has_general_criteria)
+    recvd_incentive_and_have_general = recvd_incentive.with_general
     puts "    # recvd_incentive_and_have_general = #{recvd_incentive_and_have_general.count}"
     # Documents without a root-level key of "PROGRAM YEAR 2012" did NOT recieve incentive payments
-    didnt_recv_incentive = Hospital.where(never_recv_any_incentive_criteria)
+    didnt_recv_incentive = Hospital.never_received_any_incentives
     puts "  # didnt_recv_incentive = #{didnt_recv_incentive.count}"
-    didnt_recv_incentive_and_have_geo = didnt_recv_incentive.where(has_geo_crtieria)
+    didnt_recv_incentive_and_have_geo = didnt_recv_incentive.with_geo
     puts "    # didnt_recv_incentive_and_have_geo = #{didnt_recv_incentive_and_have_geo.count}"
-    didnt_recv_incentive_and_have_hcahps = didnt_recv_incentive.where(has_hcahps_criteria)
+    didnt_recv_incentive_and_have_hcahps = didnt_recv_incentive.with_hcahps
     puts "    # didnt_recv_incentive_and_have_hcahps = #{didnt_recv_incentive_and_have_hcahps.count}"
-    didnt_recv_incentive_and_have_general = didnt_recv_incentive.where(has_general_criteria)
+    didnt_recv_incentive_and_have_general = didnt_recv_incentive.with_general
     puts "    # didnt_recv_incentive_and_have_general = #{didnt_recv_incentive_and_have_general.count}"
     puts
 

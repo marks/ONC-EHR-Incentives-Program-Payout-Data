@@ -14,7 +14,7 @@ Notes
 
 Procedure
 ---------
-1. **Providers Paid By EHR Program: June 2013 Eligible Hospitals**
+**Providers Paid By EHR Program: June 2013 Eligible Hospitals**
   1. Create a directory for the raw data and later exports:
   
       ```
@@ -54,13 +54,19 @@ Procedure
         bundle exec rake geocode
       ```
 
-  8. Export relevant information to CSV for safe keeping and offline analysis: 
+  8. Print out a nice little report about hospital counts with different types of data (geo, general info, hcahps):
 
       ```
-        mongoexport --csv -d onc -c ProvidersPaidByEHRProgram_June2013_EH -o public/data/ProvidersPaidByEHRProgram_June2013/ProvidersPaidByEHRProgram_June2013_EH-normalized-geocoded.csv -f "PROVIDER NPI,PROVIDER CCN,PROVIDER - ORG NAME,PROVIDER STATE,PROVIDER CITY,PROVIDER  ADDRESS,PROVIDER ZIP 5 CD,PROVIDER ZIP 4 CD,PROVIDER PHONE NUM,PROVIDER PHONE EXT,PROGRAM YEAR 2011,PROGRAM YEAR 2012,PROGRAM YEAR 2013,geo.provider,geo.updated_at,geo.data.types.0,geo.data.geometry.location.lat,geo.data.geometry.location.lng"
+        bundle exec rake hospitals:simple_report
+      ```
+
+  9. Export _select_ information to CSV for safe keeping and offline analysis: 
+
+      ```
+        mongoexport --csv -d onc -c ProvidersPaidByEHRProgram_June2013_EH -o public/data/ProvidersPaidByEHRProgram_June2013/ProvidersPaidByEHRProgram_June2013_EH-normalized-geocoded.csv -f "PROVIDER NPI,PROVIDER CCN,PROVIDER - ORG NAME,PROVIDER STATE,PROVIDER CITY,PROVIDER  ADDRESS,PROVIDER ZIP 5 CD,PROVIDER ZIP 4 CD,PROVIDER PHONE NUM,PROVIDER PHONE EXT,PROGRAM YEAR 2011,PROGRAM YEAR 2012,PROGRAM YEAR 2013,geo.provider,geo.updated_at,geo.data.types.0,geo.data.geometry.location.lat,geo.data.geometry.location.lng,general.hospital_type,general.hospital_owner,general.emergency_services,general.country_name"
       ```
       
-  5. Create MongoDB indexes:
+  10. Create MongoDB indexes:
 
       ```
         bundle exec rake db:mongoid:create_indexes
@@ -68,11 +74,14 @@ Procedure
 
 
 
-2. **New mongo collection for eligible providers**
+**Providers Paid By EHR Program: June 2013 Eligible Providers**
   1. Import CSV from ONC into MongoDB: `mongoimport --type csv -d cms_incentives -c ProvidersPaidByEHRProgram_June2013_EP --headerline --file public/data/ProvidersPaidByEHRProgram_June2013_EP.csv`
   2. Added 2d geospatial index: `mongo cms_incentives --eval "db.ProvidersPaidByEHRProgram_June2013_EH.ensureIndex({'geo.data.geometry.location':'2d'})"`
   3. Geocoded locations using `bundle exec rake geocode`
   4. Exported relevant information to CSV using `mongoexport --csv -d onc -c ProvidersPaidByEHRProgram_June2013_EP -o public/data/ProvidersPaidByEHRProgram_June2013_EP-geocoded.csv -f "PROVIDER NPI,PROVIDER STATE,PROVIDER CITY,PROVIDER  ADDRESS,PROVIDER ZIP 5 CD,PROVIDER ZIP 4 CD,PROVIDER PHONE NUM,PROVIDER PHONE EXT,PROGRAM YEAR,geo.provider,geo.updated_at,geo.data.types.0,geo.data.geometry.location.lat,geo.data.geometry.location.lng,geo.data.formatted_address"`
 
-Dump to local bson: `mongodump -d onc -c <collection>`
-Restore to mongohq: `mongorestore -h <server>.mongohq.com --port XXXX -d XXXXX -u <user> -p <collection>.bson`
+**Notes to self/dev**
+```
+  Dump to local bson: `mongodump -d onc -c <collection>`
+  Restore to mongohq: `mongorestore -h <server>.mongohq.com --port XXXX -d XXXXX -u <user> -p <collection>.bson`
+```

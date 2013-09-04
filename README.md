@@ -70,7 +70,17 @@ Procedure
         bundle exec rake db:mongoid:create_indexes
       ```
 
+  10. If you intend to run the visualization in a prodution-like environemnt: 
 
+      ```
+        # You will want to create a static `.geojson` 
+        bundle exec ruby web_app.rb -p 4567 -e development
+        curl http://localhost:4567/db/cms_incentives/EH/all_hospitals_with_geo.geojson -o public/data/ProvidersPaidByEHRProgram_June2013_EH/ProvidersPaidByEHRProgram_June2013_EH-all_with_geo.geojson
+
+        # Refresh the minified static assets
+        rm public/static/*
+        bundle exec rake assetpack:build
+      ```
 
 **Providers Paid By EHR Program: June 2013 Eligible Providers**
   1. Import CSV from ONC into MongoDB: `mongoimport --type csv -d cms_incentives -c ProvidersPaidByEHRProgram_June2013_EP --headerline --file public/data/ProvidersPaidByEHRProgram_June2013_EP.csv`

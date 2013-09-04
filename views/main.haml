@@ -52,6 +52,8 @@
               %li
                 %a{:href => "http://www.cms.gov/Regulations-and-Guidance/Legislation/EHRIncentivePrograms/DataAndReports.html", :target => "_blank"} Public Use CMS Data
               %li
+                %a{:href => "http://checkqm.com", :target => "_blank"} CheckQM (clinical quality measure and decision management)
+              %li
                 %a{:href => "http://www.socialhealthinsights.com", :target => "_blank"} Social Health Insights
               %li
                 %a{:href => "http://www.mappyhealth.com", :target => "_blank"} MappyHealth
@@ -101,9 +103,9 @@
       .large-8.columns
         %h3 Visualizations
         %select#dropdown{:name => "dropdown"}
-          %option{:value => "#{PUBLIC_HOST}#{@default_data_url}"} ALL US Hospitals
+          %option{:value => "#{PUBLIC_HOST}#{@default_data_url}"} ALL US Hospitals (updated June 2013)
           - STATES.each do |state|
-            %option{:value => "#{PUBLIC_HOST}/data/by_state/provider-#{state}.geojson"}= "#{state} Providers who received CMS HITECH incentives"
+            %option{:value => "#{PUBLIC_HOST}/data/by_state/provider-#{state}.geojson"}= "#{state} Providers who received CMS HITECH incentives (updated December 2012)"
         %br/
         %br/
         #map
@@ -150,6 +152,8 @@
           .large-12.columns
             %ul.inline-list.right
               %li Related links:
+              %li
+                %a{:href => "http://checkqm.com", :target => "_blank"} CheckQM (clinical quality measure and decision management)
               %li
                 %a{:href => "http://mappyhealth.com", :target => "_blank"} MappyHealth (health and disaster tracking on Twitter)
               %li

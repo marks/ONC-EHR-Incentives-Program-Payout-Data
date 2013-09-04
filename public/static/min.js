@@ -196,9 +196,9 @@ this._circleLoc.setStyle({fill:false,stroke:false});return this;},animate:functi
 {clearInterval(circle._timerAnimLoc);circle.setRadius(oldrad);}},tInt);return this;}});L.Map.addInitHook(function(){if(this.options.searchControl){this.searchControl=L.control.search();this.addControl(this.searchControl);}});L.control.search=function(options){return new L.Control.Search(options);};}).call(this);var map,markers;var features_clicked=[]
 var incentiveTrueIcon=L.icon({iconUrl:PUBLIC_HOST+'/mapicons.nicolasmollet.com/hospital-building-green.png',iconSize:[32,37],iconAnchor:[15,37],popupAnchor:[2,-37]});var incentiveFalseIcon=L.icon({iconUrl:PUBLIC_HOST+'/mapicons.nicolasmollet.com/hospital-building-red.png',iconSize:[32,37],iconAnchor:[15,37],popupAnchor:[2,-37]});function load_geojson_as_cluster(data_url,fit_bounds){$("#map").showLoading();$.getJSON(data_url,function(data){if(typeof(markers)!="undefined"){map.removeLayer(markers);}
 markers=new L.MarkerClusterGroup();var geoJsonLayer=L.geoJson(data,{onEachFeature:function(feature,layer){props=feature.properties
-if(props["PROGRAM YEAR 2011"]==2011){layer.setIcon(incentiveTrueIcon)}
-else if(props["PROGRAM YEAR 2012"]==2012){layer.setIcon(incentiveTrueIcon)}
-else if(props["PROGRAM YEAR"]!=undefined){layer.setIcon(incentiveTrueIcon)}
+if(props["PROGRAM YEAR 2011"]=="TRUE"){layer.setIcon(incentiveTrueIcon)}
+else if(props["PROGRAM YEAR 2012"]=="TRUE"){layer.setIcon(incentiveTrueIcon)}
+else if(props["PROGRAM YEAR 2013"]=="TRUE"){layer.setIcon(incentiveTrueIcon)}
 else{layer.setIcon(incentiveFalseIcon)}
 popup=""
 if(props["PROVIDER - ORG NAME"]){popup+="<strong>"+props["PROVIDER - ORG NAME"]+"</strong>"}
@@ -208,19 +208,24 @@ if(props["PROVIDER  ADDRESS"]&&props["PROVIDER CITY"]&&props["PROVIDER STATE"]&&
 popup+="<br />"+props["PROVIDER CITY"]+", "+props["PROVIDER STATE"]+" "+props["PROVIDER ZIP 5 CD"]}
 else if(props.general["address_1"]&&props.general["city"]&&props.general["state"]&&props.general["zip_code"]){popup+="<br />"+props.general["address_1"]
 popup+="<br />"+props.general["city"]+", "+props.general["state"]+" "+props.general["zip_code"]}
+if(props.general){if(props.general["hospital_name"]){popup+="<br /><br />Hosp. Name: "+props.general["hospital_name"]}
+if(props.general["hospital_owner"]){popup+="<br />Hosp. Owner: "+props.general["hospital_owner"]}
+if(props.general["hospital_type"]){popup+="<br />Hosp. Type: "+props.general["hospital_type"]}}
 if(props["PROVIDER PHONE NUM"]){popup+="<br /><br /> Phone: "+props["PROVIDER PHONE NUM"]}
 else if(props.general&&props.general["phone_number"]){popup+="<br /><br /> Phone: "+props.general["phone_number"]}
 if(props["PROVIDER CCN"]){popup+="<br /><br /> CCN: <a href='http://www.qualitycheck.org/consumer/searchresults.aspx?nm="+props["PROVIDER CCN"]+"' target=_blank>"+props["PROVIDER CCN"]+"</a>"}
 if(props["PROVIDER NPI"]){popup+="<br />NPI: "+"<a href='https://npiregistry.cms.hhs.gov/NPPESRegistry/DisplayProviderDetails.do?searchNpi=1114922341&city=&firstName=&orgName=&searchType=org&state=&npi="+props["PROVIDER NPI"]+"&orgDba=&lastName=&zip=' target=_blank>"+props["PROVIDER NPI"]+"</a>"}
 popup+="<br /><br />Incentive Program Year(s), if any: "
-if(props["PROGRAM YEAR"]!=undefined){popup+="<span class='radius secondary label'>"+props["PROGRAM YEAR"]+"</span> "}
-if(props["PROGRAM YEAR 2011"]==2011){popup+="<span class='radius secondary label'>2011</span> "}
-if(props["PROGRAM YEAR 2012"]==2012){popup+=" <span class='radius secondary label'>2012</span>"}
+if(props["PROGRAM YEAR 2011"]=="TRUE"){popup+="<span class='radius secondary label'>2011</span> "}
+if(props["PROGRAM YEAR 2012"]=="TRUE"){popup+=" <span class='radius secondary label'>2012</span>"}
+if(props["PROGRAM YEAR 2013"]=="TRUE"){popup+=" <span class='radius secondary label'>2013</span>"}
 layer.bindPopup(popup)
 layer.on('click',onFeatureClick);}});markers.on('clusterclick',onClusterClick);markers.addLayer(geoJsonLayer);map.addLayer(markers);if(fit_bounds==true){map.fitBounds(markers.getBounds());}
 $("#map").hideLoading();})}
-function onFeatureClick(e){if(e.target.feature.properties["PROVIDER CCN"]){label="CCN_"+e.target.feature.properties["PROVIDER CCN"]}
-else if(e.target.feature.properties["PROVIDER NPI"]){label="NPI_"+e.target.feature.properties["PROVIDER NPI"]}
+function onFeatureClick(e){props=e.target.feature.properties
+console.log(props)
+if(props["PROVIDER CCN"]){label="CCN_"+e.target.feature.properties["PROVIDER CCN"]}
+else if(props["PROVIDER NPI"]){label="NPI_"+e.target.feature.properties["PROVIDER NPI"]}
 else{label="Unknown"}
 _gaq.push(['_trackEvent','Map','Click (Feature)',label]);features_clicked.push(e.target.feature)
 constructComparisonTable()}
@@ -228,7 +233,7 @@ function onClusterClick(e){if(e.layer.getAllChildMarkers().length){label=e.layer
 else{label="Unknown children"}
 _gaq.push(['_trackEvent','Map','Click (Cluster)',label]);}
 function constructComparisonTable(){$("#comparison_tables").html("")
-$.each(features_clicked,function(n,feature){provider_url="/db/onc/ProvidersPaidByEHRProgram_Dec2012_HOSP_FINAL/find_by_ccn/"+feature.properties["PROVIDER CCN"]+".json"
+$.each(features_clicked,function(n,feature){provider_url="/db/cms_incentives/EH/find_by_ccn/"+feature.properties["PROVIDER CCN"]+".json"
 $.getJSON(provider_url,function(data){if(data==null){}else{hcahps_props=data.hcahps
 table_selector="#table-ccn"+hcahps_props.provider_number
 $("#comparison_tables").append("<table id='table-ccn"+hcahps_props.provider_number+"' class=''></table>")

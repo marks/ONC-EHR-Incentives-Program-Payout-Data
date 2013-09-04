@@ -55,13 +55,30 @@ function load_geojson_as_cluster(data_url,fit_bounds){
           popup += "<br />"+props.general["address_1"]
           popup += "<br />"+props.general["city"]+", " + props.general["state"] + " " + props.general["zip_code"]
         }
+        
+        // general hospital info
+        if(props.general){
+          if(props.general["hospital_name"]){
+            popup += "<br /><br />Hosp. Name: "+props.general["hospital_name"]
+          }
+          if(props.general["hospital_owner"]){
+            popup += "<br />Hosp. Owner: "+props.general["hospital_owner"]
+          }        
+          if(props.general["hospital_type"]){
+            popup += "<br />Hosp. Type: "+props.general["hospital_type"]
+          }          
+        }
+
         // phone number
         if(props["PROVIDER PHONE NUM"]){popup += "<br /><br /> Phone: " + props["PROVIDER PHONE NUM"]}
         else if(props.general && props.general["phone_number"]){popup += "<br /><br /> Phone: " + props.general["phone_number"]}
+
+
+
+
         // other attributes (NPI, CCN, Incentive Program Years)
         if(props["PROVIDER CCN"]){ popup += "<br /><br /> CCN: <a href='http://www.qualitycheck.org/consumer/searchresults.aspx?nm="+props["PROVIDER CCN"]+"' target=_blank>" + props["PROVIDER CCN"] + "</a>"}
         if(props["PROVIDER NPI"]){popup += "<br />NPI: " + "<a href='https://npiregistry.cms.hhs.gov/NPPESRegistry/DisplayProviderDetails.do?searchNpi=1114922341&city=&firstName=&orgName=&searchType=org&state=&npi="+props["PROVIDER NPI"]+"&orgDba=&lastName=&zip=' target=_blank>"+props["PROVIDER NPI"]+"</a>"}
-          // incentive years
         popup += "<br /><br />Incentive Program Year(s), if any: "
         if(props["PROGRAM YEAR 2011"] == "TRUE"){popup += "<span class='radius secondary label'>2011</span> " }
         if(props["PROGRAM YEAR 2012"] == "TRUE"){ popup += " <span class='radius secondary label'>2012</span>" }
@@ -100,7 +117,7 @@ function onClusterClick(e){
 function constructComparisonTable(){
   $("#comparison_tables").html("") // clear the comparison table div
   $.each(features_clicked, function(n,feature){
-    provider_url = "/db/onc/EH/find_by_ccn/"+feature.properties["PROVIDER CCN"]+".json"
+    provider_url = "/db/cms_incentives/EH/find_by_ccn/"+feature.properties["PROVIDER CCN"]+".json"
     $.getJSON(provider_url, function(data){
       if(data == null){
         // do nothing

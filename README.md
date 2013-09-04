@@ -35,7 +35,7 @@ Procedure
       ```
         mongoimport --type csv -d cms_incentives -c ProvidersPaidByEHRProgram_June2013_EH --headerline --file public/data/ProvidersPaidByEHRProgram_June2013_EH/ProvidersPaidByEHRProgram_June2013_EH-normalizedByBrianNorris.csv
 
-        bundle exec rake hospitals:ensure_ccns_are_properly_formatted
+        bundle exec rake hospitals:ensure_fields_are_properly_formatted
       ```
 
   5. Bring in additional data from the General Hospital Information and HCAHPS (patient experience) data sets on Socrata:

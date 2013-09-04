@@ -74,21 +74,23 @@ get '/db/cms_incentives/EH/all_hospitals_with_geo.geojson' do
   content_type :json
   geojson = Hash.new
   geojson["type"] = "FeatureCollection"
-  geojson["features"] = Hospital.where("geo" => {"$ne" => nil}).map {|h| to_geojson_point(h,["geo","hcahps"])}
+  geojson["features"] = Hospital.with_geo.map {|h| to_geojson_point(h,["geo","hcahps"])}
   return geojson.to_json
 end
 
 get '/db/cms_incentives/EH/find_by_ccn/:provider_ccn.json' do
   content_type :json
-  providers = Hospital.limit(1).where("PROVIDER CCN" => params[:provider_ccn].to_s)
-  return nil if providers.empty?
+  providers = Hospital.find_by("PROVIDER CCN" => params[:provider_ccn].to_s)
+  return nil if providers.nil?
 
-  provider = providers[0].as_document.to_hash
+  provider = providers.as_document.to_hash
   provider.delete("geo")
   # HCAHPS-specific
-  provider["hcahps"]["source"] = "API endpoint of https://data.medicare.gov/dataset/Survey-of-Patients-Hospital-Experiences-HCAHPS-/rj76-22dk ; Data last fetched at #{provider["hcahps"]["_updated_at"]}"
-  provider["hcahps"].delete("_updated_at")
-  provider["hcahps"].delete("_source")
+  if provider["hcahps"]
+    provider["hcahps"]["source"] = "API endpoint of https://data.medicare.gov/dataset/Survey-of-Patients-Hospital-Experiences-HCAHPS-/rj76-22dk ; Data last fetched at #{provider["hcahps"]["_updated_at"]}"
+    provider["hcahps"].delete("_updated_at")
+    provider["hcahps"].delete("_source")
+  end
 
   return provider.nil? ? nil.to_json : provider.to_json
 end

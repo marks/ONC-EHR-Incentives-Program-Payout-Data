@@ -3,15 +3,6 @@ def cleanup_string(string) # replace anything that is not alphanumeric, a space,
 end
 
 def dstk_geocode(string)
-  # mongoimport drops leading "0" in zip codes; we need to geocode with the leading "0" though
-  original_zip = string.split(" ").last
-  if original_zip.to_s.length < 5
-    zeros_to_add = ""
-    (5 - original_zip.to_s.length).times {zeros_to_add += "0"} # Integer*"0" doesn't seem to work
-    zip5 = " #{zeros_to_add}#{original_zip}"
-    string.gsub!(/ #{original_zip}\Z/,zip5)
-  end
-
   address_to_lookup = cleanup_string(string)
   print "Geocoding: #{address_to_lookup}"
   geo_results = JSON.parse(RestClient.get("http://#{DSTK_HOST}/maps/api/geocode/json?sensor=false&address="+URI.encode(address_to_lookup)))
@@ -29,6 +20,14 @@ def to_geojson_point(doc,keys_to_exclude = [])
   coordinates = [hash["geo"]["data"]["geometry"]["location"]["lng"],hash["geo"]["data"]["geometry"]["location"]["lat"]]
   keys_to_exclude.each{|k| hash.delete(k)}
   {"type" => "Feature", "id" => hash["_id"].to_s, "properties" => hash, "geometry" => {"type" => "Point", "coordinates" => coordinates}}
+end
+
+def add_leading_zeros(original,n,zeros_to_add = "")
+  n = n.to_i 
+  if original.to_s.length < n
+    (n - original.to_s.length).times {zeros_to_add += "0"} # Integer*"0" doesn't seem to work
+  end
+  return "#{zeros_to_add}#{original}"
 end
 
 def format_ccn(ccn)

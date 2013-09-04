@@ -9,12 +9,11 @@ task :geocode do
 
   hospitals_without_geo.each do |h|
     if h["PROVIDER  ADDRESS"] # use data from incentive data dump
-      address = "#{h["PROVIDER / ORG NAME"]}, #{h["PROVIDER  ADDRESS"]}, #{h["PROVIDER CITY"]}, #{h["PROVIDER STATE"]}, USA #{h["PROVIDER ZIP 5 CD"]}"
+      address = "#{h["PROVIDER  ADDRESS"]}, #{h["PROVIDER CITY"]}, #{h["PROVIDER STATE"]}, USA #{h["PROVIDER ZIP 5 CD"]}"
     else # resort to general info (for providers with no incentives)
-      address = "#{h["general"]["hospital_name"]}, #{h["general"]["address_1"]}, #{h["general"]["city"]}, #{h["general"]["state"]}, USA #{h["general"]["zip_code"]}"
+      address = "#{h["general"]["address_1"]}, #{h["general"]["city"]}, #{h["general"]["state"]}, USA #{h["general"]["zip_code"]}"
     end
     geo_results = dstk_geocode(address)
-    h.rename(:"PROVIDER / ORG NAME",:"PROVIDER - ORG NAME") # rename field so it is mongoexport-able
     h.update_attribute("geo",geo_results) if geo_results
   end
 

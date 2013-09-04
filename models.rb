@@ -6,6 +6,7 @@ class Hospital
   index({ "PROVIDER CCN" => 1})
   index({ "PROVIDER STATE" => 1})
   index({ "geo.data.geometry.location" => "2d"})
+  index({ "geo" => 1})
   store_in collection: "ProvidersPaidByEHRProgram_June2013_EH"
 
   scope :without_hcahps, where("hcahps" => nil)

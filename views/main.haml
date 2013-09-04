@@ -105,7 +105,7 @@
         %select#dropdown{:name => "dropdown"}
           %option{:value => "#{PUBLIC_HOST}#{@default_data_url}"} ALL US Hospitals (updated June 2013)
           - STATES.each do |state|
-            %option{:value => "#{PUBLIC_HOST}/data/by_state/provider-#{state}.geojson"}= "#{state} Providers who received CMS HITECH incentives (updated December 2012)"
+            %option{:value => "#{PUBLIC_HOST}/data/ProvidersPaidByEHRProgram_Dec2012/by_state/provider-#{state}.geojson"}= "#{state} Providers who received CMS HITECH incentives (updated December 2012)"
         %br/
         %br/
         #map

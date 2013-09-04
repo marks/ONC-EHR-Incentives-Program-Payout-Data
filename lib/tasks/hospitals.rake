@@ -19,16 +19,16 @@ namespace :hospitals do
     all_hospitals = fetch_whole_socrata_dataset(socrata_endpoint, SOCRATA_APP_TOKEN)
 
     puts "Ingesting new data"
-    all_hospitals.each do |row|
-      new_data = {
+    all_hospitals.each do |general_row|
+      new_general_data = {
         "_source" => socrata_endpoint,
         "_updated_at" => Time.now,
-      }.merge(row)
-      h = Hospital.find_by("PROVIDER CCN" => format_ccn(new_data["provider_number"]))
+      }.merge(general_row)
+      h = Hospital.find_by("PROVIDER CCN" => format_ccn(new_general_data["provider_number"]))
       if h.nil?
-        Hospital.create("general" => new_data, "PROVIDER CCN" => format_ccn(new_data["provider_number"]))
+        Hospital.create("general" => new_general_data, "PROVIDER CCN" => format_ccn(new_general_data["provider_number"]))
       else
-        h.update_attributes("general" => new_data)
+        h.update_attributes("general" => new_general_data)
       end
     end
     puts "#{Hospital.count} hospitals in db"
@@ -46,16 +46,16 @@ namespace :hospitals do
     hcahps_data = fetch_whole_socrata_dataset(socrata_endpoint, SOCRATA_APP_TOKEN)
 
     puts "Ingesting new data"
-    hcahps_data.each do |row|
-      new_data = {
+    hcahps_data.each do |hcahps_row|
+      new_hcahps_data = {
         "_source" => socrata_endpoint,
         "_updated_at" => Time.now,
-      }.merge(row)
-      h = Hospital.find_by("PROVIDER CCN" => format_ccn(new_data["provider_number"]))
+      }.merge(hcahps_row)
+      h = Hospital.find_by("PROVIDER CCN" => format_ccn(new_hcahps_data["provider_number"]))
       if h.nil?
-        Hospital.create("hcahps" => new_data, "PROVIDER CCN" => format_ccn(new_data["provider_number"]))
+        Hospital.create("hcahps" => new_hcahps_data, "PROVIDER CCN" => format_ccn(new_hcahps_data["provider_number"]))
       else
-        h.update_attribute("hcahps",new_data)
+        h.update_attribute("hcahps",new_hcahps_data)
       end
     end
     

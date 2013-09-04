@@ -80,16 +80,16 @@ end
 
 get '/db/cms_incentives/EH/find_by_ccn/:provider_ccn.json' do
   content_type :json
-  providers = Hospital.find_by("PROVIDER CCN" => params[:provider_ccn].to_s)
-  return nil if providers.nil?
-
-  provider = providers.as_document.to_hash
-  provider.delete("geo")
-  # HCAHPS-specific
-  if provider["hcahps"]
-    provider["hcahps"]["source"] = "API endpoint of https://data.medicare.gov/dataset/Survey-of-Patients-Hospital-Experiences-HCAHPS-/rj76-22dk ; Data last fetched at #{provider["hcahps"]["_updated_at"]}"
-    provider["hcahps"].delete("_updated_at")
-    provider["hcahps"].delete("_source")
+  provider = Hospital.find_by("PROVIDER CCN" => params[:provider_ccn].to_s)
+  if provider
+    provider = provider.as_document.to_hash
+    provider.delete("geo")
+    # HCAHPS-specific
+    if provider["hcahps"]
+      provider["hcahps"]["source"] = "API endpoint of https://data.medicare.gov/dataset/Survey-of-Patients-Hospital-Experiences-HCAHPS-/rj76-22dk ; Data last fetched at #{provider["hcahps"]["_updated_at"]}"
+      provider["hcahps"].delete("_updated_at")
+      provider["hcahps"].delete("_source")
+    end
   end
 
   return provider.nil? ? nil.to_json : provider.to_json

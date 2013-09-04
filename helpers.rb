@@ -8,7 +8,7 @@ def dstk_geocode(string)
   geo_results = JSON.parse(RestClient.get("http://#{DSTK_HOST}/maps/api/geocode/json?sensor=false&address="+URI.encode(address_to_lookup)))
   if geo_results["status"] == "OK"
     print " ... found results\n"
-    return {"provider" => "DSTK", "updated_at" => Time.now, "data" => geo_results["results"].first }
+    return {"_source" => "DSTK", "_updated_at" => Time.now}.merge(geo_results["results"].first)
   else
     print " ... !! did not find results !!\n"
     return nil
@@ -17,7 +17,8 @@ end
 
 def to_geojson_point(doc,keys_to_exclude = [])
   hash = doc.as_document.to_hash
-  coordinates = [hash["geo"]["data"]["geometry"]["location"]["lng"],hash["geo"]["data"]["geometry"]["location"]["lat"]]
+  hash["has_hcahps"] = true unless hash["hcahps"].nil?
+  coordinates = [hash["geo"]["geometry"]["location"]["lng"],hash["geo"]["geometry"]["location"]["lat"]]
   keys_to_exclude.each{|k| hash.delete(k)}
   {"type" => "Feature", "id" => hash["_id"].to_s, "properties" => hash, "geometry" => {"type" => "Point", "coordinates" => coordinates}}
 end

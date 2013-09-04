@@ -81,6 +81,15 @@ function load_geojson_as_cluster(data_url,fit_bounds){
         if(props["PROGRAM YEAR 2012"] == "TRUE"){ popup += " <span class='radius secondary label'>2012</span>" }
         if(props["PROGRAM YEAR 2013"] == "TRUE"){ popup += " <span class='radius secondary label'>2013</span>" }
 
+        // HCAHPS data
+        popup += "<br /><br />"
+        if(props.has_hcahps == true){
+          popup += "<span class='radius secondary label green'>HCAHPS data available</span>"
+        } else {
+          popup += "<span class='radius secondary label red'>no HCAHPS data available</span>"
+        }
+
+
         layer.bindPopup(popup)
         layer.on('click', onFeatureClick);
       }
@@ -116,7 +125,7 @@ function constructComparisonTable(){
   $.each(features_clicked, function(n,feature){
     provider_url = "/db/cms_incentives/EH/find_by_ccn/"+feature.properties["PROVIDER CCN"]+".json"
     $.getJSON(provider_url, function(data){
-      if(data == null){
+      if(data == null || data.hcahps == undefined){
         // do nothing
       } else {
         hcahps_props = data.hcahps

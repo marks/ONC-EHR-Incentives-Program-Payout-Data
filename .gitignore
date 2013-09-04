@@ -15,3 +15,7 @@ public/data/.DS_Store
 .idea/.rakeTasks
 
 .idea/.rakeTasks
+
+tmp/
+tmp
+tmp/*

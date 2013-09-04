@@ -3,8 +3,7 @@ Mongoid.raise_not_found_error = false
 
 class Hospital
   include Mongoid::Document
-  index({ "PROVIDER CCN" => 1},{ unique: true, name: "PROVIDER_CCN_index" })
-  index({ "PROVIDER NPI" => 1},{ unique: true, name: "PROVIDER_NPI_index" })
+  index({ "PROVIDER CCN" => 1})
   index({ "PROVIDER STATE" => 1})
   index({ "geo.data.geometry.location" => "2d"})
   store_in collection: "ProvidersPaidByEHRProgram_June2013_EH"

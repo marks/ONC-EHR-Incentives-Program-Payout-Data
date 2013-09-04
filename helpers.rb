@@ -31,13 +31,12 @@ def to_geojson_point(doc,keys_to_exclude = [])
   {"type" => "Feature", "id" => hash["_id"].to_s, "properties" => hash, "geometry" => {"type" => "Point", "coordinates" => coordinates}}
 end
 
-def ensure_proper_ccn_format(h)
-  original_ccn = h["PROVIDER CCN"]
+def format_ccn(ccn)
   zeros_to_add = ""
-  if original_ccn.to_s.length < 6
-    (6 - original_ccn.to_s.length).times {zeros_to_add += "0"} # Integer*"0" doesn't seem to work
+  if ccn.to_s.length < 6
+    (6 - ccn.to_s.length).times {zeros_to_add += "0"} # Integer*"0" doesn't seem to work
   end
-  h.update_attribute("PROVIDER CCN","#{zeros_to_add}#{original_ccn}")
+  "#{zeros_to_add}#{ccn}"
 end
 
 def fetch_whole_socrata_dataset(endpoint, token, per_page = 1000)

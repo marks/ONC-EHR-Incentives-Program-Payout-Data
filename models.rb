@@ -1,4 +1,5 @@
 Mongoid.load!("config/mongoid.yml")
+Mongoid.raise_not_found_error = false
 
 class Hospital
   include Mongoid::Document
@@ -8,15 +9,16 @@ class Hospital
   index({ "geo.data.geometry.location" => "2d"})
   store_in collection: "ProvidersPaidByEHRProgram_June2013_EH"
 
-  scope :without_hcahps, where("hcahps.provider_number" => nil)
-  scope :with_hcahps, where("hcahps.provider_number" => {"$ne" => nil})
+  scope :without_hcahps, where("hcahps" => nil)
+  scope :with_hcahps, where("hcahps" => {"$ne" => nil})
   scope :with_geo, where("geo" => {"$ne" => nil})
   scope :without_geo, where("geo" => nil)
   scope :with_general, where("general" => {"$ne" => nil})
   scope :without_general, where("general" => nil)
 
   scope :received_any_incentives, any_of([{"PROGRAM YEAR 2011" => "TRUE"},{"PROGRAM YEAR 2012" => "TRUE"},{"PROGRAM YEAR 2013" => "TRUE"}])
-  scope :never_received_any_incentives, any_of({"PROGRAM YEAR 2012" => nil, "PROGRAM YEAR 2011" => nil, "PROGRAM YEAR 2013" => nil})
+  scope :received_2011_incentive, where("PROGRAM YEAR 2011" => "TRUE")
+  scope :never_received_any_incentives, where({"PROGRAM YEAR 2012" => nil, "PROGRAM YEAR 2011" => nil, "PROGRAM YEAR 2013" => nil})
 
   # Usage: Hospital.mr_compute_descriptive_stats_excluding_nulls("hcahps.percent_of_patients_who_reported_that_the_area_around_their_room_was_always_quiet_at_night_")
   def self.mr_compute_descriptive_stats_excluding_nulls(field_dot_notation = "hcahps.percent_of_patients_who_reported_that_the_area_around_their_room_was_always_quiet_at_night_")

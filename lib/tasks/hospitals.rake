@@ -1,6 +1,13 @@
 namespace :hospitals do
   SOCRATA_APP_TOKEN = "c1qN0TO6e65zh9oxVD6XrVJyT"
 
+  task :ensure_ccns_are_properly_formatted do
+    Hospital.all.each do |h|
+      h.update_attribute("PROVIDER CCN",format_ccn(h["PROVIDER CCN"]))
+    end
+  end
+
+
   desc "Add General Hospital Info to datastore if they are not already in it"
   task :ingest_general_info do
     puts "#{Hospital.count} hospitals in db"
@@ -9,17 +16,16 @@ namespace :hospitals do
     all_hospitals = fetch_whole_socrata_dataset(socrata_endpoint, SOCRATA_APP_TOKEN)
 
     puts "Ingesting new data"
-    all_hospitals.each do |hospital|
-      ccn = hospital["provider_number"]
-      hospital_data = {
+    all_hospitals.each do |row|
+      new_data = {
         "_source" => socrata_endpoint,
         "_updated_at" => Time.now,
-      }.merge(hospital)
-      h = Hospital.where("PROVIDER CCN" => ccn)
-      if h.empty?
-        Hospital.create("general" => hospital_data, "PROVIDER CCN" => ccn)
+      }.merge(row)
+      h = Hospital.find_by("PROVIDER CCN" => format_ccn(new_data["provider_number"]))
+      if h.nil?
+        Hospital.create("general" => new_data, "PROVIDER CCN" => format_ccn(new_data["provider_number"]))
       else
-        h.first.update_attribute("general",hospital_data)
+        h.update_attributes("general" => new_data)
       end
     end
     puts "#{Hospital.count} hospitals in db"
@@ -37,17 +43,16 @@ namespace :hospitals do
     hcahps_data = fetch_whole_socrata_dataset(socrata_endpoint, SOCRATA_APP_TOKEN)
 
     puts "Ingesting new data"
-    hcahps_data.each do |hospital|
-      ccn = hospital["provider_number"]
-      hcahps_data = {
+    hcahps_data.each do |row|
+      new_data = {
         "_source" => socrata_endpoint,
         "_updated_at" => Time.now,
-      }.merge(hospital)
-      h = Hospital.where("PROVIDER CCN" => ccn)
-      if h.empty?
-        Hospital.create("hcahps" => hcahps_data, "PROVIDER CCN" => ccn)
+      }.merge(row)
+      h = Hospital.find_by("PROVIDER CCN" => format_ccn(new_data["provider_number"]))
+      if h.nil?
+        Hospital.create("hcahps" => new_data, "PROVIDER CCN" => format_ccn(new_data["provider_number"]))
       else
-        h.first.update_attribute("hcahps",hcahps_data)
+        h.update_attribute("hcahps",new_data)
       end
     end
     
@@ -65,29 +70,19 @@ namespace :hospitals do
   #end
 
   task :simple_report do
-    puts "We started by analyzing hospitals that received incentive payments in program year 2011, 2012, or 2013. We then added all hospitals in the hospital compare (general information) data set, and added HCAHPS data for as many hospitals as we could, using their CCN as the look-up variable."
+    puts "\nWe started by analyzing hospitals that received incentive payments in program year 2011, 2012, or 2013. We then added all hospitals in the hospital compare (general information) data set, and added HCAHPS data for as many hospitals as we could, using their CCN as the look-up variable.\n\n"
     # Documents with a root-level key of "PROGRAM YEAR 2012" DID receive incentive payments
-    puts "# of hospitals in db = #{Hospital.count}"
-    recvd_incentive = Hospital.received_any_incentives
-    puts "  # received an incentive* (* in any of 2011, 2012, _or_ 2013) = #{recvd_incentive.count}"
-    recvd_incentive_and_have_geo = recvd_incentive.with_geo
-    puts "    # received an incentive* and we were able to geocode = #{recvd_incentive_and_have_geo.count}"
-    recvd_incentive_and_have_hcahps = recvd_incentive.with_hcahps
-    puts "    # received an incentive* and we found HCAHPS data = #{recvd_incentive_and_have_hcahps.count}"
-    recvd_incentive_and_have_general = recvd_incentive.with_general
-    puts "    # received an incentive* and we found general information = #{recvd_incentive_and_have_general.count}"
-    # Documents without a root-level key of "PROGRAM YEAR 2012" did NOT recieve incentive payments
-    didnt_recv_incentive = Hospital.never_received_any_incentives
-    puts "  # did not received an incentive*  = #{didnt_recv_incentive.count}"
-    didnt_recv_incentive_and_have_geo = didnt_recv_incentive.with_geo
-    puts "    # did not received an incentive* and we were able to geocode = #{didnt_recv_incentive_and_have_geo.count}"
-    didnt_recv_incentive_and_have_hcahps = didnt_recv_incentive.with_hcahps
-    puts "    # did not received an incentive* and we found HCAHPS data = #{didnt_recv_incentive_and_have_hcahps.count}"
-    didnt_recv_incentive_and_have_general = didnt_recv_incentive.with_general
-    puts "    # did not received an incentive* and we found general information = #{didnt_recv_incentive_and_have_general.count}"
-    puts
+    puts "  # received an incentive* (* in any of 2011, 2012, _or_ 2013) = #{Hospital.received_any_incentives.count}"
+    puts "    # received an incentive* and we were able to geocode = #{Hospital.received_any_incentives.with_geo.count}"
+    puts "    # received an incentive* and we found HCAHPS data = #{Hospital.received_any_incentives.with_hcahps.count}"
+    puts "    # received an incentive* and we found general information = #{Hospital.received_any_incentives.with_general.count}"
+    puts " -> # received an incentive* and we found general information, HCAHPS, and geocoded = #{Hospital.received_any_incentives.with_general.with_hcahps.with_geo.count} (#{(Hospital.received_any_incentives.with_general.with_hcahps.with_geo.count/Hospital.received_any_incentives.count.to_f*100).round}% of ones that received incentives) \n\n"
+    puts "  # did not received an incentive*  = #{Hospital.never_received_any_incentives.count}"
+    puts "    # did not received an incentive* and we were able to geocode = #{Hospital.never_received_any_incentives.with_geo.count}"
+    puts "    # did not received an incentive* and we found HCAHPS data = #{Hospital.never_received_any_incentives.with_hcahps.count}"
+    puts "    # did not received an incentive* and we found general information = #{Hospital.never_received_any_incentives.with_general.count} \n\n"
 
-    puts "TOTAL HOSPITALS = #{Hospital.count}"
+    puts "TOTAL HOSPITALS IN DB = #{Hospital.count} (# received any incentives* + # never received an incentive)\n\n"
 
   end
 

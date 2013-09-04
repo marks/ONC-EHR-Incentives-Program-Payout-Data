@@ -30,43 +30,41 @@ Procedure
       ```
         unzip public/data/ProvidersPaidByEHRProgram_June2013_EH/ProvidersPaidByEHRProgram_June2013_EH.zip -d public/data/ProvidersPaidByEHRProgram_June2013_EH/
       ```
-  4. Import CSV into MongoDB:
+  4. Import CSV into MongoDB and ensure the CCNs are properly formatted
 
       ```
         mongoimport --type csv -d cms_incentives -c ProvidersPaidByEHRProgram_June2013_EH --headerline --file public/data/ProvidersPaidByEHRProgram_June2013_EH/ProvidersPaidByEHRProgram_June2013_EH-normalizedByBrianNorris.csv
+
+        bundle exec rake hospitals:ensure_ccns_are_properly_formatted
       ```
 
-  5. Bring in additional data from the General Hospital Information data set on Socrata:
+  5. Bring in additional data from the General Hospital Information and HCAHPS (patient experience) data sets on Socrata:
 
       ```
         bundle exec rake hospitals:ingest_general_info
-      ```
 
-  6. Bring in additional data from the HCAHPS (Patient Experience) data set on Socrata:
-
-      ```
         bundle exec rake hospitals:ingest_hcahps
       ```
 
-  7. Geocode provider addresses:
+  6. Geocode provider addresses:
 
       ```
         bundle exec rake geocode
       ```
 
-  8. Print out a nice little report about hospital counts with different types of data (geo, general info, hcahps):
+  7. Print out a nice little report about hospital counts with different types of data (geo, general info, hcahps):
 
       ```
         bundle exec rake hospitals:simple_report
       ```
 
-  9. Export _select_ information to CSV for safe keeping and offline analysis: 
+  8. Export _select_ information to CSV for safe keeping and offline analysis: 
 
       ```
-        mongoexport --csv -d ehr_incentives -c ProvidersPaidByEHRProgram_June2013_EH -o public/data/ProvidersPaidByEHRProgram_June2013_EH/ProvidersPaidByEHRProgram_June2013_EH-normalized-geocodedAndSelectedData.csv -f "PROVIDER NPI,PROVIDER CCN,PROVIDER - ORG NAME,PROVIDER STATE,PROVIDER CITY,PROVIDER  ADDRESS,PROVIDER ZIP 5 CD,PROVIDER ZIP 4 CD,PROVIDER PHONE NUM,PROVIDER PHONE EXT,PROGRAM YEAR 2011,PROGRAM YEAR 2012,PROGRAM YEAR 2013,geo.provider,geo.updated_at,geo.data.types.0,geo.data.geometry.location.lat,geo.data.geometry.location.lng,general.hospital_type,general.hospital_owner,general.emergency_services,general.country_name,hcahps.survey_response_rate_percent,hcahps.number_of_completed_surveys,hcahps.percent_of_patients_who_reported_yes_they_would_definitely_recommend_the_hospital_"
+        mongoexport --csv -d cms_incentives -c ProvidersPaidByEHRProgram_June2013_EH -o public/data/ProvidersPaidByEHRProgram_June2013_EH/ProvidersPaidByEHRProgram_June2013_EH-normalized-geocodedAndSelectedData.csv -f "PROVIDER NPI,PROVIDER CCN,PROVIDER - ORG NAME,PROVIDER STATE,PROVIDER CITY,PROVIDER  ADDRESS,PROVIDER ZIP 5 CD,PROVIDER ZIP 4 CD,PROVIDER PHONE NUM,PROVIDER PHONE EXT,PROGRAM YEAR 2011,PROGRAM YEAR 2012,PROGRAM YEAR 2013,geo.provider,geo.updated_at,geo.data.types.0,geo.data.geometry.location.lat,geo.data.geometry.location.lng,general.hospital_type,general.hospital_owner,general.emergency_services,general.country_name,hcahps.survey_response_rate_percent,hcahps.number_of_completed_surveys,hcahps.percent_of_patients_who_reported_yes_they_would_definitely_recommend_the_hospital_"
       ```
       
-  10. Create MongoDB indexes:
+  9. Create MongoDB indexes:
 
       ```
         bundle exec rake db:mongoid:create_indexes

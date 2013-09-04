@@ -219,6 +219,8 @@ popup+="<br /><br />Incentive Program Year(s), if any: "
 if(props["PROGRAM YEAR 2011"]=="TRUE"){popup+="<span class='radius secondary label'>2011</span> "}
 if(props["PROGRAM YEAR 2012"]=="TRUE"){popup+=" <span class='radius secondary label'>2012</span>"}
 if(props["PROGRAM YEAR 2013"]=="TRUE"){popup+=" <span class='radius secondary label'>2013</span>"}
+popup+="<br /><br />"
+if(props.has_hcahps==true){popup+="<span class='radius secondary label green'>HCAHPS data available</span>"}else{popup+="<span class='radius secondary label red'>no HCAHPS data available</span>"}
 layer.bindPopup(popup)
 layer.on('click',onFeatureClick);}});markers.on('clusterclick',onClusterClick);markers.addLayer(geoJsonLayer);map.addLayer(markers);if(fit_bounds==true){map.fitBounds(markers.getBounds());}
 $("#map").hideLoading();})}
@@ -234,7 +236,7 @@ else{label="Unknown children"}
 _gaq.push(['_trackEvent','Map','Click (Cluster)',label]);}
 function constructComparisonTable(){$("#comparison_tables").html("")
 $.each(features_clicked,function(n,feature){provider_url="/db/cms_incentives/EH/find_by_ccn/"+feature.properties["PROVIDER CCN"]+".json"
-$.getJSON(provider_url,function(data){if(data==null){}else{hcahps_props=data.hcahps
+$.getJSON(provider_url,function(data){if(data==null||data.hcahps==undefined){}else{hcahps_props=data.hcahps
 table_selector="#table-ccn"+hcahps_props.provider_number
 $("#comparison_tables").append("<table id='table-ccn"+hcahps_props.provider_number+"' class=''></table>")
 $(table_selector).html("<thead></thead><tbody></tbody>")

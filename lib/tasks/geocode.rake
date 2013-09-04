@@ -8,12 +8,7 @@ task :geocode do
   puts "Number of hospitals in collection w/o geolocation: #{hospitals_without_geo.count}"
 
   hospitals_without_geo.each do |h|
-    if h["PROVIDER  ADDRESS"] # use data from incentive data dump
-      address = "#{h["PROVIDER  ADDRESS"]}, #{h["PROVIDER CITY"]}, #{h["PROVIDER STATE"]}, USA #{h["PROVIDER ZIP 5 CD"]}"
-    else # resort to general info (for providers with no incentives)
-      address = "#{h["general"]["address_1"]}, #{h["general"]["city"]}, #{h["general"]["state"]}, USA #{h["general"]["zip_code"]}"
-    end
-    geo_results = dstk_geocode(address)
+    geo_results = dstk_geocode(h.address)
     h.update_attribute("geo",geo_results) if geo_results
   end
 

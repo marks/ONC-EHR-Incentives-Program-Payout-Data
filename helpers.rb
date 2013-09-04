@@ -7,8 +7,12 @@ def dstk_geocode(string)
   print "Geocoding: #{address_to_lookup}"
   geo_results = JSON.parse(RestClient.get("http://#{DSTK_HOST}/maps/api/geocode/json?sensor=false&address="+URI.encode(address_to_lookup)))
   if geo_results["status"] == "OK"
-    print " ... found results\n"
-    return {"_source" => "DSTK", "_updated_at" => Time.now}.merge(geo_results["results"].first)
+    if geo_results["results"].first["geometry"]["location"]["lng"].to_i >= -45
+      print " ... This doesn't look like a U.S.A. location... let's try again later\n"
+    else
+      print " ... found results\n"
+      return {"_source" => "DSTK", "_updated_at" => Time.now}.merge(geo_results["results"].first)
+    end
   else
     print " ... !! did not find results !!\n"
     return nil

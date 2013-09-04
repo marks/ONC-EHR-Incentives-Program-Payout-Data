@@ -58,7 +58,7 @@ configure :development do
 end
 
 configure :production do
-  PUBLIC_HOST = "http://cf.hitech.socialhealthinsights.com"
+  PUBLIC_HOST = ""
 end
 
 get '/' do

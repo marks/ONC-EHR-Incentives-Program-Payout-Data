@@ -1,5 +1,4 @@
 namespace :hospitals do
-  SOCRATA_APP_TOKEN = "c1qN0TO6e65zh9oxVD6XrVJyT"
 
   task :ensure_fields_are_properly_formatted do
     Hospital.all.each do |h|
@@ -16,7 +15,7 @@ namespace :hospitals do
     puts "#{Hospital.count} hospitals in db"
 
     socrata_endpoint = "http://data.medicare.gov/resource/v287-28n3.json"
-    all_hospitals = fetch_whole_socrata_dataset(socrata_endpoint, SOCRATA_APP_TOKEN)
+    all_hospitals = fetch_whole_socrata_dataset(socrata_endpoint, settings.socrata_key)
 
     puts "Ingesting new data"
     all_hospitals.each do |general_row|
@@ -43,7 +42,7 @@ namespace :hospitals do
     hospitals_without_hcahps = Hospital.without_hcahps
     puts "Number of hospitals in collection w/o HCAHPS: #{hospitals_without_hcahps.count}"
 
-    hcahps_data = fetch_whole_socrata_dataset(socrata_endpoint, SOCRATA_APP_TOKEN)
+    hcahps_data = fetch_whole_socrata_dataset(socrata_endpoint, settings.socrata_key)
 
     puts "Ingesting new data"
     hcahps_data.each do |hcahps_row|

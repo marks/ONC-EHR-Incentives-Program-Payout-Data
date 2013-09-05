@@ -2,6 +2,7 @@ development: &common_settings
   google_analytics_id: ~ # (null)
   public_host: ''
   leaflet_key: 'ed5940a5e0724173aba9da0d77368912'
+  socrata_key: 'c1qN0TO6e65zh9oxVD6XrVJyT'
 
 production:
   <<: *common_settings

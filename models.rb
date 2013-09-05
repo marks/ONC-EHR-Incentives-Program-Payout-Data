@@ -89,6 +89,10 @@ class Provider
   index({ "geo.geometry.location" => "2d"})
   index({ "geo" => 1})
   store_in collection: "ProvidersPaidByEHRProgram_June2013_EP"
+
+  scope :with_geo, where("geo" => {"$ne" => nil})
+  scope :without_geo, where("geo" => nil)
+
 end
 
 class DescriptiveStatistic

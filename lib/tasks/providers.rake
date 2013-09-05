@@ -1,6 +1,5 @@
 namespace :providers do
 
-
   task :ensure_fields_are_properly_formatted do
     Provider.all.each do |h|
       h.update_attribute("PROVIDER ZIP 5 CD",add_leading_zeros(h["PROVIDER ZIP 5 CD"],5))
@@ -18,17 +17,5 @@ namespace :providers do
       print "... done.\n"
     end
   end
-
-  desc "Write state provider GeoJSON files to public/data"
-  task :output_hospital_geojson do
-    filename = "public/data/ProvidersPaidByEHRProgram_Dec2012_HOSP_FINAL.geojson"
-    print "Starting hospital geojson export to #{filename} "
-    geojson = Hash.new
-    geojson["type"] = "FeatureCollection"
-    geojson["features"] = Hospital.where("geo" => {"$ne" => nil}).map {|h| to_geojson_point(h,["geo","hcahps"])}
-    File.open(filename, 'w') { |file| file.write(geojson.to_json) }
-    print "... done.\n"
-  end
-
 
 end

@@ -66,6 +66,12 @@ get '/' do
   haml :main
 end
 
+get '/data/ProvidersPaidByEHRProgram_June2013_EP/by_state/provider-:state.geojson' do
+  content_type :json
+  state_geojson = Provider.with_geo.where("PROVIDER STATE" => params[:state]).map {|p| to_geojson_point(p)}
+  state_geojson.to_json
+end
+
 get '/db/cms_incentives/EH/all_hospitals_with_geo.geojson' do
   content_type :json
   geojson = Hash.new

@@ -9,7 +9,6 @@ namespace :hospitals do
     end
   end
 
-
   desc "Add General Hospital Info to datastore if they are not already in it"
   task :ingest_general_info do
     puts "#{Hospital.count} hospitals in db"

@@ -3,6 +3,9 @@ Bundler.require
 require 'open-uri'
 require './helpers'
 require './models'
+require "sinatra/config_file"
+
+config_file './config/app.yml'
 
 configure do
   enable :sessions

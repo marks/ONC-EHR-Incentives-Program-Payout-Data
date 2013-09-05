@@ -1,0 +1,7 @@
+development: &common_settings
+  foo: 'foo'
+  bar: 'bar'
+
+production:
+  <<: *common_settings
+  bar: 'baz' # override the default value

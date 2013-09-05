@@ -2,7 +2,7 @@ A repo for working with data from [ONC's EHR Incentive Programs Data and Program
 
 Screenshot
 ----------
-![iPad (Landscape) Screenshot](public/screenshots/ipad-landscape-2013-03-04 at 9.19.43 PM.png "iPad (Landscape) Screenshot")
+![iPad (Landscape) Screenshot](public/screenshots/ipad-landscape-2013-03-04.png "iPad Screenshot")
 *Screenshot last updated 3/4/2013 at 9pm EST*
 
 Notes
@@ -11,68 +11,55 @@ Notes
 * Using [Data Science Toolkit](http://www.datasciencetoolkit.org/) for geocoding provider addresses but started getting 500 Internal Server Errors when using public DSTK host so I brought up my own instance (m1.medium) on Amazon EC2. If you choose to do the same, edit the `DSTK_HOST` variable in `lib/tasks/geocode.rake`
 * *ProvidersPaidByEHRProgram_June2013* data files have been normalized by @geek_nurse and @skram to make them more suitable for database querying
 * When geocoding, the address information from the CMS ProvidersPaidByEHRProgram is used, if available. If the provider has not received incentive payments or no address is available, the address from the Hospital General Information data set is used in the geocoding process
+* The normalized EP spreadsheet has about 1,300 duplicate NPIs out of 190,000+. This is after the normalization effort.
 
 Procedure
 ---------
-**Providers Paid By EHR Program: June 2013 Eligible Hospitals**
+**EH: Providers Paid By EHR Program: June 2013 Eligible Hospitals**
+  
   1. Create a directory for the raw data and later exports:
   
-      ```
         mkdir -p public/data/ProvidersPaidByEHRProgram_June2013_EH/
-      ```
+
   2. Download data file:
 
-      ```
         curl http://www.cms.gov/Regulations-and-Guidance/Legislation/EHRIncentivePrograms/Downloads/ProvidersPaidByEHRProgram_June2013_EH.zip -o public/data/ProvidersPaidByEHRProgram_June2013_EH/ProvidersPaidByEHRProgram_June2013_EH.zip
-      ```
+
   3. Unzip data file:
 
-      ```
         unzip public/data/ProvidersPaidByEHRProgram_June2013_EH/ProvidersPaidByEHRProgram_June2013_EH.zip -d public/data/ProvidersPaidByEHRProgram_June2013_EH/
-      ```
-  4. Import CSV into MongoDB and ensure the CCNs are properly formatted
 
-      ```
+  4. Import CSV into MongoDB and ensure the fields are properly formatted. _Note_ how we use ProvidersPaidByEHRProgram_June2013_EH-normalizedByBrianNorris.csv instead of ProvidersPaidByEHRProgram_June2013_EH.csv. Unfortunately, the CMS download is formatted where each provider gets multiple rows. We decided to use Excel skills to normalize the data and import that into MongoDB. A pull request to automatically and scalably normalize the messy CSV from CMS would be very much welcomed.    
+
         mongoimport --type csv -d cms_incentives -c ProvidersPaidByEHRProgram_June2013_EH --headerline --file public/data/ProvidersPaidByEHRProgram_June2013_EH/ProvidersPaidByEHRProgram_June2013_EH-normalizedByBrianNorris.csv
 
         bundle exec rake hospitals:ensure_fields_are_properly_formatted
-      ```
+
+
 
   5. Bring in additional data from the General Hospital Information and HCAHPS (patient experience) data sets on Socrata:
 
-      ```
         bundle exec rake hospitals:ingest_general_info
-
         bundle exec rake hospitals:ingest_hcahps
-      ```
 
   6. Geocode provider addresses:
 
-      ```
         bundle exec rake geocode
-      ```
 
   7. Print out a nice little report about hospital counts with different types of data (geo, general info, hcahps):
 
-      ```
         bundle exec rake hospitals:simple_report
-      ```
 
   8. Export _select_ information to CSV for safe keeping and offline analysis: 
 
-      ```
         mongoexport --csv -d cms_incentives -c ProvidersPaidByEHRProgram_June2013_EH -o public/data/ProvidersPaidByEHRProgram_June2013_EH/ProvidersPaidByEHRProgram_June2013_EH-normalized-geocodedAndSelectedData.csv -f "PROVIDER NPI,PROVIDER CCN,PROVIDER - ORG NAME,PROVIDER STATE,PROVIDER CITY,PROVIDER  ADDRESS,PROVIDER ZIP 5 CD,PROVIDER ZIP 4 CD,PROVIDER PHONE NUM,PROVIDER PHONE EXT,PROGRAM YEAR 2011,PROGRAM YEAR 2012,PROGRAM YEAR 2013,geo.provider,geo.updated_at,geo.data.types.0,geo.data.geometry.location.lat,geo.data.geometry.location.lng,general.hospital_type,general.hospital_owner,general.emergency_services,general.country_name,hcahps.survey_response_rate_percent,hcahps.number_of_completed_surveys,hcahps.percent_of_patients_who_reported_yes_they_would_definitely_recommend_the_hospital_"
-      ```
       
   9. Create MongoDB indexes:
 
-      ```
         bundle exec rake db:mongoid:create_indexes
-      ```
 
   10. If you intend to run the visualization in a prodution-like environemnt: 
 
-      ```
         # You will want to create a static `.geojson` 
         bundle exec ruby web_app.rb -p 4567 -e development
         curl http://localhost:4567/db/cms_incentives/EH/all_hospitals_with_geo.geojson -o public/data/ProvidersPaidByEHRProgram_June2013_EH/ProvidersPaidByEHRProgram_June2013_EH-all_with_geo.geojson
@@ -80,13 +67,28 @@ Procedure
         # Refresh the minified static assets
         rm public/static/*
         bundle exec rake assetpack:build
-      ```
 
-**Providers Paid By EHR Program: June 2013 Eligible Providers**
-  1. Import CSV from ONC into MongoDB: `mongoimport --type csv -d cms_incentives -c ProvidersPaidByEHRProgram_June2013_EP --headerline --file public/data/ProvidersPaidByEHRProgram_June2013_EP.csv`
-  2. Added 2d geospatial index: `mongo cms_incentives --eval "db.ProvidersPaidByEHRProgram_June2013_EH.ensureIndex({'geo.data.geometry.location':'2d'})"`
-  3. Geocoded locations using `bundle exec rake geocode`
-  4. Exported relevant information to CSV using `mongoexport --csv -d onc -c ProvidersPaidByEHRProgram_June2013_EP -o public/data/ProvidersPaidByEHRProgram_June2013_EP-geocoded.csv -f "PROVIDER NPI,PROVIDER STATE,PROVIDER CITY,PROVIDER  ADDRESS,PROVIDER ZIP 5 CD,PROVIDER ZIP 4 CD,PROVIDER PHONE NUM,PROVIDER PHONE EXT,PROGRAM YEAR,geo.provider,geo.updated_at,geo.data.types.0,geo.data.geometry.location.lat,geo.data.geometry.location.lng,geo.data.formatted_address"`
+**EP: Providers Paid By EHR Program: June 2013 Eligible Providers**
+  
+  1. Create a directory for the raw data and later exports:
+  
+        mkdir -p public/data/ProvidersPaidByEHRProgram_June2013_EP/
+
+  2. Download data file:
+
+
+        curl http://www.cms.gov/Regulations-and-Guidance/Legislation/EHRIncentivePrograms/Downloads/ProvidersPaidByEHRProgram_June2013_EP.zip -o public/data/ProvidersPaidByEHRProgram_June2013_EP/ProvidersPaidByEHRProgram_June2013_EP.zip
+
+  3. Unzip data file:
+
+        unzip public/data/ProvidersPaidByEHRProgram_June2013_EP/ProvidersPaidByEHRProgram_June2013_EP.zip -d public/data/ProvidersPaidByEHRProgram_June2013_EP/
+
+  4. Import CSV into MongoDB and ensure the fields are properly formatted. _See EH section note for step 4 above. Same applies here, for EPs._    
+
+        mongoimport --type csv -d cms_incentives -c ProvidersPaidByEHRProgram_June2013_EP --headerline --file public/data/ProvidersPaidByEHRProgram_June2013_EP/ProvidersPaidByEHRProgram_June2013_EP-normalizedByBrianNorris.csv
+
+        bundle exec rake providers:ensure_fields_are_properly_formatted
+
 
 **Notes to self/dev**
 ```

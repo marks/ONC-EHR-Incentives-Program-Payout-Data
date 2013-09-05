@@ -5,6 +5,7 @@ class Hospital
   include Mongoid::Document
   index({ "PROVIDER CCN" => 1})
   index({ "PROVIDER STATE" => 1})
+  index({ "PROGRAM YEAR 2011" => 1, "PROGRAM YEAR 2012" => 1, "PROGRAM YEAR 2013" => 1})
   index({ "geo.geometry.location" => "2d"})
   index({ "geo" => 1})
   store_in collection: "ProvidersPaidByEHRProgram_June2013_EH"
@@ -83,7 +84,10 @@ class Provider
   include Mongoid::Document
   index({ "PROVIDER NPI" => 1},{ unique: true, name: "PROVIDER_NPI_index" })
   index({ "PROVIDER STATE" => 1})
+  index({ "PROVIDER STATE" => 1})
+  index({ "PROGRAM YEAR 2011" => 1, "PROGRAM YEAR 2012" => 1, "PROGRAM YEAR 2013" => 1})
   index({ "geo.geometry.location" => "2d"})
+  index({ "geo" => 1})
   store_in collection: "ProvidersPaidByEHRProgram_June2013_EP"
 end
 

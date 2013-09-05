@@ -108,7 +108,7 @@ function onFeatureClick(e){
   if(props["PROVIDER CCN"]){ label = "CCN_"+e.target.feature.properties["PROVIDER CCN"] }
   else if(props["PROVIDER NPI"]) { label = "NPI_"+e.target.feature.properties["PROVIDER NPI"] }
   else { label = "Unknown" }
-  _gaq.push(['_trackEvent', 'Map', 'Click (Feature)', label]);
+  if(typeof(_gaq) != "undefined"){ _gaq.push(['_trackEvent', 'Map', 'Click (Feature)', label]); }
 
   features_clicked.push(e.target.feature)
   constructComparisonTable()
@@ -117,7 +117,7 @@ function onFeatureClick(e){
 function onClusterClick(e){
   if(e.layer.getAllChildMarkers().length){label = e.layer.getAllChildMarkers().length + " children"}
   else{ label = "Unknown children"}
-  _gaq.push(['_trackEvent', 'Map', 'Click (Cluster)', label]);
+  if(typeof(_gaq) != "undefined"){ _gaq.push(['_trackEvent', 'Map', 'Click (Cluster)', label]); }
 }
 
 function constructComparisonTable(){

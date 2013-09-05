@@ -90,6 +90,6 @@ Procedure
 
 **Notes to self/dev**
 ```
-  mongodump -d cms_incentives -o tmp/ # Dump to local bson
+  rm tmp/cms_incentives/* && mongodump -d cms_incentives -o tmp/ # Dump to local bson
   Restore to mongohq: `mongorestore -h <server>.mongohq.com --port XXXX -d XXXXX -u <user> -p <password> tmp/cms_incentives`
 ```

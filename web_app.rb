@@ -4,6 +4,7 @@ require 'open-uri'
 require './helpers'
 require './models'
 require "sinatra/config_file"
+require "sinatra/reloader" if development?
 
 config_file './config/app.yml'
 
@@ -54,14 +55,6 @@ assets do
     "/zurb-foundation-4.0.3/js/foundation/foundation.topbar.js"
   ]
 
-end
-
-configure :development do
-  PUBLIC_HOST = ""
-end
-
-configure :production do
-  PUBLIC_HOST = ""
 end
 
 get '/' do

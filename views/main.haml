@@ -68,7 +68,7 @@
       .large-12.columns
         %br
         .alert-box
-          Hospital data has been updated to be up to date as of June 2013.
+          September 2013 Update: Hospital and Provider (physician) data has been updated to be up to date as of June 2013.
     .row
       .large-4.columns
         %h5 About
@@ -110,7 +110,7 @@
         %select#dropdown{:name => "dropdown"}
           %option{:value => "#{settings.public_host}#{@default_data_url}"} ALL US Hospitals (updated June 2013)
           - STATES.each do |state|
-            %option{:value => "#{settings.public_host}/db/cms_incentives/EP/#{state}.geojson"}= "#{state} Providers who received CMS HITECH incentives (updated December 2012)"
+            %option{:value => "#{settings.public_host}/db/cms_incentives/EP/#{state}.geojson"}= "#{state} Providers who received CMS HITECH incentives (updated June 2013)"
         %br/
         %br/
         #map

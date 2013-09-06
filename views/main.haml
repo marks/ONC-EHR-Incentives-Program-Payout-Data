@@ -13,10 +13,12 @@
     %script{:src => "http://s3.amazonaws.com/mappyhealth-public/showLoading/jquery.showLoading.min.js"}
     %link{:href => "http://s3.amazonaws.com/mappyhealth-public/showLoading/showLoading.css", :rel => "stylesheet"}
     - if settings.production?
-      %script{:src => "#{settings.public_host}/static/min.js"}
       %link{:href => "#{settings.public_host}/static/min.css", :rel => "stylesheet"}
+      %script{:src => "#{settings.public_host}/static/foundation_all.min.js"}
+      %script{:src => "#{settings.public_host}/static/min.js"}
     - else
       != css :application, :media => 'screen'
+      != js :foundation_all
       != js :application
 
     - if settings.google_analytics_id.present?
@@ -165,12 +167,6 @@
                 %a{:href => "http://mappyhealth.com", :target => "_blank"} MappyHealth (health and disaster tracking on Twitter)
               %li
                 %a{:href => "http://socialhealthinsights.com", :target => "_blank"} Social Health Insights (platforms to positively impact health)
-
-    :javascript
-      document.write('<script src=' +
-      ('__proto__' in {} ? '#{settings.public_host}/zurb-foundation-4.0.3/js/vendor/zepto' : '#{settings.public_host}/zurb-foundation-4.0.3/js/vendor/jquery') +
-      '.js><\/script>')
-    %script{:src => "#{settings.public_host}/zurb-foundation-4.0.3/js/foundation.min.js"}
 
     :javascript
       $(document).foundation();

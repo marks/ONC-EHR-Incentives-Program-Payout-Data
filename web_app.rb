@@ -18,8 +18,8 @@ end
 
 assets do
   css :application, '/static/min.css', [
-    '/zurb-foundation-4.0.3/css/normalize.css',
-    '/zurb-foundation-4.0.3/css/foundation.css',
+    '/zurb-foundation-4.3.1/css/normalize.css',
+    '/zurb-foundation-4.3.1/css/foundation.css',
     '/leaflet-0.5.1/leaflet.css',
     '/Leaflet.markercluster/MarkerCluster.css',
     '/Leaflet.markercluster/MarkerCluster.Default.css',
@@ -29,7 +29,7 @@ assets do
   ]
 
   js :application, '/static/min.js', [
-    '/zurb-foundation-4.0.3/js/vendor/custom.modernizr.js',
+    '/zurb-foundation-4.3.1/js/vendor/custom.modernizr.js',
     '/leaflet-0.5.1/leaflet.js',
     '/Leaflet.markercluster/leaflet.markercluster-src.js',
     '/bradvin-FooTable-master/js/footable-0.1.js',
@@ -39,21 +39,21 @@ assets do
   ]
 
   js :foundation_all, '/static/foundation_all.min.js', [
-    "/zurb-foundation-4.0.3/js/foundation.min.js",
-    "/zurb-foundation-4.0.3/js/foundation/foundation.js",
-    "/zurb-foundation-4.0.3/js/foundation/foundation.alerts.js",
-    "/zurb-foundation-4.0.3/js/foundation/foundation.clearing.js",
-    "/zurb-foundation-4.0.3/js/foundation/foundation.cookie.js",
-    "/zurb-foundation-4.0.3/js/foundation/foundation.dropdown.js",
-    "/zurb-foundation-4.0.3/js/foundation/foundation.forms.js",
-    "/zurb-foundation-4.0.3/js/foundation/foundation.joyride.js",
-    "/zurb-foundation-4.0.3/js/foundation/foundation.magellan.js",
-    "/zurb-foundation-4.0.3/js/foundation/foundation.orbit.js",
-    "/zurb-foundation-4.0.3/js/foundation/foundation.placeholder.js",
-    "/zurb-foundation-4.0.3/js/foundation/foundation.reveal.js",
-    "/zurb-foundation-4.0.3/js/foundation/foundation.section.js",
-    "/zurb-foundation-4.0.3/js/foundation/foundation.tooltips.js",
-    "/zurb-foundation-4.0.3/js/foundation/foundation.topbar.js"
+    "/zurb-foundation-4.3.1/js/foundation.min.js",
+    "/zurb-foundation-4.3.1/js/foundation/foundation.js",
+    "/zurb-foundation-4.3.1/js/foundation/foundation.alerts.js",
+    "/zurb-foundation-4.3.1/js/foundation/foundation.clearing.js",
+    "/zurb-foundation-4.3.1/js/foundation/foundation.cookie.js",
+    "/zurb-foundation-4.3.1/js/foundation/foundation.dropdown.js",
+    "/zurb-foundation-4.3.1/js/foundation/foundation.forms.js",
+    "/zurb-foundation-4.3.1/js/foundation/foundation.joyride.js",
+    "/zurb-foundation-4.3.1/js/foundation/foundation.magellan.js",
+    "/zurb-foundation-4.3.1/js/foundation/foundation.orbit.js",
+    "/zurb-foundation-4.3.1/js/foundation/foundation.placeholder.js",
+    "/zurb-foundation-4.3.1/js/foundation/foundation.reveal.js",
+    "/zurb-foundation-4.3.1/js/foundation/foundation.section.js",
+    "/zurb-foundation-4.3.1/js/foundation/foundation.tooltips.js",
+    "/zurb-foundation-4.3.1/js/foundation/foundation.topbar.js"
   ]
 end
 

@@ -58,11 +58,11 @@ assets do
 end
 
 get '/' do
-  if settings.production? # static asset from AWS S3/CF
-    @default_data_url = '/data/ProvidersPaidByEHRProgram_June2013_EH/ProvidersPaidByEHRProgram_June2013_EH-all_with_geo.geojson'
-  else
+  # if settings.production? # static asset from AWS S3/CF
+  #   @default_data_url = '/data/ProvidersPaidByEHRProgram_June2013_EH/ProvidersPaidByEHRProgram_June2013_EH-all_with_geo.geojson'
+  # else
     @default_data_url = '/db/cms_incentives/EH/all_hospitals_with_geo.geojson'
-  end
+  # end
   haml :main
 end
 

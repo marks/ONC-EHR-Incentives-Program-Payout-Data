@@ -61,6 +61,24 @@ namespace :hospitals do
     puts "Number of hospitals in collection w/o HCAHPS: #{Hospital.without_hcahps.count}"
   end
 
+  task :ingest_joint_commission_ids do
+    require 'csv'
+
+    puts "Number of hospitals in collection: #{Hospital.count}"
+    puts "Number of hospitals in collection w/o JC org id: #{Hospital.without_jc_id.count}"
+
+    CSV.foreach("public/data/hospital_jc_id-to-medicare_ccn.csv") do |row|
+      h = Hospital.find_by("PROVIDER CCN" => row[1])
+      unless h.nil?
+        jc_data = {"org_id" => row[0].to_i, "_updated_at" => Time.now, "_source" => "Extracted via qualitycheck.org"}
+        h.update_attribute("jc",jc_data)
+      end
+    end
+
+    puts "Number of hospitals in collection w/o JC org id: #{Hospital.without_jc_id.count}"
+    
+  end
+
   #desc "Calculate HCAHPS national averages for each value and store in a hcahps_averages collection"
   #task :calculate_national_averages do
   #  # find out what fields we need to calculate averages for

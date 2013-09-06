@@ -213,8 +213,9 @@ if(props.general["hospital_owner"]){popup+="<br />Hosp. Owner: "+props.general["
 if(props.general["hospital_type"]){popup+="<br />Hosp. Type: "+props.general["hospital_type"]}}
 if(props["PROVIDER PHONE NUM"]){popup+="<br /><br /> Phone: "+props["PROVIDER PHONE NUM"]}
 else if(props.general&&props.general["phone_number"]){popup+="<br /><br /> Phone: "+props.general["phone_number"]}
-if(props["PROVIDER CCN"]){popup+="<br /><br /> CCN: <a href='http://www.qualitycheck.org/consumer/searchresults.aspx?nm="+props["PROVIDER CCN"]+"' target=_blank>"+props["PROVIDER CCN"]+"</a>"}
+if(props["PROVIDER CCN"]){popup+="<br /><br /> CCN: <a href='http://www.medicare.gov/hospitalcompare/profile.html#profTab=0&ID="+props["PROVIDER CCN"]+"' target='blank'>"+props["PROVIDER CCN"]+"</a>"}
 if(props["PROVIDER NPI"]){popup+="<br />NPI: "+"<a href='https://npiregistry.cms.hhs.gov/NPPESRegistry/DisplayProviderDetails.do?searchNpi=1114922341&city=&firstName=&orgName=&searchType=org&state=&npi="+props["PROVIDER NPI"]+"&orgDba=&lastName=&zip=' target=_blank>"+props["PROVIDER NPI"]+"</a>"}
+if(props["jc"]){if(props["jc"]["org_id"]){popup+="<br />Joint Commisison ID: <a target='blank' href='http://www.qualitycheck.org/consumer/searchresults.aspx?nm="+props["jc"]["org_id"]+"'>"+props["jc"]["org_id"]+"</a>"}}
 popup+="<br /><br />Incentive Program Year(s), if any: "
 if(props["PROGRAM YEAR 2011"]=="TRUE"){popup+="<span class='radius secondary label'>2011</span> "}
 if(props["PROGRAM YEAR 2012"]=="TRUE"){popup+=" <span class='radius secondary label'>2012</span>"}
@@ -229,11 +230,12 @@ console.log(props)
 if(props["PROVIDER CCN"]){label="CCN_"+e.target.feature.properties["PROVIDER CCN"]}
 else if(props["PROVIDER NPI"]){label="NPI_"+e.target.feature.properties["PROVIDER NPI"]}
 else{label="Unknown"}
-_gaq.push(['_trackEvent','Map','Click (Feature)',label]);features_clicked.push(e.target.feature)
+if(typeof(_gaq)!="undefined"){_gaq.push(['_trackEvent','Map','Click (Feature)',label]);}
+features_clicked.push(e.target.feature)
 constructComparisonTable()}
 function onClusterClick(e){if(e.layer.getAllChildMarkers().length){label=e.layer.getAllChildMarkers().length+" children"}
 else{label="Unknown children"}
-_gaq.push(['_trackEvent','Map','Click (Cluster)',label]);}
+if(typeof(_gaq)!="undefined"){_gaq.push(['_trackEvent','Map','Click (Cluster)',label]);}}
 function constructComparisonTable(){$("#comparison_tables").html("")
 $.each(features_clicked,function(n,feature){provider_url="/db/cms_incentives/EH/find_by_ccn/"+feature.properties["PROVIDER CCN"]+".json"
 $.getJSON(provider_url,function(data){if(data==null||data.hcahps==undefined){}else{hcahps_props=data.hcahps

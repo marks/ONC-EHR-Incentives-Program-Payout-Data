@@ -16,6 +16,8 @@ class Hospital
   scope :without_geo, where("geo" => nil)
   scope :with_general, where("general" => {"$ne" => nil})
   scope :without_general, where("general" => nil)
+  scope :with_jc_id, where("jc" => {"$ne" => nil})
+  scope :without_jc_id, where("jc" => nil)
 
   scope :received_any_incentives, any_of([{"PROGRAM YEAR 2011" => "TRUE"},{"PROGRAM YEAR 2012" => "TRUE"},{"PROGRAM YEAR 2013" => "TRUE"}])
   scope :received_2011_incentive, where("PROGRAM YEAR 2011" => "TRUE")

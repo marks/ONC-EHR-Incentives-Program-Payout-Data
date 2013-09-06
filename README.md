@@ -56,7 +56,7 @@ Procedure
       
   9. Create MongoDB indexes:
 
-        bundle exec rake db:mongoid:create_indexes
+        bundle exec rake mongodb:mongoid_create_indexes
 
   10. If you intend to run the visualization in a prodution-like environemnt: 
 
@@ -88,10 +88,3 @@ Procedure
         mongoimport --type csv -d cms_incentives -c ProvidersPaidByEHRProgram_June2013_EP --headerline --file public/data/ProvidersPaidByEHRProgram_June2013_EP/ProvidersPaidByEHRProgram_June2013_EP-normalizedByBrianNorris.csv
 
         bundle exec rake providers:ensure_fields_are_properly_formatted
-
-
-**Notes to self/dev**
-```
-  rm tmp/cms_incentives/* && mongodump -d cms_incentives -o tmp/ # Dump to local bson
-  Restore to mongohq: `mongorestore -h <server>.mongohq.com --port XXXX -d XXXXX -u <user> -p <password> --drop tmp/cms_incentives`
-```

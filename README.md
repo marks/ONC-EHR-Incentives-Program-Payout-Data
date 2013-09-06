@@ -93,5 +93,5 @@ Procedure
 **Notes to self/dev**
 ```
   rm tmp/cms_incentives/* && mongodump -d cms_incentives -o tmp/ # Dump to local bson
-  Restore to mongohq: `mongorestore -h <server>.mongohq.com --port XXXX -d XXXXX -u <user> -p <password> tmp/cms_incentives`
+  Restore to mongohq: `mongorestore -h <server>.mongohq.com --port XXXX -d XXXXX -u <user> -p <password> --drop tmp/cms_incentives`
 ```

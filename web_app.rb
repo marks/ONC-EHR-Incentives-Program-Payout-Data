@@ -8,11 +8,12 @@ require "sinatra/reloader" if development?
 
 config_file './config/app.yml'
 
-configure do
+configure :production do
   enable :sessions
   set :session_secret, rand(36**10).to_s(36)
   set :raise_errors, false
   set :show_exceptions, false
+  use Rack::Deflater
 end
 
 assets do
@@ -54,7 +55,6 @@ assets do
     "/zurb-foundation-4.0.3/js/foundation/foundation.tooltips.js",
     "/zurb-foundation-4.0.3/js/foundation/foundation.topbar.js"
   ]
-
 end
 
 get '/' do

@@ -104,8 +104,9 @@ function load_geojson_as_cluster(data_url,fit_bounds){
 }
 
 function onFeatureClick(e){
+  $("p.title[data-section-title=data]").effect("highlight")
+  $("p.title[data-section-title=data]").first().click()
   props = e.target.feature.properties
-  console.log(props)
   if(props["PROVIDER CCN"]){ label = "CCN_"+e.target.feature.properties["PROVIDER CCN"] }
   else if(props["PROVIDER NPI"]) { label = "NPI_"+e.target.feature.properties["PROVIDER NPI"] }
   else { label = "Unknown" }
@@ -122,27 +123,60 @@ function onClusterClick(e){
 }
 
 function constructComparisonTable(){
-  $("#comparison_tables").html("") // clear the comparison table div
+  $("#feature_accordion").html("") // clear the comparison table div
   $.each(features_clicked, function(n,feature){
-    provider_url = "/db/cms_incentives/EH/find_by_ccn/"+feature.properties["PROVIDER CCN"]+".json"
-    $.getJSON(provider_url, function(data){
-      if(data == null || data.hcahps == undefined){
-        // do nothing
+    provider_url = "/db/cms_incentives/EH/find_by_bson_id/"+feature.id+".json"
+    $.getJSON(provider_url, function(props){
+      selector = "#feature_accordion section#"+props._id
+      if($(selector).length === 0){
+        feature_stub = "<section id='"+props._id+"'></section>"
+        $("#feature_accordion").append(feature_stub)
+
+        if(props["PROVIDER - ORG NAME"]){
+          title = props["PROVIDER - ORG NAME"]
+        }
+        else if(props["general"]){
+          title = props["general"]["hospital_name"]
+        } else {
+          title = "Unknown"
+        }
+        feature_content = "<p class='title' data-section-title=''><a href='#'>"+title+"</a></p><div class='content' data-section-content=''>"
+
+        if(props["hcahps"]){
+          $.each( props["hcahps"], function(k, v){
+            key = k.split("_").join(" ")
+            feature_content += "<li><strong>"+key+":</strong> "+v+"</li>"
+          });
+
+        }
+        feature_content += "</div>"
+        $(selector).html(feature_content)
+
       } else {
-        hcahps_props = data.hcahps
-        table_selector = "#table-ccn"+hcahps_props.provider_number
-        $("#comparison_tables").append("<table id='table-ccn"+hcahps_props.provider_number+"' class=''></table>")
-        $(table_selector).html("<thead></thead><tbody></tbody>")
-        $(table_selector+" thead").append("<tr><th>Measure</th><th data-sort-initial='true' data-type='numeric'>Values for: "+hcahps_props.hospital_name+"</th></tr>");
-        $.each( hcahps_props, function(k, v){
-          value = v
-          key = k.split("_").join(" ")
-          if(k.match(/percent/)){value = "<div class=progress><span class=meter style='width: "+value+"%'>&nbsp;"+value+"</span></div>"}
-          else { v = 999; } // group non-percentile values together at the top/bottom of table depending on sort
-          $(table_selector+" tbody").append("<tr><td>"+key+"</td><td data-value='"+v+"'>"+value+"</td></tr>")
-        });
-        $(table_selector).footable();
+        // do nothing
       }
+      // if(data == null || data.hcahps == undefined){
+      //   // do nothing
+      // } else {
+      //   hcahps_props = data.hcahps
+      //   table_selector = "#table-ccn"+hcahps_props.provider_number
+      //   $("#comparison_tables").append("<table id='table-ccn"+hcahps_props.provider_number+"' class=''></table>")
+      //   $(table_selector).html("<thead></thead><tbody></tbody>")
+      //   $(table_selector+" thead").append("<tr><th>Measure</th><th data-sort-initial='true' data-type='numeric'>Values for: "+hcahps_props.hospital_name+"</th></tr>");
+      //   $.each( hcahps_props, function(k, v){
+      //     value = v
+      //     key = k.split("_").join(" ")
+      //     if(k.match(/percent/)){value = "<div class=progress><span class=meter style='width: "+value+"%'>&nbsp;"+value+"</span></div>"}
+      //     else { v = 999; } // group non-percentile values together at the top/bottom of table depending on sort
+      //     $(table_selector+" tbody").append("<tr><td>"+key+"</td><td data-value='"+v+"'>"+value+"</td></tr>")
+      //   });
+      //   $(table_selector).footable();
+      // }
+      // selector = data._id
+      // feature_html = "<section><p class='title' data-section-title=''><a href='#'>Section 1</a></p>"
+      // feature_html += ""
+      // feature_html += "</section>"
+   
     });
   })
 }

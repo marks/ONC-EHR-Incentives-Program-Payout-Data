@@ -9,8 +9,10 @@
     %meta{:content => "width=device-width, initial-scale=1.0", :name => "viewport"}/
     :javascript
       var PUBLIC_HOST = "#{settings.public_host}"
-    %script{:src => "http://s3.amazonaws.com/mappyhealth-public/bootstrap/js/jquery.js"}
-    %script{:src => "http://s3.amazonaws.com/mappyhealth-public/showLoading/jquery.showLoading.min.js"}
+    %script{:src => "http://code.jquery.com/jquery-1.9.1.js"}
+    %script{:src => "http://code.jquery.com/ui/1.10.3/jquery-ui.js"}
+    %link{:href => "http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css"}
+    %script{:src => "http://s3.amazonaws.com/mappyhealth-public/showLoading/jquery.showLoading.min.js"}    
     %link{:href => "http://s3.amazonaws.com/mappyhealth-public/showLoading/showLoading.css", :rel => "stylesheet"}
     - if settings.production?
       %link{:href => "#{settings.public_host}/static/min.css", :rel => "stylesheet"}
@@ -68,79 +70,92 @@
 
     .row
       .large-12.columns
-        %br
         .alert-box
           September 2013 Update: Hospital and Provider (physician) data has been updated to be up to date as of June 2013.
+
     .row
-      .large-4.columns
-        %h5 About
-        %p
-          The Center for Medicare and Medicaid Services (CMS) released raw data of providers and hospitals attesting to
-          %a{:href => "http://www.cms.gov/Regulations-and-Guidance/Legislation/EHRIncentivePrograms/Meaningful_Use.html", :target => "_blank"} Meaningful Use
-          under the Health Information Technology for Economic and Clinical Health Act
-          = precede "(" do
-            = succeed ")." do
-              %a{:href => "http://www.healthit.gov/policy-researchers-implementers/final-rules-regulations", :target => "_blank"}HITECH
-          As
-          %a{:href => "http://www.healthit.gov", :target => "_blank"}healthit.gov
-          data has been made more and more open we saw opportunity to start the development of intuitive data visualizations showing the progress of this important piece of legislation. The following map provides you the ability to see the number of Medicare hospitals and providers that have attested to Meaningful Use as available in the CMS data set. We will keep this updated as the CMS updates their data set.
-          %br
-          %strong This is only the beginning.
-        %p
-          Visit Mark's
-          %a{:href => "http://socialhealthinsights.com/2013/03/hhscms-open-data-exploration-ehr-incentive-payments-to-eligible-hospitals-and-professionals/", :target => "_blank"}blog post about this project
-          to see the presentation introducing it at the health edition of Data Business DC meetup.
+      .large-5.columns
+        .section-container.tabs{"data-section" => "tabs"}
+          %section
+            %p.title{"data-section-title" => "about"}
+              %a{:href => "#"} About
+            .content{"data-section-content" => ""}
+              %p
+                The Center for Medicare and Medicaid Services (CMS) released raw data of providers and hospitals attesting to
+                %a{:href => "http://www.cms.gov/Regulations-and-Guidance/Legislation/EHRIncentivePrograms/Meaningful_Use.html", :target => "_blank"} Meaningful Use
+                under the Health Information Technology for Economic and Clinical Health Act
+                = precede "(" do
+                  = succeed ")." do
+                    %a{:href => "http://www.healthit.gov/policy-researchers-implementers/final-rules-regulations", :target => "_blank"}HITECH
+                As
+                %a{:href => "http://www.healthit.gov", :target => "_blank"}healthit.gov
+                data has been made more and more open we saw opportunity to start the development of intuitive data visualizations showing the progress of this important piece of legislation. The following map provides you the ability to see the number of Medicare hospitals and providers that have attested to Meaningful Use as available in the CMS data set. We will keep this updated as the CMS updates their data set.
+                %br
+                %strong This is only the beginning.
+              %p
+                Visit Mark's
+                %a{:href => "http://socialhealthinsights.com/2013/03/hhscms-open-data-exploration-ehr-incentive-payments-to-eligible-hospitals-and-professionals/", :target => "_blank"}blog post about this project
+                to see the presentation introducing it at the health edition of Data Business DC meetup.
 
-        %p
-          We envision a mash-up of various open data sets including but not limited to quality data, social data, and others to provide further insight. This is open source and on Github so please do help us keep the innovation going and let us know what you have done by tweeting to
-          = succeed "," do
-            %a{:href => "http://twitter.com/skram", :target => "_blank"}@skram
-          = succeed "," do
-            %a{:href => "http://twitter.com/geek_nurse", :target => "_blank"}@geek_nurse
-          = succeed "," do
-            %a{:href => "http://twitter.com/n2informaticsRN", :target => "_blank"}@n2informaticsRN
-          or
-          = succeed "." do
-            %a{:href => "http://twitter.com/mappyhealth", :target => "_blank"}@mappyhealth
-        %p
-          This started as a weekend project sparked by a Twitter conversation between @Skram (Mark at Social Health Insights) and
-          %a{:href => "http://twitter.com/Cascadia", :target => "_blank"}@Cascadia
-          (Sherry at ONC, who works in the Office of Provider Adoption, although this grew out of an open data project in late February 2013) who pointed us toward the right data.
+              %p
+                We envision a mash-up of various open data sets including but not limited to quality data, social data, and others to provide further insight. This is open source and on Github so please do help us keep the innovation going and let us know what you have done by tweeting to
+                = succeed "," do
+                  %a{:href => "http://twitter.com/skram", :target => "_blank"}@skram
+                = succeed "," do
+                  %a{:href => "http://twitter.com/geek_nurse", :target => "_blank"}@geek_nurse
+                = succeed "," do
+                  %a{:href => "http://twitter.com/n2informaticsRN", :target => "_blank"}@n2informaticsRN
+                or
+                = succeed "." do
+                  %a{:href => "http://twitter.com/mappyhealth", :target => "_blank"}@mappyhealth
+              %p
+                This started as a weekend project sparked by a Twitter conversation between @Skram (Mark at Social Health Insights) and
+                %a{:href => "http://twitter.com/Cascadia", :target => "_blank"}@Cascadia
+                (Sherry at ONC, who works in the Office of Provider Adoption, although this grew out of an open data project in late February 2013) who pointed us toward the right data.
+      
+          %section
+            %p.title{"data-section-title" => ""}
+              %a{:href => "#"} Map Legend
+            .content{"data-section-content" => ""}
+              %table
+                %thead
+                  %tr
+                    %th Icon
+                    %th Description
+                %tbody
+                  %tr
+                    %td
+                      %img{:src => "#{settings.public_host}/mapicons.nicolasmollet.com/hospital-building-green.png"}
+                    %td Received MU/HITECH incentive payments in 2011, 2012 and/or 2013
+                  %tr
+                    %td
+                      %img{:src => "#{settings.public_host}/mapicons.nicolasmollet.com/hospital-building-red.png"}
+                    %td
+                      Did not receive any MU/HITECH incentive payments in 2011, 2012, or 2013
 
-      .large-8.columns
-        %h3 Visualizations
-        %select#dropdown{:name => "dropdown"}
-          %option{:value => "#{settings.public_host}#{@default_data_url}"} ALL US Hospitals (updated June 2013)
-          - STATES.each do |state|
-            %option{:value => "#{settings.public_host}/db/cms_incentives/EP/#{state}.geojson"}= "#{state} Providers who received CMS HITECH incentives (updated June 2013)"
-        %br/
-        %br/
+
+          %section
+            %p.title{"data-section-title" => "data"}
+              %a{:href => "#"} Data
+            .content{"data-section-content" => ""}
+              .section-container.accordion#feature_accordion{"data-section" => "accordion", "data-options" => "one_up: false"}
+
+      .large-7.columns
+        %h3 Map of Meaningful Use Attestors
+        .row
+          .large-8.columns
+            %select#dropdown{:name => "dropdown"}
+              %option{:value => "#{settings.public_host}#{@default_data_url}"} ALL US Hospitals (updated June 2013)
+              - STATES.each do |state|
+                %option{:value => "#{settings.public_host}/db/cms_incentives/EP/#{state}.geojson"}= "#{state} Providers who received CMS HITECH incentives (updated June 2013)"
+          .large-4.columns
+            %a.tiny.secondary.button{:href => "#", :onclick => "map.locate({setView:true})"} Zoom to current location
+       
+        %p
+          To see more information about a facility, select its marker on the map and then visit the "Data" tab on the left.
+
         #map
-        %br
-        %ul.inline-list.right
-          %li
-            %a.tiny.secondary.button{:href => "#", :onclick => "map.locate({setView:true})"} Zoom into my current location
-        .clear
-      .large-8.columns
-        %h5 Map Legend
-        %ul.inline-list
-          %li
-            %img.left{:src => "#{settings.public_host}/mapicons.nicolasmollet.com/hospital-building-green.png"}
-            &nbsp;&nbsp;
-            Received MU/HITECH incentive payments in 2011, 2012 and/or 2013
-          %li
-            %img.left{:src => "#{settings.public_host}/mapicons.nicolasmollet.com/hospital-building-red.png"}
-            &nbsp;&nbsp;
-            Did not receive any MU/HITECH incentive payments in 2011, 2012, or 2013
 
-      .large-8.columns
-        %h5 Compare Facilities
-        %p
-          %em To compare facility measures, select a marker on the map above to populate a table below with data.
-          %br
-          At this time, only US Hospital providers are supported and we show data from
-          %a{:href => "http://www.cms.gov/Medicare/Quality-Initiatives-Patient-Assessment-Instruments/HospitalQualityInits/HospitalHCAHPS.html", :target => "_blank"} HCAHPS: Patients' Perspectives of Care Survey
-        #comparison_tables
 
     %footer.row
       .large-12.columns

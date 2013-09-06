@@ -95,11 +95,13 @@ namespace :hospitals do
     puts "    # received an incentive* and we were able to geocode = #{Hospital.received_any_incentives.with_geo.count}"
     puts "    # received an incentive* and we found HCAHPS data = #{Hospital.received_any_incentives.with_hcahps.count}"
     puts "    # received an incentive* and we found general information = #{Hospital.received_any_incentives.with_general.count}"
+    puts "    # received an incentive* and we found a Joint Commission ID = #{Hospital.received_any_incentives.with_jc_id.count}"
     puts " -> # received an incentive* and we found general information, HCAHPS, and geocoded = #{Hospital.received_any_incentives.with_general.with_hcahps.with_geo.count} (#{(Hospital.received_any_incentives.with_general.with_hcahps.with_geo.count/Hospital.received_any_incentives.count.to_f*100).round}% of ones that received incentives) \n\n"
     puts "  # did not received an incentive*  = #{Hospital.never_received_any_incentives.count}"
     puts "    # did not received an incentive* and we were able to geocode = #{Hospital.never_received_any_incentives.with_geo.count}"
     puts "    # did not received an incentive* and we found HCAHPS data = #{Hospital.never_received_any_incentives.with_hcahps.count}"
-    puts "    # did not received an incentive* and we found general information = #{Hospital.never_received_any_incentives.with_general.count} \n\n"
+    puts "    # did not received an incentive* and we found general information = #{Hospital.never_received_any_incentives.with_general.count}"
+    puts "    # did not received an incentive* and we found Joint Commission ID = #{Hospital.never_received_any_incentives.with_jc_id.count} \n\n"
 
     puts "TOTAL HOSPITALS IN DB = #{Hospital.count} (# received any incentives* + # never received an incentive)\n\n"
 

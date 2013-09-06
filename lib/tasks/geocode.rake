@@ -1,7 +1,5 @@
 task :geocode do
-  # configure data science toolkit host.
-  DSTK_HOST = "www.datasciencetoolkit.org" # "www.datasciencetoolkit.org"
-
+  
   # GEOCODE ELIGIBLE HOSPITALS (~2k)
   puts "Number of hospitals in collection: #{Hospital.count}"
   hospitals_without_geo = Hospital.where("geo" => nil)

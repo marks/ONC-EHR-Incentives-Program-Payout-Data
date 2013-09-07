@@ -12,7 +12,7 @@ namespace :providers do
     STATES.each do |state|
       filename = "public/data/by_state/provider-#{state}.geojson"
       print "Starting #{state} geojson export to #{filename} "
-      geojson = Provider.where("PROVIDER STATE" => state, "geo" => {"$ne" => nil}).map {|p| to_geojson_point(p)}
+      geojson = Provider.where("PROVIDER STATE" => state, "geo" => {"$ne" => nil}).map {|p| p.to_geojson}
       File.open(filename, 'w') { |file| file.write(geojson.to_json) }
       print "... done.\n"
     end

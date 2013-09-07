@@ -3,6 +3,7 @@ Mongoid.raise_not_found_error = false
 
 class Hospital
   include Mongoid::Document
+
   index({ "PROVIDER CCN" => 1})
   index({ "PROVIDER STATE" => 1})
   index({ "PROGRAM YEAR 2011" => 1, "PROGRAM YEAR 2012" => 1, "PROGRAM YEAR 2013" => 1})
@@ -82,6 +83,15 @@ class Hospital
     Hospital.where(query).map_reduce(map, reduce).finalize(finalize).out(merge: DescriptiveStatistic.collection.name).each{|x| puts x}
   end
 
+  def to_geojson(keys_to_exclude = ["hcahps","hc_hais","geo"])
+    hash = self.as_document.to_hash
+    hash["has_hcahps"] = true unless hash["hcahps"].nil?
+    coordinates = [hash["geo"]["geometry"]["location"]["lng"],hash["geo"]["geometry"]["location"]["lat"]]
+    keys_to_exclude.each{|k| hash.delete(k)}
+    {"type" => "Feature", "id" => hash["_id"].to_s, "properties" => hash, "geometry" => {"type" => "Point", "coordinates" => coordinates}}
+  end
+
+
 end
 
 class HcHai
@@ -109,6 +119,14 @@ class Provider
 
   scope :with_geo, where("geo" => {"$ne" => nil})
   scope :without_geo, where("geo" => nil)
+
+  def to_geojson(keys_to_exclude = ["geo"])
+    hash = self.as_document.to_hash
+    hash["has_hcahps"] = true unless hash["hcahps"].nil?
+    coordinates = [hash["geo"]["geometry"]["location"]["lng"],hash["geo"]["geometry"]["location"]["lat"]]
+    keys_to_exclude.each{|k| hash.delete(k)}
+    {"type" => "Feature", "id" => hash["_id"].to_s, "properties" => hash, "geometry" => {"type" => "Point", "coordinates" => coordinates}}
+  end
 
 end
 

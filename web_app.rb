@@ -68,7 +68,7 @@ end
 
 get '/db/cms_incentives/EP/:state.geojson' do
   content_type :json
-  state_geojson = Provider.with_geo.where("PROVIDER STATE" => params[:state]).map {|p| to_geojson_point(p)}
+  state_geojson = Provider.with_geo.where("PROVIDER STATE" => params[:state]).map {|p| p.to_geojson}
   state_geojson.to_json
 end
 
@@ -76,7 +76,7 @@ get '/db/cms_incentives/EH/all_hospitals_with_geo.geojson' do
   content_type :json
   geojson = Hash.new
   geojson["type"] = "FeatureCollection"
-  geojson["features"] = Hospital.with_geo.map {|h| to_geojson_point(h,["geo","hcahps"])}
+  geojson["features"] = Hospital.with_geo.map {|h| h.to_geojson}
   return geojson.to_json
 end
 

@@ -19,14 +19,6 @@ def dstk_geocode(string)
   end
 end
 
-def to_geojson_point(doc,keys_to_exclude = [])
-  hash = doc.as_document.to_hash
-  hash["has_hcahps"] = true unless hash["hcahps"].nil?
-  coordinates = [hash["geo"]["geometry"]["location"]["lng"],hash["geo"]["geometry"]["location"]["lat"]]
-  keys_to_exclude.each{|k| hash.delete(k)}
-  {"type" => "Feature", "id" => hash["_id"].to_s, "properties" => hash, "geometry" => {"type" => "Point", "coordinates" => coordinates}}
-end
-
 def add_leading_zeros(original,n,zeros_to_add = "")
   n = n.to_i 
   if original.to_s.length < n

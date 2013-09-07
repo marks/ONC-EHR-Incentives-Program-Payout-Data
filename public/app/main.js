@@ -1,4 +1,4 @@
-// the plain is to have all custom JS that supports the main site function here
+// the plan is to have all custom JS that supports the main site function here
 // document.ready calls will stay in layout.haml/page level code, for now
 
 var map, markers; // for leaflet mapping

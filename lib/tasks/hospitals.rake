@@ -33,7 +33,7 @@ namespace :hospitals do
   end
 
 
-  desc "Fetch HCAHPS hospital data from Socrata API for hospitals that are already in our system (aka received incentive payments)"
+  desc "Fetch HCAHPS hospital data from Socrata API for hospitals that are already in our system"
   task :ingest_hcahps do
     socrata_endpoint = "http://data.medicare.gov/resource/rj76-22dk.json"
 
@@ -61,6 +61,7 @@ namespace :hospitals do
     puts "Number of hospitals in collection w/o HCAHPS: #{Hospital.without_hcahps.count}"
   end
 
+  desc "Using a CSV mapping file, bring in Joint Commission IDs so we can link to qualitycheck.org"
   task :ingest_joint_commission_ids do
     require 'csv'
 
@@ -78,6 +79,31 @@ namespace :hospitals do
     puts "Number of hospitals in collection w/o JC org id: #{Hospital.without_jc_id.count}"
     
   end
+
+  desc "Fetch HAI (hospital acquired infection) data from Socrata API for hospitals that are already in our system (aka received incentive payments)"
+  task :ingest_hc_hais do
+    socrata_endpoint = "http://data.medicare.gov/resource/ihvx-zkyp.json"
+
+    hc_hai_data = fetch_whole_socrata_dataset(socrata_endpoint, settings.socrata_key, 1000, "score is not null")
+
+    puts "Ingesting new data"
+    hc_hai_data.each do |hc_hai_row|
+      hc_hai_row = {
+        "_source" => socrata_endpoint,
+        "_updated_at" => Time.now,
+      }.merge(hc_hai_row)
+      ["hospital_name","phone_number","zip_code","state","address_1","city","county_name"].each {|k| hc_hai_row.delete(k)}
+      h = Hospital.find_by("PROVIDER CCN" => format_ccn(hc_hai_row["provider_id"]))
+      if h.nil?
+        new_h = Hospital.create("PROVIDER CCN" => format_ccn(hc_hai_row["provider_id"]))
+        new_h.hc_hais << HcHai.new(hc_hai_row)
+      else
+        h.hc_hais << HcHai.new(hc_hai_row)
+      end
+    end
+    
+  end
+
 
   #desc "Calculate HCAHPS national averages for each value and store in a hcahps_averages collection"
   #task :calculate_national_averages do

@@ -42,6 +42,7 @@ Procedure
         bundle exec rake hospitals:ingest_general_info
         bundle exec rake hospitals:ingest_hcahps
         bundle exec rake hospitals:ingest_joint_commission_ids
+        bundle exec rake hospitals:ingest_hc_hais
 
   6. Geocode provider addresses:
 

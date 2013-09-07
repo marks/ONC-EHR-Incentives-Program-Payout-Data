@@ -10,6 +10,8 @@ class Hospital
   index({ "geo" => 1})
   store_in collection: "ProvidersPaidByEHRProgram_June2013_EH"
 
+  embeds_many :hc_hais
+
   scope :without_hcahps, where("hcahps" => nil)
   scope :with_hcahps, where("hcahps" => {"$ne" => nil})
   scope :with_geo, where("geo" => {"$ne" => nil})
@@ -80,6 +82,19 @@ class Hospital
     Hospital.where(query).map_reduce(map, reduce).finalize(finalize).out(merge: DescriptiveStatistic.collection.name).each{|x| puts x}
   end
 
+end
+
+class HcHai
+  include Mongoid::Document
+
+  embedded_in :hospital
+
+  index({ "measure" => 1})
+  index({ "measure" => 1, "score" => -1})
+
+  field :measure
+  field :score
+  field :footnote
 end
 
 class Provider

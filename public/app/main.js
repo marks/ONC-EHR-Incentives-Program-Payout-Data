@@ -51,9 +51,11 @@ function load_geojson_as_cluster(data_url,fit_bounds){
           popup += "<br />"+props["PROVIDER  ADDRESS"]
           popup += "<br />"+props["PROVIDER CITY"]+", " + props["PROVIDER STATE"] + " " + props["PROVIDER ZIP 5 CD"]
         }
-        else if(props.general["address_1"] && props.general["city"] && props.general["state"] && props.general["zip_code"]){
-          popup += "<br />"+props.general["address_1"]
-          popup += "<br />"+props.general["city"]+", " + props.general["state"] + " " + props.general["zip_code"]
+        else if(props.general){
+          if(props.general["address_1"] && props.general["city"] && props.general["state"] && props.general["zip_code"]){
+            popup += "<br />"+props.general["address_1"]
+            popup += "<br />"+props.general["city"]+", " + props.general["state"] + " " + props.general["zip_code"]
+          }
         }
         
         // general hospital info
@@ -127,34 +129,37 @@ function constructComparisonTable(){
   $.each(features_clicked, function(n,feature){
     provider_url = "/db/cms_incentives/EH/find_by_bson_id/"+feature.id+".json"
     $.getJSON(provider_url, function(props){
-      selector = "#feature_accordion section#"+props._id
-      if($(selector).length === 0){
-        feature_stub = "<section id='"+props._id+"'></section>"
-        $("#feature_accordion").append(feature_stub)
+      if(props != null){
+        selector = "#feature_accordion section#"+props._id
+        if($(selector).length === 0){
+          feature_stub = "<section id='"+props._id+"'></section>"
+          $("#feature_accordion").append(feature_stub)
 
-        if(props["PROVIDER - ORG NAME"]){
-          title = props["PROVIDER - ORG NAME"]
-        }
-        else if(props["general"]){
-          title = props["general"]["hospital_name"]
+          if(props["PROVIDER - ORG NAME"]){
+            title = props["PROVIDER - ORG NAME"]
+          }
+          else if(props["general"]){
+            title = props["general"]["hospital_name"]
+          } else {
+            title = "Unknown"
+          }
+          feature_content = "<p class='title' data-section-title=''><a href='#'>"+title+"</a></p><div class='content' data-section-content=''>"
+
+          if(props["hcahps"]){
+            $.each( props["hcahps"], function(k, v){
+              key = k.split("_").join(" ")
+              feature_content += "<li><strong>"+key+":</strong> "+v+"</li>"
+            });
+
+          }
+          feature_content += "</div>"
+          $(selector).html(feature_content)
+
         } else {
-          title = "Unknown"
+          // do nothing
         }
-        feature_content = "<p class='title' data-section-title=''><a href='#'>"+title+"</a></p><div class='content' data-section-content=''>"
-
-        if(props["hcahps"]){
-          $.each( props["hcahps"], function(k, v){
-            key = k.split("_").join(" ")
-            feature_content += "<li><strong>"+key+":</strong> "+v+"</li>"
-          });
-
-        }
-        feature_content += "</div>"
-        $(selector).html(feature_content)
-
-      } else {
-        // do nothing
       }
+      
       // if(data == null || data.hcahps == undefined){
       //   // do nothing
       // } else {

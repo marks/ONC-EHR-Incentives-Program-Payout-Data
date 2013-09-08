@@ -3,6 +3,7 @@ def cleanup_string(string) # replace anything that is not alphanumeric, a space,
 end
 
 def dstk_geocode(string)
+  return nil if string.nil?
   address_to_lookup = cleanup_string(string)
   print "Geocoding: #{address_to_lookup}"
   geo_results = JSON.parse(RestClient.get("http://#{settings.dstk_host}/maps/api/geocode/json?sensor=false&address="+URI.encode(address_to_lookup)))

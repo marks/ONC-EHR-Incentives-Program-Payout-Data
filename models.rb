@@ -29,8 +29,10 @@ class Hospital
   def address
     if self["PROVIDER  ADDRESS"] # favor data from EHR incentive data dump
       return "#{self["PROVIDER  ADDRESS"]}, #{self["PROVIDER CITY"]}, #{self["PROVIDER STATE"]}, #{self["PROVIDER ZIP 5 CD"]}"
-    else # resort to general info (for providers with no incentives)
+    elsif self["general"] # resort to general info (for providers with no incentives)
       return "#{self["general"]["address_1"]}, #{self["general"]["city"]}, #{self["general"]["state"]}, #{self["general"]["zip_code"]}"
+    else
+      return nil
     end
   end
 

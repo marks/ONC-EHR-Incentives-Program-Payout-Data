@@ -24,79 +24,10 @@ var incentiveFalseIcon = L.icon({
 function load_geojson_as_cluster(data_url,fit_bounds){
   $("#map").showLoading();
   $.getJSON(data_url, function(data){
-    // clear all markers
-    if(typeof(markers) != "undefined"){map.removeLayer(markers);}
+    if(typeof(markers) != "undefined"){map.removeLayer(markers);}    // clear all markers
 
     markers = new L.MarkerClusterGroup();
-    var geoJsonLayer = L.geoJson(data, {
-      onEachFeature: function (feature, layer) {
-        props = feature.properties
-        // set icon (green or red) depending on incentive receive status
-        if(props["PROGRAM YEAR 2011"] == "TRUE"){layer.setIcon(incentiveTrueIcon) }
-        else if(props["PROGRAM YEAR 2012"] == "TRUE"){layer.setIcon(incentiveTrueIcon) }
-        else if(props["PROGRAM YEAR 2013"] == "TRUE"){layer.setIcon(incentiveTrueIcon) }
-        else {layer.setIcon(incentiveFalseIcon)}
-
-        // set up pop up text. ALWAYS give preference to incentive received dataset but fall back on general info dataset
-        // TODO - this needs some major refactoring / DRYing
-        popup = ""
-
-        // provider name
-        if(props["PROVIDER - ORG NAME"]){popup += "<strong>" + props["PROVIDER - ORG NAME"]+"</strong>"} // incentive dataset
-        else if(props["PROVIDER NAME"]){popup += "<strong>" + props["PROVIDER NAME"]+"</strong>"} // incentive
-        else if(props.general["hospital_name"]){popup += "<strong>" + props.general["hospital_name"]+"</strong>"}
-
-        // provider address
-        if(props["PROVIDER  ADDRESS"] && props["PROVIDER CITY"] && props["PROVIDER STATE"] && props["PROVIDER ZIP 5 CD"]){
-          popup += "<br />"+props["PROVIDER  ADDRESS"]
-          popup += "<br />"+props["PROVIDER CITY"]+", " + props["PROVIDER STATE"] + " " + props["PROVIDER ZIP 5 CD"]
-        }
-        else if(props.general){
-          if(props.general["address_1"] && props.general["city"] && props.general["state"] && props.general["zip_code"]){
-            popup += "<br />"+props.general["address_1"]
-            popup += "<br />"+props.general["city"]+", " + props.general["state"] + " " + props.general["zip_code"]
-          }
-        }
-        
-        // general hospital info
-        if(props.general){
-          if(props.general["hospital_name"]){
-            popup += "<br /><br />Hosp. Name: "+props.general["hospital_name"]
-          }
-          if(props.general["hospital_owner"]){
-            popup += "<br />Hosp. Owner: "+props.general["hospital_owner"]
-          }        
-          if(props.general["hospital_type"]){
-            popup += "<br />Hosp. Type: "+props.general["hospital_type"]
-          }          
-        }
-
-        // phone number
-        if(props["PROVIDER PHONE NUM"]){popup += "<br /><br /> Phone: " + props["PROVIDER PHONE NUM"]}
-        else if(props.general && props.general["phone_number"]){popup += "<br /><br /> Phone: " + props.general["phone_number"]}
-
-        // other attributes (NPI, CCN, Incentive Program Years)
-        if(props["PROVIDER CCN"]){ popup += "<br /><br /> CCN: <a href='http://www.medicare.gov/hospitalcompare/profile.html#profTab=0&ID="+props["PROVIDER CCN"]+"' target='blank'>"+props["PROVIDER CCN"]+"</a>"}
-        if(props["PROVIDER NPI"]){popup += "<br />NPI: " + "<a href='https://npiregistry.cms.hhs.gov/NPPESRegistry/DisplayProviderDetails.do?searchNpi=1114922341&city=&firstName=&orgName=&searchType=org&state=&npi="+props["PROVIDER NPI"]+"&orgDba=&lastName=&zip=' target=_blank>"+props["PROVIDER NPI"]+"</a>"}
-        if(props["jc"]){if(props["jc"]["org_id"]){popup+= "<br />Joint Commisison ID: <a target='blank' href='http://www.qualitycheck.org/consumer/searchresults.aspx?nm="+props["jc"]["org_id"]+"'>"+props["jc"]["org_id"]+"</a>"}}
-        popup += "<br /><br />Incentive Program Year(s), if any: "
-        if(props["PROGRAM YEAR 2011"] == "TRUE"){popup += "<span class='radius secondary label'>2011</span> " }
-        if(props["PROGRAM YEAR 2012"] == "TRUE"){ popup += " <span class='radius secondary label'>2012</span>" }
-        if(props["PROGRAM YEAR 2013"] == "TRUE"){ popup += " <span class='radius secondary label'>2013</span>" }
-
-        // HCAHPS data
-        popup += "<br /><br />"
-        if(props.has_hcahps == true){
-          popup += "<span class='radius secondary label green'>HCAHPS data available</span>"
-        } else {
-          popup += "<span class='radius secondary label red'>no HCAHPS data available</span>"
-        }
-
-
-        layer.bindPopup(popup)
-        layer.on('click', onFeatureClick);
-      }
-    });
+    var geoJsonLayer = L.geoJson(data, {onEachFeature: handleFeature });
     markers.on('clusterclick', onClusterClick);
     markers.addLayer(geoJsonLayer);
     map.addLayer(markers);
@@ -143,15 +74,16 @@ function constructComparisonTable(){
           } else {
             title = "Unknown"
           }
+
           feature_content = "<p class='title' data-section-title=''><a href='#'>"+title+"</a></p><div class='content' data-section-content=''>"
+          feature_content += "<pre>"+JSON.stringify(props,null,2)+"</pre>"
+          // if(props["hcahps"]){
+          //   $.each( props["hcahps"], function(k, v){
+          //     key = k.split("_").join(" ")
+          //     feature_content += "<li><strong>"+key+":</strong> "+v+"</li>"
+          //   });
+          // }
 
-          if(props["hcahps"]){
-            $.each( props["hcahps"], function(k, v){
-              key = k.split("_").join(" ")
-              feature_content += "<li><strong>"+key+":</strong> "+v+"</li>"
-            });
-
-          }
           feature_content += "</div>"
           $(selector).html(feature_content)
 
@@ -191,3 +123,69 @@ function toggle_column_mode(){
   $('div#content').toggleClass('large-9').toggleClass('large-12')
 }
 
+function handleFeature(feature, layer){
+  props = feature.properties
+  // set icon (green or red) depending on incentive receive status
+  if(props["PROGRAM YEAR 2011"] == "TRUE"){layer.setIcon(incentiveTrueIcon) }
+  else if(props["PROGRAM YEAR 2012"] == "TRUE"){layer.setIcon(incentiveTrueIcon) }
+  else if(props["PROGRAM YEAR 2013"] == "TRUE"){layer.setIcon(incentiveTrueIcon) }
+  else {layer.setIcon(incentiveFalseIcon)}
+
+  // set up pop up text. ALWAYS give preference to incentive received dataset but fall back on general info dataset
+  // TODO - this needs some major refactoring / DRYing
+  popup = ""
+
+  // provider name
+  if(props["PROVIDER - ORG NAME"]){popup += "<strong>" + props["PROVIDER - ORG NAME"]+"</strong>"} // incentive dataset
+  else if(props["PROVIDER NAME"]){popup += "<strong>" + props["PROVIDER NAME"]+"</strong>"} // incentive
+  else if(props.general["hospital_name"]){popup += "<strong>" + props.general["hospital_name"]+"</strong>"}
+
+  // provider address
+  if(props["PROVIDER  ADDRESS"] && props["PROVIDER CITY"] && props["PROVIDER STATE"] && props["PROVIDER ZIP 5 CD"]){
+    popup += "<br />"+props["PROVIDER  ADDRESS"]
+    popup += "<br />"+props["PROVIDER CITY"]+", " + props["PROVIDER STATE"] + " " + props["PROVIDER ZIP 5 CD"]
+  }
+  else if(props.general){
+    if(props.general["address_1"] && props.general["city"] && props.general["state"] && props.general["zip_code"]){
+      popup += "<br />"+props.general["address_1"]
+      popup += "<br />"+props.general["city"]+", " + props.general["state"] + " " + props.general["zip_code"]
+    }
+  }
+  
+  // general hospital info
+  if(props.general){
+    if(props.general["hospital_name"]){
+      popup += "<br /><br />Hosp. Name: "+props.general["hospital_name"]
+    }
+    if(props.general["hospital_owner"]){
+      popup += "<br />Hosp. Owner: "+props.general["hospital_owner"]
+    }        
+    if(props.general["hospital_type"]){
+      popup += "<br />Hosp. Type: "+props.general["hospital_type"]
+    }          
+  }
+
+  // phone number
+  if(props["PROVIDER PHONE NUM"]){popup += "<br /><br /> Phone: " + props["PROVIDER PHONE NUM"]}
+  else if(props.general && props.general["phone_number"]){popup += "<br /><br /> Phone: " + props.general["phone_number"]}
+
+  // other attributes (NPI, CCN, Incentive Program Years)
+  if(props["PROVIDER CCN"]){ popup += "<br /><br /> CCN: <a href='http://www.medicare.gov/hospitalcompare/profile.html#profTab=0&ID="+props["PROVIDER CCN"]+"' target='blank'>"+props["PROVIDER CCN"]+"</a>"}
+  if(props["PROVIDER NPI"]){popup += "<br />NPI: " + "<a href='https://npiregistry.cms.hhs.gov/NPPESRegistry/DisplayProviderDetails.do?searchNpi=1114922341&city=&firstName=&orgName=&searchType=org&state=&npi="+props["PROVIDER NPI"]+"&orgDba=&lastName=&zip=' target=_blank>"+props["PROVIDER NPI"]+"</a>"}
+  if(props["jc"]){if(props["jc"]["org_id"]){popup+= "<br />Joint Commisison ID: <a target='blank' href='http://www.qualitycheck.org/consumer/searchresults.aspx?nm="+props["jc"]["org_id"]+"'>"+props["jc"]["org_id"]+"</a>"}}
+  popup += "<br /><br />Incentive Program Year(s), if any: "
+  if(props["PROGRAM YEAR 2011"] == "TRUE"){popup += "<span class='radius secondary label'>2011</span> " }
+  if(props["PROGRAM YEAR 2012"] == "TRUE"){ popup += " <span class='radius secondary label'>2012</span>" }
+  if(props["PROGRAM YEAR 2013"] == "TRUE"){ popup += " <span class='radius secondary label'>2013</span>" }
+
+  // HCAHPS data
+  popup += "<br /><br />"
+  if(props.has_hcahps == true){
+    popup += "<span class='radius secondary label green'>HCAHPS data available</span>"
+  } else {
+    popup += "<span class='radius secondary label red'>no HCAHPS data available</span>"
+  }
+
+  layer.bindPopup(popup)
+  layer.on('click', onFeatureClick);
+}

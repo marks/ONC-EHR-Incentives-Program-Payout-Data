@@ -22,8 +22,8 @@ assets do
     '/zurb-foundation-4.3.1/css/foundation.css',
     '/zurb-foundation-4.3.1/css/accessibility_foundicons.css',
     '/leaflet-0.6.4/leaflet.css',
-    # '/Leaflet.markercluster/dist/MarkerCluster.css',
-    # '/Leaflet.markercluster/dist/MarkerCluster.Default.css',
+    '/Leaflet.markercluster/dist/MarkerCluster.css',
+    '/Leaflet.markercluster/dist/MarkerCluster.Default.css',
     '/stefanocudini-leaflet-search/leaflet-search.css',
     '/app/main.css'
   ]
@@ -74,7 +74,9 @@ get '/db/cms_incentives/EH/all_hospitals_with_geo.geojson' do
   content_type :json
   geojson = Hash.new
   geojson["type"] = "FeatureCollection"
-  geojson["features"] = Hospital.with_geo.map {|h| h.to_geojson}
+  features = Hospital.with_geo
+  features = settings.development? ? features.limit(100) : features
+  geojson["features"] = features.map {|h| h.to_geojson}
   return geojson.to_json
 end
 

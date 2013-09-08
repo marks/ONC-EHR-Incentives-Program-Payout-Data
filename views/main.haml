@@ -204,22 +204,16 @@
 
         var minimal   = L.tileLayer(cloudmadeUrl, {styleId: 22677, attribution: cloudmadeAttribution}),
             midnight  = L.tileLayer(cloudmadeUrl, {styleId: 999,   attribution: cloudmadeAttribution});
-
+        
         map = L.map('map', {
             zoom: 10,
             layers: [minimal]
         });
-
-        var baseMaps = {
-            "Minimal": minimal,
-            "Night View": midnight
-        };
-
-        var overlayMaps = {
-        };
+        
+        var baseMaps = {"Light theme": minimal, "Dark theme": midnight },
+          overlayMaps = {};
 
         L.control.layers(baseMaps, overlayMaps).addTo(map);
 
-        // add data to Leaflet map
         load_geojson_as_cluster("#{@default_data_url}",true)
       });

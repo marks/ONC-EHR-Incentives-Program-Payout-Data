@@ -188,7 +188,34 @@ this._shadow.style.display='none';if(this._circleLoc)
 this._circleLoc.setStyle({fill:false,stroke:false});return this;},animate:function(){var circle=this._circleLoc,tInt=200,ss=10,mr=parseInt(circle._radius/ss),oldrad=this.options.radius,newrad=circle._radius*2.5,acc=0;circle._timerAnimLoc=setInterval(function(){acc+=0.5;mr+=acc;newrad-=mr;circle.setRadius(newrad);if(newrad<oldrad)
 {clearInterval(circle._timerAnimLoc);circle.setRadius(oldrad);}},tInt);return this;}});L.Map.addInitHook(function(){if(this.options.searchControl){this.searchControl=L.control.search();this.addControl(this.searchControl);}});L.control.search=function(options){return new L.Control.Search(options);};}).call(this);var map,markers;var features_clicked=[]
 var incentiveTrueIcon=L.icon({iconUrl:PUBLIC_HOST+'/mapicons.nicolasmollet.com/hospital-building-green.png',iconSize:[32,37],iconAnchor:[15,37],popupAnchor:[2,-37]});var incentiveFalseIcon=L.icon({iconUrl:PUBLIC_HOST+'/mapicons.nicolasmollet.com/hospital-building-red.png',iconSize:[32,37],iconAnchor:[15,37],popupAnchor:[2,-37]});function load_geojson_as_cluster(data_url,fit_bounds){$("#map").showLoading();$.getJSON(data_url,function(data){if(typeof(markers)!="undefined"){map.removeLayer(markers);}
-markers=new L.MarkerClusterGroup();var geoJsonLayer=L.geoJson(data,{onEachFeature:function(feature,layer){props=feature.properties
+markers=new L.MarkerClusterGroup();var geoJsonLayer=L.geoJson(data,{onEachFeature:handleFeature});markers.on('clusterclick',onClusterClick);markers.addLayer(geoJsonLayer);map.addLayer(markers);if(fit_bounds==true){map.fitBounds(markers.getBounds());}
+$("#map").hideLoading();})}
+function onFeatureClick(e){$("p.title[data-section-title=data]").effect("highlight")
+$("p.title[data-section-title=data]").first().click()
+props=e.target.feature.properties
+if(props["PROVIDER CCN"]){label="CCN_"+e.target.feature.properties["PROVIDER CCN"]}
+else if(props["PROVIDER NPI"]){label="NPI_"+e.target.feature.properties["PROVIDER NPI"]}
+else{label="Unknown"}
+if(typeof(_gaq)!="undefined"){_gaq.push(['_trackEvent','Map','Click (Feature)',label]);}
+features_clicked.push(e.target.feature)
+constructComparisonTable()}
+function onClusterClick(e){if(e.layer.getAllChildMarkers().length){label=e.layer.getAllChildMarkers().length+" children"}
+else{label="Unknown children"}
+if(typeof(_gaq)!="undefined"){_gaq.push(['_trackEvent','Map','Click (Cluster)',label]);}}
+function constructComparisonTable(){$("#feature_accordion").html("")
+$.each(features_clicked,function(n,feature){provider_url="/db/cms_incentives/EH/find_by_bson_id/"+feature.id+".json"
+$.getJSON(provider_url,function(props){if(props!=null){selector="#feature_accordion section#"+props._id
+if($(selector).length===0){feature_stub="<section id='"+props._id+"'></section>"
+$("#feature_accordion").append(feature_stub)
+if(props["PROVIDER - ORG NAME"]){title=props["PROVIDER - ORG NAME"]}
+else if(props["general"]){title=props["general"]["hospital_name"]}else{title="Unknown"}
+feature_content="<p class='title' data-section-title=''><a href='#'>"+title+"</a></p><div class='content' data-section-content=''>"
+feature_content+="<pre>"+JSON.stringify(props,null,2)+"</pre>"
+feature_content+="</div>"
+$(selector).html(feature_content)}else{}}});})}
+function toggle_column_mode(){$('div#side_section').toggleClass('large-5')
+$('div#content').toggleClass('large-9').toggleClass('large-12')}
+function handleFeature(feature,layer){props=feature.properties
 if(props["PROGRAM YEAR 2011"]=="TRUE"){layer.setIcon(incentiveTrueIcon)}
 else if(props["PROGRAM YEAR 2012"]=="TRUE"){layer.setIcon(incentiveTrueIcon)}
 else if(props["PROGRAM YEAR 2013"]=="TRUE"){layer.setIcon(incentiveTrueIcon)}
@@ -216,31 +243,4 @@ if(props["PROGRAM YEAR 2013"]=="TRUE"){popup+=" <span class='radius secondary la
 popup+="<br /><br />"
 if(props.has_hcahps==true){popup+="<span class='radius secondary label green'>HCAHPS data available</span>"}else{popup+="<span class='radius secondary label red'>no HCAHPS data available</span>"}
 layer.bindPopup(popup)
-layer.on('click',onFeatureClick);}});markers.on('clusterclick',onClusterClick);markers.addLayer(geoJsonLayer);map.addLayer(markers);if(fit_bounds==true){map.fitBounds(markers.getBounds());}
-$("#map").hideLoading();})}
-function onFeatureClick(e){$("p.title[data-section-title=data]").effect("highlight")
-$("p.title[data-section-title=data]").first().click()
-props=e.target.feature.properties
-if(props["PROVIDER CCN"]){label="CCN_"+e.target.feature.properties["PROVIDER CCN"]}
-else if(props["PROVIDER NPI"]){label="NPI_"+e.target.feature.properties["PROVIDER NPI"]}
-else{label="Unknown"}
-if(typeof(_gaq)!="undefined"){_gaq.push(['_trackEvent','Map','Click (Feature)',label]);}
-features_clicked.push(e.target.feature)
-constructComparisonTable()}
-function onClusterClick(e){if(e.layer.getAllChildMarkers().length){label=e.layer.getAllChildMarkers().length+" children"}
-else{label="Unknown children"}
-if(typeof(_gaq)!="undefined"){_gaq.push(['_trackEvent','Map','Click (Cluster)',label]);}}
-function constructComparisonTable(){$("#feature_accordion").html("")
-$.each(features_clicked,function(n,feature){provider_url="/db/cms_incentives/EH/find_by_bson_id/"+feature.id+".json"
-$.getJSON(provider_url,function(props){if(props!=null){selector="#feature_accordion section#"+props._id
-if($(selector).length===0){feature_stub="<section id='"+props._id+"'></section>"
-$("#feature_accordion").append(feature_stub)
-if(props["PROVIDER - ORG NAME"]){title=props["PROVIDER - ORG NAME"]}
-else if(props["general"]){title=props["general"]["hospital_name"]}else{title="Unknown"}
-feature_content="<p class='title' data-section-title=''><a href='#'>"+title+"</a></p><div class='content' data-section-content=''>"
-if(props["hcahps"]){$.each(props["hcahps"],function(k,v){key=k.split("_").join(" ")
-feature_content+="<li><strong>"+key+":</strong> "+v+"</li>"});}
-feature_content+="</div>"
-$(selector).html(feature_content)}else{}}});})}
-function toggle_column_mode(){$('div#side_section').toggleClass('large-5')
-$('div#content').toggleClass('large-9').toggleClass('large-12')}
+layer.on('click',onFeatureClick);}

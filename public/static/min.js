@@ -206,8 +206,8 @@ else if(props["PROVIDER NAME"]){popup+="<strong>"+props["PROVIDER NAME"]+"</stro
 else if(props.general["hospital_name"]){popup+="<strong>"+props.general["hospital_name"]+"</strong>"}
 if(props["PROVIDER  ADDRESS"]&&props["PROVIDER CITY"]&&props["PROVIDER STATE"]&&props["PROVIDER ZIP 5 CD"]){popup+="<br />"+props["PROVIDER  ADDRESS"]
 popup+="<br />"+props["PROVIDER CITY"]+", "+props["PROVIDER STATE"]+" "+props["PROVIDER ZIP 5 CD"]}
-else if(props.general["address_1"]&&props.general["city"]&&props.general["state"]&&props.general["zip_code"]){popup+="<br />"+props.general["address_1"]
-popup+="<br />"+props.general["city"]+", "+props.general["state"]+" "+props.general["zip_code"]}
+else if(props.general){if(props.general["address_1"]&&props.general["city"]&&props.general["state"]&&props.general["zip_code"]){popup+="<br />"+props.general["address_1"]
+popup+="<br />"+props.general["city"]+", "+props.general["state"]+" "+props.general["zip_code"]}}
 if(props.general){if(props.general["hospital_name"]){popup+="<br /><br />Hosp. Name: "+props.general["hospital_name"]}
 if(props.general["hospital_owner"]){popup+="<br />Hosp. Owner: "+props.general["hospital_owner"]}
 if(props.general["hospital_type"]){popup+="<br />Hosp. Type: "+props.general["hospital_type"]}}
@@ -239,7 +239,7 @@ else{label="Unknown children"}
 if(typeof(_gaq)!="undefined"){_gaq.push(['_trackEvent','Map','Click (Cluster)',label]);}}
 function constructComparisonTable(){$("#feature_accordion").html("")
 $.each(features_clicked,function(n,feature){provider_url="/db/cms_incentives/EH/find_by_bson_id/"+feature.id+".json"
-$.getJSON(provider_url,function(props){selector="#feature_accordion section#"+props._id
+$.getJSON(provider_url,function(props){if(props!=null){selector="#feature_accordion section#"+props._id
 if($(selector).length===0){feature_stub="<section id='"+props._id+"'></section>"
 $("#feature_accordion").append(feature_stub)
 if(props["PROVIDER - ORG NAME"]){title=props["PROVIDER - ORG NAME"]}
@@ -248,4 +248,6 @@ feature_content="<p class='title' data-section-title=''><a href='#'>"+title+"</a
 if(props["hcahps"]){$.each(props["hcahps"],function(k,v){key=k.split("_").join(" ")
 feature_content+="<li><strong>"+key+":</strong> "+v+"</li>"});}
 feature_content+="</div>"
-$(selector).html(feature_content)}else{}});})}
+$(selector).html(feature_content)}else{}}});})}
+function toggle_column_mode(){$('div#side_section').toggleClass('large-5')
+$('div#content').toggleClass('large-9').toggleClass('large-12')}

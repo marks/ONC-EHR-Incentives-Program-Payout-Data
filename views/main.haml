@@ -4,7 +4,7 @@
 %html.no-js{:lang => "en"}
   / <![endif]
   %head
-    %title Making "Meaningful Use" of HHS Data - by Social Health Insights using HHS / HealthIT.gov Open Data
+    %title US Healthcare Provider Mashup
     %meta{:charset => "utf-8"}/
     %meta{:content => "width=device-width, initial-scale=1.0", :name => "viewport"}/
     :javascript
@@ -43,30 +43,31 @@
         %li.name
           %h1
             %a{:href => "#"}
-              Making
-              %em "Meaningful Use"
-              of HHS Data
+              US Healthcare Provider Mashup
         %li.toggle-topbar.menu-icon
           %a{:href => "#"}
             %span menu
       %section.top-bar-section
         %ul.right
+          %li.hide-for-small
+            %a{:href => "#", :onclick => "javascript:toggle_column_mode()"}
+              %span.has-tip{"data-tooltip" => "", "data-options" => "disable-for-touch:true", :title => "Toggle 1 and 2 column mode"}
+                %i.foundicon-view-mode
+
           %li.divider
           %li.has-dropdown
-            %a{:href => "#"} Links
+            %a.links-link{:href => "#"} Links
             %ul.dropdown
               %li
-                %a{:href => "http://www.cms.gov/Regulations-and-Guidance/Legislation/EHRIncentivePrograms/DataAndReports.html", :target => "_blank"} Public Use CMS Data
+                %a{:href => "http://github.com/marks/ONC-EHR-Incentives-Program-Payout-Data/", :target => "_blank"} Github Repo for this entire website
               %li
                 %a{:href => "http://checkqm.com", :target => "_blank"} CheckQM (CQM and decision management)
               %li
                 %a{:href => "http://www.socialhealthinsights.com", :target => "_blank"} Social Health Insights
               %li
-                %a{:href => "http://www.mappyhealth.com", :target => "_blank"} MappyHealth
-          %li.divider
-          %li
-            %a.ghbtns-fork{:href => "#"}
-              %iframe{:allowtransparency => "true", :frameborder => "0", :height => "20", :scrolling => "0", :src => "http://ghbtns.com/github-btn.html?user=marks&repo=ONC-EHR-Incentives-Program-Payout-Data&type=fork", :width => "62"}
+                %a{:href => "http://www.mappyhealth.com", :target => "_blank"} MappyHealth (social media biosurveillance)
+              %li
+                %a{:href => "http://www.bloomapi.com", :target => "_blank"} Bloom API (friendly NPPES/NPI API)
 
     .row
       .large-12.columns
@@ -74,7 +75,7 @@
           September 2013 Update: Hospital and Provider (physician) data has been updated to be up to date as of June 2013.
 
     .row
-      .large-5.columns
+      .large-5.columns#side_section
         .section-container.tabs{"data-section" => "tabs"}
           %section
             %p.title{"data-section-title" => "about"}
@@ -115,14 +116,19 @@
       
           %section
             %p.title{"data-section-title" => ""}
-              %a{:href => "#"} Map Legend
+              %a{:href => "#"} Icon Legend
             .content{"data-section-content" => ""}
-              %table
+              %table#legend
                 %thead
                   %tr
                     %th Icon
                     %th Description
                 %tbody
+                  %tr
+                    %td
+                      %i.foundicon-view-mode
+                    %td
+                      Toggle between one and two column mode (desktop only)
                   %tr
                     %td
                       %img{:src => "#{settings.public_host}/mapicons.nicolasmollet.com/hospital-building-green.png"}
@@ -141,8 +147,8 @@
               .section-container.accordion#feature_accordion{"data-section" => "accordion", "data-options" => "one_up: false"}
               %p To see specifics about a healthcare provider, click on their icon on the map to the right.
 
-      .large-7.columns
-        %h3 Map of Meaningful Use Attestors
+      .large-7.columns#content
+        %h3 Map of United States Healthcare Providers
         .row
           .large-8.columns
             %select#dropdown{:name => "dropdown"}

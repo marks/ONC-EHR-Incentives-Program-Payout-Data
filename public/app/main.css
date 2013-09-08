@@ -2,3 +2,7 @@ div.progress span.meter{color:#000; font-weight:bold;}
 #map{width: 100%; height: 500px; border: 1px solid #ccc;}
 .ghbtns-fork{padding:10px !important;}
 #comparison_tables td.footable-last-column{width:100%;}
+#legend i{font-size:30px;}
+.alert-box{line-height:20px;}
+.top-bar i{font-size:34px;}
+.top-bar .has-tip{color:#FFF; border-bottom:none;}

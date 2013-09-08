@@ -20,6 +20,7 @@ assets do
   css :application, '/static/min.css', [
     '/zurb-foundation-4.3.1/css/normalize.css',
     '/zurb-foundation-4.3.1/css/foundation.css',
+    '/zurb-foundation-4.3.1/css/accessibility_foundicons.css',
     '/leaflet-0.5.1/leaflet.css',
     '/Leaflet.markercluster/MarkerCluster.css',
     '/Leaflet.markercluster/MarkerCluster.Default.css',
@@ -53,7 +54,7 @@ assets do
     "/zurb-foundation-4.3.1/js/foundation/foundation.reveal.js",
     "/zurb-foundation-4.3.1/js/foundation/foundation.section.js",
     "/zurb-foundation-4.3.1/js/foundation/foundation.tooltips.js",
-    "/zurb-foundation-4.3.1/js/foundation/foundation.topbar.js"
+    "/zurb-foundation-4.3.1/js/foundation/foundation.topbar.js",
   ]
 end
 

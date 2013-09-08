@@ -185,3 +185,9 @@ function constructComparisonTable(){
     });
   })
 }
+
+function toggle_column_mode(){
+  $('div#side_section').toggleClass('large-5')
+  $('div#content').toggleClass('large-9').toggleClass('large-12')
+}
+

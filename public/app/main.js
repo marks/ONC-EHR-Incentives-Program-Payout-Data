@@ -58,13 +58,14 @@ function onClusterClick(e){
 function constructComparisonTable(){
   $("#feature_accordion").html("") // clear the comparison table div
   $.each(features_clicked, function(n,feature){
+    console.log(n)
     provider_url = "/db/cms_incentives/EH/find_by_bson_id/"+feature.id+".json"
     $.getJSON(provider_url, function(props){
       if(props != null){
-        selector = "#feature_accordion section#"+props._id
+        selector = "#feature_accordion_container section#"+props["PROVIDER CCN"]
         if($(selector).length === 0){
-          feature_stub = "<section id='"+props._id+"'></section>"
-          $("#feature_accordion").append(feature_stub)
+          feature_stub = "<div class='section-container accordion' data-options='one_up:false' data-section='accordion'><section id='"+props["PROVIDER CCN"]+"'></section></div>"
+          $("#feature_accordion_container").append(feature_stub)
 
           if(props["PROVIDER - ORG NAME"]){
             title = props["PROVIDER - ORG NAME"]

@@ -21,20 +21,17 @@ assets do
     '/zurb-foundation-4.3.1/css/normalize.css',
     '/zurb-foundation-4.3.1/css/foundation.css',
     '/zurb-foundation-4.3.1/css/accessibility_foundicons.css',
-    '/leaflet-0.5.1/leaflet.css',
-    '/Leaflet.markercluster/MarkerCluster.css',
-    '/Leaflet.markercluster/MarkerCluster.Default.css',
-    '/bradvin-FooTable-master/css/footable-0.1.css',
+    '/leaflet-0.6.4/leaflet.css',
+    # '/Leaflet.markercluster/dist/MarkerCluster.css',
+    # '/Leaflet.markercluster/dist/MarkerCluster.Default.css',
     '/stefanocudini-leaflet-search/leaflet-search.css',
     '/app/main.css'
   ]
 
   js :application, '/static/min.js', [
     '/zurb-foundation-4.3.1/js/vendor/custom.modernizr.js',
-    '/leaflet-0.5.1/leaflet.js',
-    '/Leaflet.markercluster/leaflet.markercluster-src.js',
-    '/bradvin-FooTable-master/js/footable-0.1.js',
-    '/bradvin-FooTable-master/js/footable.sortable.js',
+    '/leaflet-0.6.4/leaflet.js',
+    '/Leaflet.markercluster/dist/leaflet.markercluster-src.js',
     '/stefanocudini-leaflet-search/leaflet-search.js',
     '/app/main.js'
   ]

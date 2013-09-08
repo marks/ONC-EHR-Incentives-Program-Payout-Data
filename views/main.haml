@@ -203,12 +203,11 @@
           cloudmadeAttribution = 'Map data &copy; OpenStreetMap contributors, Imagery &copy; CloudMade';
 
         var minimal   = L.tileLayer(cloudmadeUrl, {styleId: 22677, attribution: cloudmadeAttribution}),
-            midnight  = L.tileLayer(cloudmadeUrl, {styleId: 999,   attribution: cloudmadeAttribution}),
-            //motorways = L.tileLayer(cloudmadeUrl, {styleId: 46561, attribution: cloudmadeAttribution});
+            midnight  = L.tileLayer(cloudmadeUrl, {styleId: 999,   attribution: cloudmadeAttribution});
 
         map = L.map('map', {
             zoom: 10,
-            layers: [minimal, motorways]
+            layers: [minimal]
         });
 
         var baseMaps = {
@@ -217,8 +216,6 @@
         };
 
         var overlayMaps = {
-            //"Motorways": motorways,
-            //"Cities": cities
         };
 
         L.control.layers(baseMaps, overlayMaps).addTo(map);

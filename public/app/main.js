@@ -75,16 +75,34 @@ function constructComparisonTable(){
             title = "Unknown"
           }
 
-          feature_content = "<p class='title' data-section-title=''><a href='#'>"+title+"</a></p><div class='content' data-section-content=''>"
-          feature_content += "<pre>"+JSON.stringify(props,null,2)+"</pre>"
-          // if(props["hcahps"]){
-          //   $.each( props["hcahps"], function(k, v){
-          //     key = k.split("_").join(" ")
-          //     feature_content += "<li><strong>"+key+":</strong> "+v+"</li>"
-          //   });
-          // }
+          feature_content = "<p class='title' data-section-title=''><a href='#'>"+title+"</a></p><div class='content' data-section-content=''><p>"
+          // feature_content += "<pre>"+JSON.stringify(props,null,2)+"</pre>"
+          
+          $.each( props, function(k, v){
+            key = formatKey(k)
+            console.log()
 
-          feature_content += "</div>"
+            if(typeof(v) === "object"){
+              feature_content += "<br />"
+              if(key == "hc hais"){
+                feature_content += "</p>"+renderHcHaisObject(v)+"<p>"
+              } else if (key == "hcahps"){
+                feature_content += "</p>"+rebderHcahpsObject(v)+"<p>"
+              } else {
+                feature_content += "<br /><strong>"+key+"</strong><br />"
+                $.each(v, function(k2,v2){
+                  key2 = formatKey(k2)
+                  feature_content += "<u>"+key2+":</u>"+v2+"<br />"
+                })                
+              }
+              feature_content += "<br />"
+            } else {
+              feature_content += "<u>"+key+":</u> "+v+"<br />"
+            }
+
+          });
+
+          feature_content += "</p></div>"
           $(selector).html(feature_content)
 
         } else {
@@ -178,14 +196,35 @@ function handleFeature(feature, layer){
   if(props["PROGRAM YEAR 2012"] == "TRUE"){ popup += " <span class='radius secondary label'>2012</span>" }
   if(props["PROGRAM YEAR 2013"] == "TRUE"){ popup += " <span class='radius secondary label'>2013</span>" }
 
-  // HCAHPS data
-  popup += "<br /><br />"
-  if(props.has_hcahps == true){
-    popup += "<span class='radius secondary label green'>HCAHPS data available</span>"
-  } else {
-    popup += "<span class='radius secondary label red'>no HCAHPS data available</span>"
-  }
-
   layer.bindPopup(popup)
   layer.on('click', onFeatureClick);
+}
+
+function renderHcHaisObject(obj){
+  html = "<strong><a href='https://data.medicare.gov/Hospital-Compare/Healthcare-Associated-Infections/ihvx-zkyp' target='blank'>Hospital Associated Infections (from CMS Hospital Compare/CDC)</a></strong>"
+  html += "<ul class='side-nav'>"
+  $.each(obj, function(k,hai){
+    if(hai.score != undefined){
+      html += "<li><a href='http://www.cdc.gov/HAI/infectionTypes.html' target='blank'>"+hai.measure+"</a>"
+      html += "<ul class=''><li>Score: "+hai.score+"</li><li>Footnote: "+hai.footnote+"</li><li>Source: "+formatSource(hai._source)+"</li><li>Data last refreshed at: "+hai._updated_at+"</li></ul>"
+      html += "</li>"      
+    }
+  })
+  html += "</ul>"
+  return html
+}
+
+function rebderHcahpsObject(obj){
+  html = "<strong>Patient Experience Surveys (HCAHPS via CMS Hospital Compare</strong>"
+  return html
+}
+
+function formatKey(input){
+  string = String(input)
+  return string.toLowerCase().split("_").join(" ")
+}
+
+function formatSource(input){
+  string = String(input)
+  return string.split("/")[2]
 }

@@ -82,6 +82,6 @@ end
 
 get '/db/cms_incentives/EH/find_by_bson_id/:bson_id.json' do
   content_type :json
-  provider = Hospital.find(params[:bson_id])
+  provider = Hospital.without(:geo,:_id).find(params[:bson_id])
   return provider.nil? ? nil.to_json : provider.as_document.to_hash.to_json
 end

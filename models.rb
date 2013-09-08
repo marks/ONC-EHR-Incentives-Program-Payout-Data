@@ -87,7 +87,6 @@ class Hospital
 
   def to_geojson(keys_to_exclude = ["hcahps","hc_hais","geo"])
     hash = self.as_document.to_hash
-    hash["has_hcahps"] = true unless hash["hcahps"].nil?
     coordinates = [hash["geo"]["geometry"]["location"]["lng"],hash["geo"]["geometry"]["location"]["lat"]]
     keys_to_exclude.each{|k| hash.delete(k)}
     {"type" => "Feature", "id" => hash["_id"].to_s, "properties" => hash, "geometry" => {"type" => "Point", "coordinates" => coordinates}}

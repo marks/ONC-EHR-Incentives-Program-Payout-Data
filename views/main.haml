@@ -198,12 +198,31 @@
       });
 
       $(document).ready(function() {
-        map = new L.Map('map', {
-          layers: [new L.tileLayer('http://{s}.tile.cloudmade.com/{key}/999/256/{z}/{x}/{y}.png', {
-            maxZoom: 18,
-            attribution: '© 2013 <a target="_blank" href="http://cloudmade.com">CloudMade</a> - Map data <a target="_blank" href="http://creativecommons.org/licenses/by-sa/2.0/">CCBYSA</a> 2013 <a target="_blank" href="http://openstreetmap.org">OpenStreetMap.org</a> contributors - <a target="_blank" href="http://cloudmade.com/terms_conditions">Terms of Use</a>',
-            key: '#{settings.leaflet_key}'
-          })]
+        // initialize and create Leaflet map
+        var cloudmadeUrl = 'http://{s}.tile.cloudmade.com/#{settings.leaflet_key}/{styleId}/256/{z}/{x}/{y}.png',
+          cloudmadeAttribution = 'Map data &copy; OpenStreetMap contributors, Imagery &copy; CloudMade';
+
+        var minimal   = L.tileLayer(cloudmadeUrl, {styleId: 22677, attribution: cloudmadeAttribution}),
+            midnight  = L.tileLayer(cloudmadeUrl, {styleId: 999,   attribution: cloudmadeAttribution}),
+            //motorways = L.tileLayer(cloudmadeUrl, {styleId: 46561, attribution: cloudmadeAttribution});
+
+        map = L.map('map', {
+            zoom: 10,
+            layers: [minimal, motorways]
         });
+
+        var baseMaps = {
+            "Minimal": minimal,
+            "Night View": midnight
+        };
+
+        var overlayMaps = {
+            //"Motorways": motorways,
+            //"Cities": cities
+        };
+
+        L.control.layers(baseMaps, overlayMaps).addTo(map);
+
+        // add data to Leaflet map
         load_geojson_as_cluster("#{@default_data_url}",true)
       });

@@ -105,7 +105,7 @@ function renderHospitalDetails(){
           }
 
 
-          feature_content = "<a href=# onclick=toggle('"+id+"','.feature_content') title='show/hide details' class='toggler'><i class='foundicon-plus'></i></a>"
+          feature_content = "<a href=# onclick=toggle('"+id+"','.feature_content') title='show/hide details' class='toggler'><i class='foundicon-general-plus'></i></a>"
           feature_content += "<h4>"+title+"</h4>"
           feature_content += "<div class='feature_content' style='display:none'><p>"
           
@@ -274,11 +274,11 @@ function formatSource(input){
 function toggle(input,what_to_toggle){
   str = String(input)
   $("#"+str+" "+what_to_toggle).toggle('blind')
-  if($("#"+str+" .toggler i").hasClass("foundicon-minus")){
-    $("#"+str+" .toggler i").toggleClass("foundicon-minus")
-    $("#"+str+" .toggler i").toggleClass("foundicon-plus")
+  if($("#"+str+" .toggler i").hasClass("foundicon-general-minus")){
+    $("#"+str+" .toggler i").toggleClass("foundicon-general-minus")
+    $("#"+str+" .toggler i").toggleClass("foundicon-general-plus")
   } else {
-    $("#"+str+" .toggler i").toggleClass("foundicon-minus")
-    $("#"+str+" .toggler i").toggleClass("foundicon-plus")
+    $("#"+str+" .toggler i").toggleClass("foundicon-general-minus")
+    $("#"+str+" .toggler i").toggleClass("foundicon-general-plus")
   }
 }

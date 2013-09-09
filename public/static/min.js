@@ -222,7 +222,7 @@ feature_stub="<div class='feature panel "+feature_stub_div_class+"' id='"+id+"'>
 $("#feature_container").append(feature_stub)
 if(props["PROVIDER - ORG NAME"]){title=props["PROVIDER - ORG NAME"]}
 else if(props["general"]){title=props["general"]["hospital_name"]}else{title="Unknown"}
-feature_content="<a href=# onclick=toggle('"+id+"','.feature_content') title='show/hide details' class='toggler'><i class='foundicon-plus'></i></a>"
+feature_content="<a href=# onclick=toggle('"+id+"','.feature_content') title='show/hide details' class='toggler'><i class='foundicon-general-plus'></i></a>"
 feature_content+="<h4>"+title+"</h4>"
 feature_content+="<div class='feature_content' style='display:none'><p>"
 $.each(props,function(k,v){key=formatKey(k)
@@ -285,6 +285,6 @@ function formatSource(input){string=String(input)
 return string.split("/")[2]}
 function toggle(input,what_to_toggle){str=String(input)
 $("#"+str+" "+what_to_toggle).toggle('blind')
-if($("#"+str+" .toggler i").hasClass("foundicon-minus")){$("#"+str+" .toggler i").toggleClass("foundicon-minus")
-$("#"+str+" .toggler i").toggleClass("foundicon-plus")}else{$("#"+str+" .toggler i").toggleClass("foundicon-minus")
-$("#"+str+" .toggler i").toggleClass("foundicon-plus")}}
+if($("#"+str+" .toggler i").hasClass("foundicon-general-minus")){$("#"+str+" .toggler i").toggleClass("foundicon-general-minus")
+$("#"+str+" .toggler i").toggleClass("foundicon-general-plus")}else{$("#"+str+" .toggler i").toggleClass("foundicon-general-minus")
+$("#"+str+" .toggler i").toggleClass("foundicon-general-plus")}}

@@ -211,9 +211,9 @@ feature_stub="<div class='feature panel "+feature_stub_div_class+"' id='"+id+"'>
 $("#feature_container").append(feature_stub)
 if(props["PROVIDER - ORG NAME"]){title=props["PROVIDER - ORG NAME"]}
 else if(props["general"]){title=props["general"]["hospital_name"]}else{title="Unknown"}
-feature_content="<a href=# onclick=toggle('"+id+"','.feature_content') title='show/hide details' class='toggler'><i class='foundicon-minus'></i></a>"
+feature_content="<a href=# onclick=toggle('"+id+"','.feature_content') title='show/hide details' class='toggler'><i class='foundicon-plus'></i></a>"
 feature_content+="<h4>"+title+"</h4>"
-feature_content+="<div class='feature_content'><p>"
+feature_content+="<div class='feature_content' style='display:none;'><p>"
 $.each(props,function(k,v){key=formatKey(k)
 console.log(k,'=',v)
 if(v.length===0){}
@@ -225,8 +225,8 @@ feature_content+="<u>"+key2+":</u> "+v2+"<br />"})}}
 else{feature_content+="<u>"+key+":</u> "+v+"<br />"}});feature_content+="</p></div></div>"
 $(selector).html(feature_content)}else{}}});})}
 function toggle_column_mode(){$('div#side_section').toggleClass('large-5')
-$('div#content').toggleClass('large-9').toggleClass('large-12')
-$('div#side_section .feature').toggleClass("columns large-4")}
+$('div#side_section .feature').toggleClass("columns large-4")
+$('div#content').toggleClass('large-9').toggleClass('large-12')}
 function handleFeature(feature,layer){props=feature.properties
 if(props["PROGRAM YEAR 2011"]=="TRUE"){layer.setIcon(incentiveTrueIcon)}
 else if(props["PROGRAM YEAR 2012"]=="TRUE"){layer.setIcon(incentiveTrueIcon)}

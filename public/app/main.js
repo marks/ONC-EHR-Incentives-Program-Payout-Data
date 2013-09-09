@@ -83,9 +83,9 @@ function constructComparisonTable(){
           }
 
 
-          feature_content = "<a href=# onclick=toggle('"+id+"','.feature_content') title='show/hide details' class='toggler'><i class='foundicon-minus'></i></a>"
+          feature_content = "<a href=# onclick=toggle('"+id+"','.feature_content') title='show/hide details' class='toggler'><i class='foundicon-plus'></i></a>"
           feature_content += "<h4>"+title+"</h4>"
-          feature_content += "<div class='feature_content'><p>"
+          feature_content += "<div class='feature_content' style='display:none;'><p>"
           // feature_content += "<pre>"+JSON.stringify(props,null,2)+"</pre>"
           
           $.each( props, function(k, v){
@@ -151,8 +151,8 @@ function constructComparisonTable(){
 
 function toggle_column_mode(){
   $('div#side_section').toggleClass('large-5')
-  $('div#content').toggleClass('large-9').toggleClass('large-12')
   $('div#side_section .feature').toggleClass("columns large-4")
+  $('div#content').toggleClass('large-9').toggleClass('large-12')
 }
 
 function handleFeature(feature, layer){

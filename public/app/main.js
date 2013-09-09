@@ -25,7 +25,6 @@ function load_geojson_as_cluster(data_url,fit_bounds){
   $("#map").showLoading();
   $.getJSON(data_url, function(data){
     if(typeof(markers) != "undefined"){map.removeLayer(markers);}    // clear all markers
-
     markers = new L.MarkerClusterGroup();
     var geoJsonLayer = L.geoJson(data, {onEachFeature: handleFeature });
     markers.on('clusterclick', onClusterClick);
@@ -45,8 +44,31 @@ function onFeatureClick(e){
   else { label = "Unknown" }
   if(typeof(_gaq) != "undefined"){ _gaq.push(['_trackEvent', 'Map', 'Click (Feature)', label]); }
 
-  features_clicked.push(e.target.feature)
-  constructComparisonTable()
+  if(props["PROVIDER CCN"]){ 
+    // hospital
+    features_clicked.push(e.target.feature)
+    renderHospitalDetails()
+  }
+  else if(props["PROVIDER NPI"]) {
+    id = props["PROVIDER NPI"]
+    selector = "#feature_container #"+id
+    if($('div#content').hasClass("large-12")){
+      feature_stub_div_class = "large-4 columns"
+    } else {
+      feature_stub_div_class = ""
+    }
+    if($(selector).length === 0){
+      feature_stub = "<div class='feature panel "+feature_stub_div_class+"' id='"+id+"'></div>"
+      $("#feature_container").append(feature_stub)
+      feature_content = ""
+      feature_content += "<h4>"+props["PROVIDER NAME"]+"</h4>"
+      feature_content += "<div class='feature_content'><a href='http://www.bloomapi.com/search#/npis/"+id+"' target='blank'>Visit BloomAPI for data about this provider from the CMS NPPES database</a><p>"
+      feature_content += "</p></div></div>"
+      $(selector).html(feature_content)
+    }
+  }
+  else {} // do nothing
+  
 }
 
 function onClusterClick(e){
@@ -55,8 +77,8 @@ function onClusterClick(e){
   if(typeof(_gaq) != "undefined"){ _gaq.push(['_trackEvent', 'Map', 'Click (Cluster)', label]); }
 }
 
-function constructComparisonTable(){
-  $("#feature_container").html("") // clear the comparison table div
+function renderHospitalDetails(){
+  $("#feature_container").html("")
   $.each(features_clicked, function(n,feature){
     provider_url = "/db/cms_incentives/EH/find_by_bson_id/"+feature.id+".json"
     $.getJSON(provider_url, function(props){
@@ -85,8 +107,7 @@ function constructComparisonTable(){
 
           feature_content = "<a href=# onclick=toggle('"+id+"','.feature_content') title='show/hide details' class='toggler'><i class='foundicon-plus'></i></a>"
           feature_content += "<h4>"+title+"</h4>"
-          feature_content += "<div class='feature_content' style='display:none;'><p>"
-          // feature_content += "<pre>"+JSON.stringify(props,null,2)+"</pre>"
+          feature_content += "<div class='feature_content' style='display:none'><p>"
           
           $.each( props, function(k, v){
             key = formatKey(k)

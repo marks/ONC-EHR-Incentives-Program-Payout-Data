@@ -52,7 +52,7 @@
           %li.hide-for-small
             %a{:href => "#", :onclick => "javascript:toggle_column_mode()"}
               %span.has-tip{"data-tooltip" => "", "data-options" => "disable-for-touch:true", :title => "Toggle 1 and 2 column mode"}
-                %i.foundicon-view-mode
+                %i.foundicon-accessibility-view-mode
           %li.divider
           %li.has-dropdown
             %a.links-link{:href => "#"} Links
@@ -125,11 +125,6 @@
                 %tbody
                   %tr
                     %td
-                      %i.foundicon-view-mode
-                    %td
-                      Toggle between one and two column mode (desktop only)
-                  %tr
-                    %td
                       %img{:src => "#{settings.public_host}/mapicons.nicolasmollet.com/hospital-building-green.png"}
                     %td Received MU/HITECH incentive payments in 2011, 2012 and/or 2013
                   %tr
@@ -137,6 +132,22 @@
                       %img{:src => "#{settings.public_host}/mapicons.nicolasmollet.com/hospital-building-red.png"}
                     %td
                       Did not receive any MU/HITECH incentive payments in 2011, 2012, or 2013
+                  %tr
+                    %td
+                      %i.foundicon-accessibility-view-mode
+                    %td
+                      Toggle between one and two column mode (desktop only)
+                  %tr
+                    %td
+                      %i.foundicon-plus
+                    %td
+                      Show more additional details
+                  %tr
+                    %td
+                      %i.foundicon-minus
+                    %td
+                      Hide additional details
+
 
           %section
             %p.title{"data-section-title" => "data"}

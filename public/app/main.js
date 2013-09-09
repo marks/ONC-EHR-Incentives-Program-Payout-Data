@@ -25,13 +25,26 @@ function load_geojson_as_cluster(data_url,fit_bounds){
   $("#map").showLoading();
   $.getJSON(data_url, function(data){
     if(typeof(markers) != "undefined"){map.removeLayer(markers);}    // clear all markers
+    if(typeof(searchControl)!= "undefined"){map.removeControl(searchControl)}
     markers = new L.MarkerClusterGroup();
     var geoJsonLayer = L.geoJson(data, {onEachFeature: handleFeature });
     markers.on('clusterclick', onClusterClick);
     markers.addLayer(geoJsonLayer);
     map.addLayer(markers);
-    if(fit_bounds == true){map.fitBounds(markers.getBounds());}
+
+    searchControl = new L.Control.Search({layer: markers, propertyName: "PROVIDER CCN", circleLocation:true});
+    searchControl.on('search_locationfound', function(e) {
+      map.fitBounds(new L.LatLngBounds(new L.LatLng(e.layer.getLatLng().lat, e.layer.getLatLng().lng), new L.LatLng(e.layer.getLatLng().lat, e.layer.getLatLng().lng)))
+      map.zoomOut(10)
+      e.layer.openPopup()
+    })
+    map.addControl( searchControl );
+
     $("#map").hideLoading();
+
+    if(fit_bounds == true){map.fitBounds(markers.getBounds());}
+    
+
   })
 }
 
@@ -111,7 +124,6 @@ function renderHospitalDetails(){
           
           $.each( props, function(k, v){
             key = formatKey(k)
-            console.log(k,'=',v)
             if(v.length === 0){
               // do nothing
             }
@@ -253,7 +265,6 @@ function renderHcahpsObject(obj){
   html = "<h6><a href='http://www.hcahpsonline.org/home.aspx' target='blank'>Patient Experience Surveys (HCAHPS via CMS Hospital Compare</a></h6>"
   html += "<ul class='side-nav'>"
   $.each(obj, function(k,v){
-    console.log(k)
     key = formatKey(k)
     html += "<li><u>"+key+":</u> "+v+"</li>"
   })                

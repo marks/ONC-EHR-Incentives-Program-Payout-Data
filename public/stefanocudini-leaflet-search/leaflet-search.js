@@ -440,6 +440,12 @@ L.Control.Search = L.Control.extend({
 					loc.layer = layer;
 					retRecords[ layer.options[propName] ] = loc;
 				}
+				// // NEW by @Skram
+				else if(layer.feature.properties.hasOwnProperty(propName)){
+					loc = layer.getLatLng();
+					loc.layer = layer;			
+					retRecords[ layer.feature.properties[propName] ] = loc;
+				}
 				else
 					console.log("propertyName '"+propName+"' not found in marker", layer);	
 			}

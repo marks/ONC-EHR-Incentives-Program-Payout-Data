@@ -56,16 +56,22 @@ function onClusterClick(e){
 }
 
 function constructComparisonTable(){
-  $("#feature_accordion").html("") // clear the comparison table div
+  $("#feature_container").html("") // clear the comparison table div
   $.each(features_clicked, function(n,feature){
-    console.log(n)
     provider_url = "/db/cms_incentives/EH/find_by_bson_id/"+feature.id+".json"
     $.getJSON(provider_url, function(props){
       if(props != null){
-        selector = "#feature_accordion_container section#"+props["PROVIDER CCN"]
+        id = props["PROVIDER CCN"]
+        selector = "#feature_container #"+id
         if($(selector).length === 0){
-          feature_stub = "<div class='section-container accordion' data-options='one_up:false' data-section='accordion'><section id='"+props["PROVIDER CCN"]+"'></section></div>"
-          $("#feature_accordion_container").append(feature_stub)
+          if($('div#content').hasClass("large-12")){
+            feature_stub_div_class = "large-4 columns"
+          } else {
+            feature_stub_div_class = ""
+          }
+          feature_stub = "<div class='feature panel "+feature_stub_div_class+"' id='"+id+"'></div>"
+
+          $("#feature_container").append(feature_stub)
 
           if(props["PROVIDER - ORG NAME"]){
             title = props["PROVIDER - ORG NAME"]
@@ -76,34 +82,40 @@ function constructComparisonTable(){
             title = "Unknown"
           }
 
-          feature_content = "<p class='title' data-section-title=''><a href='#'>"+title+"</a></p><div class='content' data-section-content=''><p>"
+
+          feature_content = "<a href=# onclick=toggle('"+id+"','.feature_content') title='show/hide details' class='toggler'><i class='foundicon-minus'></i></a>"
+          feature_content += "<h4>"+title+"</h4>"
+          feature_content += "<div class='feature_content'><p>"
           // feature_content += "<pre>"+JSON.stringify(props,null,2)+"</pre>"
           
           $.each( props, function(k, v){
             key = formatKey(k)
-            console.log()
-
-            if(typeof(v) === "object"){
-              feature_content += "<br />"
-              if(key == "hc hais"){
+            console.log(k,'=',v)
+            if(v.length === 0){
+              // do nothing
+            }
+            else if(typeof(v) === "object"){
+              feature_content += "<hr />"
+              if(k == "hc_hais"){
                 feature_content += "</p>"+renderHcHaisObject(v)+"<p>"
-              } else if (key == "hcahps"){
-                feature_content += "</p>"+rebderHcahpsObject(v)+"<p>"
-              } else {
-                feature_content += "<br /><strong>"+key+"</strong><br />"
+              } else if (k == "hcahps"){
+                feature_content += "</p>"+renderHcahpsObject(v)+"<p>"
+              } 
+              else {
+                feature_content += "</p><h6>"+key+"</h6><p>"
                 $.each(v, function(k2,v2){
                   key2 = formatKey(k2)
-                  feature_content += "<u>"+key2+":</u>"+v2+"<br />"
+                  feature_content += "<u>"+key2+":</u> "+v2+"<br />"
                 })                
               }
-              feature_content += "<br />"
-            } else {
+            } 
+            else {
               feature_content += "<u>"+key+":</u> "+v+"<br />"
             }
 
           });
 
-          feature_content += "</p></div>"
+          feature_content += "</p></div></div>"
           $(selector).html(feature_content)
 
         } else {
@@ -140,6 +152,7 @@ function constructComparisonTable(){
 function toggle_column_mode(){
   $('div#side_section').toggleClass('large-5')
   $('div#content').toggleClass('large-9').toggleClass('large-12')
+  $('div#side_section .feature').toggleClass("columns large-4")
 }
 
 function handleFeature(feature, layer){
@@ -202,7 +215,7 @@ function handleFeature(feature, layer){
 }
 
 function renderHcHaisObject(obj){
-  html = "<strong><a href='https://data.medicare.gov/Hospital-Compare/Healthcare-Associated-Infections/ihvx-zkyp' target='blank'>Hospital Associated Infections (from CMS Hospital Compare/CDC)</a></strong>"
+  html = "<h6><a href='https://data.medicare.gov/Hospital-Compare/Healthcare-Associated-Infections/ihvx-zkyp' target='blank'>Hospital Associated Infections (from CMS Hospital Compare/CDC)</a></h6>"
   html += "<ul class='side-nav'>"
   $.each(obj, function(k,hai){
     if(hai.score != undefined){
@@ -215,8 +228,15 @@ function renderHcHaisObject(obj){
   return html
 }
 
-function rebderHcahpsObject(obj){
-  html = "<strong>Patient Experience Surveys (HCAHPS via CMS Hospital Compare</strong>"
+function renderHcahpsObject(obj){
+  html = "<h6><a href='http://www.hcahpsonline.org/home.aspx' target='blank'>Patient Experience Surveys (HCAHPS via CMS Hospital Compare</a></h6>"
+  html += "<ul class='side-nav'>"
+  $.each(obj, function(k,v){
+    console.log(k)
+    key = formatKey(k)
+    html += "<li><u>"+key+":</u> "+v+"</li>"
+  })                
+  html += "</ul>"
   return html
 }
 
@@ -228,4 +248,16 @@ function formatKey(input){
 function formatSource(input){
   string = String(input)
   return string.split("/")[2]
+}
+
+function toggle(input,what_to_toggle){
+  str = String(input)
+  $("#"+str+" "+what_to_toggle).toggle('blind')
+  if($("#"+str+" .toggler i").hasClass("foundicon-minus")){
+    $("#"+str+" .toggler i").toggleClass("foundicon-minus")
+    $("#"+str+" .toggler i").toggleClass("foundicon-plus")
+  } else {
+    $("#"+str+" .toggler i").toggleClass("foundicon-minus")
+    $("#"+str+" .toggler i").toggleClass("foundicon-plus")
+  }
 }

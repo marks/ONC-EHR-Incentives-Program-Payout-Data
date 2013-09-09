@@ -6,3 +6,5 @@ div.progress span.meter{color:#000; font-weight:bold;}
 .alert-box{line-height:20px;}
 .top-bar i{font-size:34px;}
 .top-bar .has-tip{color:#FFF; border-bottom:none;}
+#feature_container h6{line-height:20px !important; margin-bottom: 0px !important;}
+#feature_container .toggler{float:right;margin-top:5px;}

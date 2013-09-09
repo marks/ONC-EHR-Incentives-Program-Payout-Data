@@ -53,7 +53,6 @@
             %a{:href => "#", :onclick => "javascript:toggle_column_mode()"}
               %span.has-tip{"data-tooltip" => "", "data-options" => "disable-for-touch:true", :title => "Toggle 1 and 2 column mode"}
                 %i.foundicon-view-mode
-
           %li.divider
           %li.has-dropdown
             %a.links-link{:href => "#"} Links
@@ -139,13 +138,14 @@
                     %td
                       Did not receive any MU/HITECH incentive payments in 2011, 2012, or 2013
 
-
           %section
             %p.title{"data-section-title" => "data"}
               %a{:href => "#"} Data
             .content{"data-section-content" => ""}
-              #feature_accordion_container
-              %p To see specifics about a healthcare provider, click on their icon on the map to the right.
+              %p To see data about a healthcare provider, click on their icon on the map.
+              .row
+                #feature_container_container.large-12.columns
+                  #feature_container
 
       .large-7.columns#content
         %h3 Map of United States Healthcare Providers

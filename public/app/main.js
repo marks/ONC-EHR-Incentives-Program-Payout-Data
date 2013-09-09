@@ -53,7 +53,7 @@ function onFeatureClick(e){
   $("p.title[data-section-title=data]").first().click()
   props = e.target.feature.properties
   if(props["PROVIDER CCN"]){ label = "CCN_"+e.target.feature.properties["PROVIDER CCN"] }
-  else if(props["PROVIDER NPI"]) { label = "NPI_"+e.target.feature.properties["PROVIDER NPI"] }
+  else if(props["PROVIDER NPI"]) { label = "NPI_"+e.target.feature.properties.npi }
   else { label = "Unknown" }
   if(typeof(_gaq) != "undefined"){ _gaq.push(['_trackEvent', 'Map', 'Click (Feature)', label]); }
 
@@ -62,8 +62,8 @@ function onFeatureClick(e){
     features_clicked.push(e.target.feature)
     renderHospitalDetails()
   }
-  else if(props["PROVIDER NPI"]) {
-    id = props["PROVIDER NPI"]
+  else if(props.npi) {
+    id = props.npi
     selector = "#feature_container #"+id
     if($('div#content').hasClass("large-12")){
       feature_stub_div_class = "large-4 columns"
@@ -74,8 +74,8 @@ function onFeatureClick(e){
       feature_stub = "<div class='feature panel "+feature_stub_div_class+"' id='"+id+"'></div>"
       $("#feature_container").append(feature_stub)
       feature_content = ""
-      feature_content += "<h4>"+props["PROVIDER NAME"]+"</h4>"
-      feature_content += "<div class='feature_content'><a href='http://www.bloomapi.com/search#/npis/"+id+"' target='blank'>Visit BloomAPI for data about this provider from the CMS NPPES database</a><p>"
+      feature_content += "<h4>"+props.name+"</h4>"
+      feature_content += "<div class='feature_content'><p><a href='http://www.bloomapi.com/search#/npis/"+id+"' target='blank'>Visit BloomAPI for data about this provider from the CMS NPPES database</a></p>"
       feature_content += "</p></div></div>"
       $(selector).html(feature_content)
     }
@@ -99,7 +99,6 @@ function renderHospitalDetails(){
         id = props.id
         selector = "#feature_container #"+id
         if($(selector).length === 0){
-          console.log(props)
           if($('div#content').hasClass("large-12")){
             feature_stub_div_class = "large-4 columns"
           } else {
@@ -182,10 +181,12 @@ function toggle_column_mode(){
 function handleFeature(feature, layer){
   props = feature.properties
   // set icon (green or red) depending on incentive receive status
-  console.log(props)
-  if(props["incentives_received"]["year_2011"] == true){layer.setIcon(incentiveTrueIcon) }
-  else if(props["incentives_received"]["year_2012"] == true){layer.setIcon(incentiveTrueIcon) }
-  else if(props["incentives_received"]["year_2013"] == true){layer.setIcon(incentiveTrueIcon) }
+  if(props.incentives_received){
+    if(props["incentives_received"]["year_2011"] == true){layer.setIcon(incentiveTrueIcon) }
+    else if(props["incentives_received"]["year_2012"] == true){layer.setIcon(incentiveTrueIcon) }
+    else if(props["incentives_received"]["year_2013"] == true){layer.setIcon(incentiveTrueIcon) }    
+    else {layer.setIcon(incentiveFalseIcon)}
+  }
   else {layer.setIcon(incentiveFalseIcon)}
 
   // set up pop up text. ALWAYS give preference to incentive received dataset but fall back on general info dataset
@@ -193,8 +194,7 @@ function handleFeature(feature, layer){
   popup = ""
 
   // provider name
-  if(props["PROVIDER CCN"]){popup += "<strong>" + props["name"]+"</strong>"} 
-  else if(props["PROVIDER NAME"]){popup += "<strong>" + props["PROVIDER NAME"]+"</strong>"}
+  popup += "<strong>" + props.name + "</strong>"
 
   if(props.address){
     popup += "<br />"+props.address["address"]

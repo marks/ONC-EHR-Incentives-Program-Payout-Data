@@ -217,19 +217,19 @@ function onFeatureClick(e){$("p.title[data-section-title=data]").effect("highlig
 $("p.title[data-section-title=data]").first().click()
 props=e.target.feature.properties
 if(props["PROVIDER CCN"]){label="CCN_"+e.target.feature.properties["PROVIDER CCN"]}
-else if(props["PROVIDER NPI"]){label="NPI_"+e.target.feature.properties["PROVIDER NPI"]}
+else if(props["PROVIDER NPI"]){label="NPI_"+e.target.feature.properties.npi}
 else{label="Unknown"}
 if(typeof(_gaq)!="undefined"){_gaq.push(['_trackEvent','Map','Click (Feature)',label]);}
 if(props["PROVIDER CCN"]){features_clicked.push(e.target.feature)
 renderHospitalDetails()}
-else if(props["PROVIDER NPI"]){id=props["PROVIDER NPI"]
+else if(props.npi){id=props.npi
 selector="#feature_container #"+id
 if($('div#content').hasClass("large-12")){feature_stub_div_class="large-4 columns"}else{feature_stub_div_class=""}
 if($(selector).length===0){feature_stub="<div class='feature panel "+feature_stub_div_class+"' id='"+id+"'></div>"
 $("#feature_container").append(feature_stub)
 feature_content=""
-feature_content+="<h4>"+props["PROVIDER NAME"]+"</h4>"
-feature_content+="<div class='feature_content'><a href='http://www.bloomapi.com/search#/npis/"+id+"' target='blank'>Visit BloomAPI for data about this provider from the CMS NPPES database</a><p>"
+feature_content+="<h4>"+props.name+"</h4>"
+feature_content+="<div class='feature_content'><p><a href='http://www.bloomapi.com/search#/npis/"+id+"' target='blank'>Visit BloomAPI for data about this provider from the CMS NPPES database</a></p>"
 feature_content+="</p></div></div>"
 $(selector).html(feature_content)}}
 else{}}
@@ -240,8 +240,7 @@ function renderHospitalDetails(){$("#feature_container").html("")
 $.each(features_clicked,function(n,feature){provider_url="/db/cms_incentives/EH/find_by_bson_id/"+feature.id+".json"
 $.getJSON(provider_url,function(props){if(props!=null){id=props.id
 selector="#feature_container #"+id
-if($(selector).length===0){console.log(props)
-if($('div#content').hasClass("large-12")){feature_stub_div_class="large-4 columns"}else{feature_stub_div_class=""}
+if($(selector).length===0){if($('div#content').hasClass("large-12")){feature_stub_div_class="large-4 columns"}else{feature_stub_div_class=""}
 feature_stub="<div class='feature panel "+feature_stub_div_class+"' id='"+id+"'></div>"
 $("#feature_container").append(feature_stub)
 feature_content="<a href=# onclick=toggle('"+id+"','.feature_content') title='show/hide details' class='toggler'><i class='foundicon-general-plus'></i></a>"
@@ -260,14 +259,13 @@ function toggle_column_mode(){$('div#side_section').toggleClass('large-5')
 $('div#side_section .feature').toggleClass("columns large-4")
 $('div#content').toggleClass('large-9').toggleClass('large-12')}
 function handleFeature(feature,layer){props=feature.properties
-console.log(props)
-if(props["incentives_received"]["year_2011"]==true){layer.setIcon(incentiveTrueIcon)}
+if(props.incentives_received){if(props["incentives_received"]["year_2011"]==true){layer.setIcon(incentiveTrueIcon)}
 else if(props["incentives_received"]["year_2012"]==true){layer.setIcon(incentiveTrueIcon)}
 else if(props["incentives_received"]["year_2013"]==true){layer.setIcon(incentiveTrueIcon)}
+else{layer.setIcon(incentiveFalseIcon)}}
 else{layer.setIcon(incentiveFalseIcon)}
 popup=""
-if(props["PROVIDER CCN"]){popup+="<strong>"+props["name"]+"</strong>"}
-else if(props["PROVIDER NAME"]){popup+="<strong>"+props["PROVIDER NAME"]+"</strong>"}
+popup+="<strong>"+props.name+"</strong>"
 if(props.address){popup+="<br />"+props.address["address"]
 popup+="<br />"+props.address["city"]+", "+props.address["state"]+" "+props.address["zip"]}
 if(props.general){popup+="<br /><br />Hosp. Name: "+props.general["hospital_name"]

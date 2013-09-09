@@ -1,7 +1,5 @@
 // the plan is to have all custom JS that supports the main site function here
 // document.ready calls will stay in layout.haml/page level code, for now
-L.Icon.Default.imagePath = '/leaflet-0.6.4/images'
-
 
 var map, markers; // for leaflet mapping
 var features_clicked = [] // for comparison features

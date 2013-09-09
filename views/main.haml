@@ -204,6 +204,8 @@
 
       $(document).ready(function() {
         // initialize and create Leaflet map
+        L.Icon.Default.imagePath = '/leaflet-0.6.4/images'
+        
         var cloudmadeUrl = 'http://{s}.tile.cloudmade.com/#{settings.leaflet_key}/{styleId}/256/{z}/{x}/{y}.png',
           cloudmadeAttribution = 'Map data &copy; OpenStreetMap contributors, Imagery &copy; CloudMade';
 

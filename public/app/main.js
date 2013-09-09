@@ -96,9 +96,10 @@ function renderHospitalDetails(){
     provider_url = "/db/cms_incentives/EH/find_by_bson_id/"+feature.id+".json"
     $.getJSON(provider_url, function(props){
       if(props != null){
-        id = props["PROVIDER CCN"]
+        id = props.id
         selector = "#feature_container #"+id
         if($(selector).length === 0){
+          console.log(props)
           if($('div#content').hasClass("large-12")){
             feature_stub_div_class = "large-4 columns"
           } else {
@@ -108,23 +109,13 @@ function renderHospitalDetails(){
 
           $("#feature_container").append(feature_stub)
 
-          if(props["PROVIDER - ORG NAME"]){
-            title = props["PROVIDER - ORG NAME"]
-          }
-          else if(props["general"]){
-            title = props["general"]["hospital_name"]
-          } else {
-            title = "Unknown"
-          }
-
-
           feature_content = "<a href=# onclick=toggle('"+id+"','.feature_content') title='show/hide details' class='toggler'><i class='foundicon-general-plus'></i></a>"
-          feature_content += "<h4>"+title+"</h4>"
+          feature_content += "<h4>"+props.name+"</h4>"
           feature_content += "<div class='feature_content' style='display:none'><p>"
           
           $.each( props, function(k, v){
             key = formatKey(k)
-            if(v.length === 0){
+            if(v == null || v.length === 0){
               // do nothing
             }
             else if(typeof(v) === "object"){
@@ -191,9 +182,10 @@ function toggle_column_mode(){
 function handleFeature(feature, layer){
   props = feature.properties
   // set icon (green or red) depending on incentive receive status
-  if(props["PROGRAM YEAR 2011"] == "TRUE"){layer.setIcon(incentiveTrueIcon) }
-  else if(props["PROGRAM YEAR 2012"] == "TRUE"){layer.setIcon(incentiveTrueIcon) }
-  else if(props["PROGRAM YEAR 2013"] == "TRUE"){layer.setIcon(incentiveTrueIcon) }
+  console.log(props)
+  if(props["incentives_received"]["year_2011"] == true){layer.setIcon(incentiveTrueIcon) }
+  else if(props["incentives_received"]["year_2012"] == true){layer.setIcon(incentiveTrueIcon) }
+  else if(props["incentives_received"]["year_2013"] == true){layer.setIcon(incentiveTrueIcon) }
   else {layer.setIcon(incentiveFalseIcon)}
 
   // set up pop up text. ALWAYS give preference to incentive received dataset but fall back on general info dataset
@@ -201,47 +193,31 @@ function handleFeature(feature, layer){
   popup = ""
 
   // provider name
-  if(props["PROVIDER - ORG NAME"]){popup += "<strong>" + props["PROVIDER - ORG NAME"]+"</strong>"} // incentive dataset
-  else if(props["PROVIDER NAME"]){popup += "<strong>" + props["PROVIDER NAME"]+"</strong>"} // incentive
-  else if(props.general["hospital_name"]){popup += "<strong>" + props.general["hospital_name"]+"</strong>"}
+  if(props["PROVIDER CCN"]){popup += "<strong>" + props["name"]+"</strong>"} 
+  else if(props["PROVIDER NAME"]){popup += "<strong>" + props["PROVIDER NAME"]+"</strong>"}
 
-  // provider address
-  if(props["PROVIDER  ADDRESS"] && props["PROVIDER CITY"] && props["PROVIDER STATE"] && props["PROVIDER ZIP 5 CD"]){
-    popup += "<br />"+props["PROVIDER  ADDRESS"]
-    popup += "<br />"+props["PROVIDER CITY"]+", " + props["PROVIDER STATE"] + " " + props["PROVIDER ZIP 5 CD"]
-  }
-  else if(props.general){
-    if(props.general["address_1"] && props.general["city"] && props.general["state"] && props.general["zip_code"]){
-      popup += "<br />"+props.general["address_1"]
-      popup += "<br />"+props.general["city"]+", " + props.general["state"] + " " + props.general["zip_code"]
-    }
+  if(props.address){
+    popup += "<br />"+props.address["address"]
+    popup += "<br />"+props.address["city"]+", " + props.address["state"] + " " + props.address["zip"]
   }
   
-  // general hospital info
   if(props.general){
-    if(props.general["hospital_name"]){
-      popup += "<br /><br />Hosp. Name: "+props.general["hospital_name"]
-    }
-    if(props.general["hospital_owner"]){
-      popup += "<br />Hosp. Owner: "+props.general["hospital_owner"]
-    }        
-    if(props.general["hospital_type"]){
-      popup += "<br />Hosp. Type: "+props.general["hospital_type"]
-    }          
+    popup += "<br /><br />Hosp. Name: "+props.general["hospital_name"]
+    popup += "<br />Hosp. Owner: "+props.general["hospital_owner"]
+    popup += "<br />Hosp. Type: "+props.general["hospital_type"]
   }
 
   // phone number
-  if(props["PROVIDER PHONE NUM"]){popup += "<br /><br /> Phone: " + props["PROVIDER PHONE NUM"]}
-  else if(props.general && props.general["phone_number"]){popup += "<br /><br /> Phone: " + props.general["phone_number"]}
+  if(props.phone_number){popup += "<br /><br /> Phone: " + props.phone_number}
 
   // other attributes (NPI, CCN, Incentive Program Years)
   if(props["PROVIDER CCN"]){ popup += "<br /><br /> CCN: <a href='http://www.medicare.gov/hospitalcompare/profile.html#profTab=0&ID="+props["PROVIDER CCN"]+"' target='blank'>"+props["PROVIDER CCN"]+"</a>"}
-  if(props["PROVIDER NPI"]){popup += "<br />NPI: " + "<a href='https://npiregistry.cms.hhs.gov/NPPESRegistry/DisplayProviderDetails.do?searchNpi=1114922341&city=&firstName=&orgName=&searchType=org&state=&npi="+props["PROVIDER NPI"]+"&orgDba=&lastName=&zip=' target=_blank>"+props["PROVIDER NPI"]+"</a>"}
-  if(props["jc"]){if(props["jc"]["org_id"]){popup+= "<br />Joint Commisison ID: <a target='blank' href='http://www.qualitycheck.org/consumer/searchresults.aspx?nm="+props["jc"]["org_id"]+"'>"+props["jc"]["org_id"]+"</a>"}}
+  if(props.npi){popup += "<br />NPI: " + "<a href='http://www.bloomapi.com/search#/npis/"+props.npi+"' target=_blank>"+props.npi+"</a>"}
+  if(props.jc_id){popup+= "<br />Joint Commisison ID: <a target='blank' href='http://www.qualitycheck.org/consumer/searchresults.aspx?nm="+props.jc_id+"'>"+props.jc_id+"</a>"}
   popup += "<br /><br />Incentive Program Year(s), if any: "
-  if(props["PROGRAM YEAR 2011"] == "TRUE"){popup += "<span class='radius secondary label'>2011</span> " }
-  if(props["PROGRAM YEAR 2012"] == "TRUE"){ popup += " <span class='radius secondary label'>2012</span>" }
-  if(props["PROGRAM YEAR 2013"] == "TRUE"){ popup += " <span class='radius secondary label'>2013</span>" }
+  if(props["incentives_received"]["year_2011"] === true){popup += "<span class='radius secondary label'>2011</span> " }
+  if(props["incentives_received"]["year_2012"] === true){ popup += " <span class='radius secondary label'>2012</span>" }
+  if(props["incentives_received"]["year_2013"] === true){ popup += " <span class='radius secondary label'>2013</span>" }
 
   layer.bindPopup(popup)
   layer.on('click', onFeatureClick);

@@ -6,7 +6,7 @@ task :geocode do
   puts "Number of hospitals in collection w/o geolocation: #{hospitals_without_geo.count}"
 
   hospitals_without_geo.each do |h|
-    geo_results = dstk_geocode(h.address)
+    geo_results = dstk_geocode(h.full_address)
     h.update_attribute("geo",geo_results) if geo_results
   end
 

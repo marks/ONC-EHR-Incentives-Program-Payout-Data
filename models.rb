@@ -3,6 +3,7 @@ Mongoid.raise_not_found_error = false
 
 class Hospital
   include Mongoid::Document
+  include Mongoid::CachedJson
 
   index({ "PROVIDER CCN" => 1})
   index({ "PROVIDER STATE" => 1})
@@ -12,6 +13,12 @@ class Hospital
   store_in collection: "ProvidersPaidByEHRProgram_June2013_EH"
 
   embeds_many :hc_hais
+
+  json_fields \
+    :"PROVIDER CCN" => { }, :id => {:type => :reference, :definiton => :_id}, :incentives_received => {:type => :reference},
+    :geo => {}, :phone_number => {:type => :reference},
+    :address => {:type => :reference}, :name => {:type => :reference}, :npi => {:type => :reference},
+    :hc_hais => { :type => :reference}, :general => {:type => :reference, :definition => :general_or_not}, :hcahps => {:type => :reference, :definition => :hcahps_or_not}, :jc_id => {:type => :reference}
 
   scope :without_hcahps, where("hcahps" => nil)
   scope :with_hcahps, where("hcahps" => {"$ne" => nil})
@@ -26,13 +33,71 @@ class Hospital
   scope :received_2011_incentive, where("PROGRAM YEAR 2011" => "TRUE")
   scope :never_received_any_incentives, where({"PROGRAM YEAR 2012" => nil, "PROGRAM YEAR 2011" => nil, "PROGRAM YEAR 2013" => nil})
 
+  def to_s
+    name
+  end
+
+  def name
+    if self["general"].present? && self["general"]["hospital_name"].present? 
+      self["general"]["hospital_name"]
+    elsif self["PROVIDER - ORG NAME"].present?
+      self["PROVIDER - ORG NAME"]
+    else
+      nil
+    end
+  end
+
   def address
+    if self["PROVIDER  ADDRESS"].present?
+      {:address => self["PROVIDER  ADDRESS"], :city => self["PROVIDER CITY"], :state => self["PROVIDER STATE"], :zip => self["PROVIDER ZIP 5 CD"]} 
+    elsif self["general"]["address_1"].present?
+      {:address => self["general"]["address_1"], :city => self["general"]["city"], :state => self["general"]["state"], :zip => self["general"]["zip_code"]} 
+    else
+      nil
+    end
+  end
+
+  def npi
+    self["PROVIDER NPI"].present? ? self["PROVIDER NPI"] : nil
+  end
+
+  def hcahps_or_not
+    self["hcahps"].present? ? self["hcahps"] : nil
+  end
+
+  def jc_id
+    self["jc"].present? ? self["jc"]["org_id"] : nil
+  end
+
+  def general_or_not
+    self["general"].present? ? self["general"] : nil
+  end
+
+  def incentives_received
+    incentives = {}
+    (2011..2013).each do |year|
+      incentives["year_#{year}"] = (self["PROGRAM YEAR #{year}"] == "TRUE")
+    end
+    return incentives
+  end
+
+  def full_address
     if self["PROVIDER  ADDRESS"] # favor data from EHR incentive data dump
       return "#{self["PROVIDER  ADDRESS"]}, #{self["PROVIDER CITY"]}, #{self["PROVIDER STATE"]}, #{self["PROVIDER ZIP 5 CD"]}"
     elsif self["general"] # resort to general info (for providers with no incentives)
       return "#{self["general"]["address_1"]}, #{self["general"]["city"]}, #{self["general"]["state"]}, #{self["general"]["zip_code"]}"
     else
       return nil
+    end
+  end
+
+  def phone_number
+    if self["general"]["phone_number"].present?
+      self["general"]["phone_number"]
+    elsif self["PROVIDER PHONE NUM"].present?
+      self["PROVIDER PHONE NUM"]
+    else
+      nil
     end
   end
 
@@ -85,11 +150,11 @@ class Hospital
     Hospital.where(query).map_reduce(map, reduce).finalize(finalize).out(merge: DescriptiveStatistic.collection.name).each{|x| puts x}
   end
 
-  def to_geojson(keys_to_exclude = ["hcahps","hc_hais","geo"])
-    hash = self.as_document.to_hash
-    coordinates = [hash["geo"]["geometry"]["location"]["lng"],hash["geo"]["geometry"]["location"]["lat"]]
+  def to_geojson(keys_to_exclude = [:hcahps,:hc_hais,:geo])
+    hash = self.as_json
+    coordinates = [hash[:geo]["geometry"]["location"]["lng"],hash[:geo]["geometry"]["location"]["lat"]]
     keys_to_exclude.each{|k| hash.delete(k)}
-    {"type" => "Feature", "id" => hash["_id"].to_s, "properties" => hash, "geometry" => {"type" => "Point", "coordinates" => coordinates}}
+    {"type" => "Feature", "id" => hash[:id].to_s, "properties" => hash, "geometry" => {"type" => "Point", "coordinates" => coordinates}}
   end
 
 

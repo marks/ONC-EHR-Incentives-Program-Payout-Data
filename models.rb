@@ -85,6 +85,8 @@ class Hospital
   scope :without_jc_id, where("jc" => nil)
   scope :with_ahrq_m, where("ahrq_m" => {"$ne" => nil})
   scope :without_ahrq_m, where("ahrq_m" => nil)
+  scope :with_hc_hais, where("hc_hais" => {"$ne" => nil})
+  scope :without_hc_hais, where("hc_hais" => nil)
 
   scope :received_any_incentives, any_of([{"PROGRAM YEAR 2011" => "TRUE"},{"PROGRAM YEAR 2012" => "TRUE"},{"PROGRAM YEAR 2013" => "TRUE"}])
   scope :received_2011_incentive, where("PROGRAM YEAR 2011" => "TRUE")

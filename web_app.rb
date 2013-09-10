@@ -58,11 +58,11 @@ end
 
 get '/' do
   if settings.production?
-    @all_hospitals_with_geo_url = "/data/ProvidersPaidByEHRProgram_June2013_EH/-all_with_geo.geojson"
-    @state_providers_url = "/db/cms_incentives/EP/"    
-  else
     @all_hospitals_with_geo_url = "#{settings.public_host}/public/data/ProvidersPaidByEHRProgram_June2013_EH/geojson/all.geojson"
     @state_providers_url = "#{settings.public_host}/data/ProvidersPaidByEHRProgram_June2013_EP/geojson/"
+  else
+    @all_hospitals_with_geo_url = "/db/cms_incentives/EH/all.geojson"
+    @state_providers_url = "/db/cms_incentives/EP/"    
   end
   haml :main
 end
@@ -73,7 +73,7 @@ get '/db/cms_incentives/EP/:state.geojson' do
   state_geojson.to_json
 end
 
-get '/db/cms_incentives/EH/all_hospitals_with_geo.geojson' do
+get '/db/cms_incentives/EH/all.geojson' do
   content_type :json
   geojson = Hash.new
   geojson["type"] = "FeatureCollection"

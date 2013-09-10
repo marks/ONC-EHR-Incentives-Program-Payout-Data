@@ -32,10 +32,10 @@ function load_geojson_as_cluster(data_url,fit_bounds){
     markers.addLayer(geoJsonLayer);
     map.addLayer(markers);
 
-    searchControl = new L.Control.Search({layer: markers, propertyName: "PROVIDER CCN", circleLocation:true});
+    searchControl = new L.Control.Search({layer: markers, propertyName: "name", circleLocation:true});
     searchControl.on('search_locationfound', function(e) {
       map.fitBounds(new L.LatLngBounds(new L.LatLng(e.layer.getLatLng().lat, e.layer.getLatLng().lng), new L.LatLng(e.layer.getLatLng().lat, e.layer.getLatLng().lng)))
-      map.zoomOut(10)
+      map.zoomOut(3)
       e.layer.openPopup()
     })
     map.addControl( searchControl );

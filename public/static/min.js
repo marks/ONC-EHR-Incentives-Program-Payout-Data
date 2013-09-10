@@ -250,7 +250,7 @@ key_value_content=""
 object_content=""
 $.each(props,function(k,v){key=formatKey(k)
 if(v==null||v.length===0){}
-else if(typeof(v)==="object"){if(k=="hc_hais"){object_content+="</p>"+renderHcHaisObject(v)+"<p>"}else if(k=="hcahps"){object_content+="</p><h6><a href='http://www.hcahpsonline.org/home.aspx' target='blank'>Patient Experience Surveys (HCAHPS via CMS Hospital Compare</a></h6><p>"
+else if(typeof(v)==="object"){if(k=="hc_hais"){object_content+="</p>"+renderHcHaisObject(v)+"<p>"}else if(k=="hc_hacs"){object_content+="</p>"+renderHcHacsObject(v)+"<p>"}else if(k=="hcahps"){object_content+="</p><h6><a href='http://www.hcahpsonline.org/home.aspx' target='blank'>Patient Experience Surveys (HCAHPS via CMS Hospital Compare</a></h6><p>"
 object_content+=renderKeyValueObject(v)}else if(k=="ahrq_m"){object_content+="</p><h6><a href='https://data.medicare.gov/Hospital-Compare/Agency-For-Healthcare-Research-And-Quality-Measure/vs3q-rxc5' target='blank'>Agency for Healthcare Research and Quality Measues</a></h6><p>"
 object_content+=renderKeyValueObject(v)}else if(k=="address"){object_content+="</p><h6>Address</h6><p>"
 object_content+=renderKeyValueObject(v,false)}else if(k=="geo"){object_content+="</p><h6>Geocoding</h6><p>"
@@ -288,10 +288,17 @@ if(props["incentives_received"]["year_2012"]===true){popup+=" <span class='radiu
 if(props["incentives_received"]["year_2013"]===true){popup+=" <span class='radius secondary label'>2013</span>"}
 layer.bindPopup(popup)
 layer.on('click',onFeatureClick);}
-function renderHcHaisObject(obj){html="<h6><a href='https://data.medicare.gov/Hospital-Compare/Healthcare-Associated-Infections/ihvx-zkyp' target='blank'>Hospital Associated Infections (from CMS Hospital Compare/CDC)</a></h6>"
+function renderHcHaisObject(obj){html="<h6><a href='http://www.medicare.gov/hospitalcompare/Data/Healthcare-Associated-Infections.html' target='blank'>Hospital Associated Infections (from CMS Hospital Compare/CDC)</a></h6>"
 html+="<ul class='side-nav'>"
 $.each(obj,function(k,hai){if(hai.score!=undefined){html+="<li><a href='http://www.cdc.gov/HAI/infectionTypes.html' target='blank'>"+hai.measure+"</a>"
 html+="<ul class=''><li>Score: "+hai.score+"</li><li>Footnote: "+hai.footnote+"</li><li>Source: "+formatSource(hai._source)+"</li><li>Data last refreshed at: "+hai._updated_at+"</li></ul>"
+html+="</li>"}})
+html+="</ul>"
+return html}
+function renderHcHacsObject(obj){html="<h6><a href='http://www.medicare.gov/hospitalcompare/Data/Hospital-Acquired-Conditions.html' target='blank'>Hospital Acquired Condition (from CMS Hospital Compare/CDC)</a></h6>"
+html+="<ul class='side-nav'>"
+$.each(obj,function(k,hac){if(hac.rate_per_1_000_discharges_!=undefined){html+="<li>"+hac.measure+""
+html+="<ul class=''><li>Rate per 1,000: "+hac.rate_per_1_000_discharges_+"</li><li>Source: "+formatSource(hac._source)+"</li><li>Data last refreshed at: "+hac._updated_at+"</li></ul>"
 html+="</li>"}})
 html+="</ul>"
 return html}

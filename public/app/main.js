@@ -120,6 +120,8 @@ function renderHospitalDetails(){
             else if(typeof(v) === "object"){
               if(k == "hc_hais"){
                 object_content += "</p>"+renderHcHaisObject(v)+"<p>"
+              } else if (k == "hc_hacs"){
+                object_content += "</p>"+renderHcHacsObject(v)+"<p>"
               } else if (k == "hcahps"){
                 // feature_content += "</p>"+renderHcahpsObject(v)+"<p>"
                 object_content += "</p><h6><a href='http://www.hcahpsonline.org/home.aspx' target='blank'>Patient Experience Surveys (HCAHPS via CMS Hospital Compare</a></h6><p>"
@@ -235,12 +237,26 @@ function handleFeature(feature, layer){
 }
 
 function renderHcHaisObject(obj){
-  html = "<h6><a href='https://data.medicare.gov/Hospital-Compare/Healthcare-Associated-Infections/ihvx-zkyp' target='blank'>Hospital Associated Infections (from CMS Hospital Compare/CDC)</a></h6>"
+  html = "<h6><a href='http://www.medicare.gov/hospitalcompare/Data/Healthcare-Associated-Infections.html' target='blank'>Hospital Associated Infections (from CMS Hospital Compare/CDC)</a></h6>"
   html += "<ul class='side-nav'>"
   $.each(obj, function(k,hai){
     if(hai.score != undefined){
       html += "<li><a href='http://www.cdc.gov/HAI/infectionTypes.html' target='blank'>"+hai.measure+"</a>"
       html += "<ul class=''><li>Score: "+hai.score+"</li><li>Footnote: "+hai.footnote+"</li><li>Source: "+formatSource(hai._source)+"</li><li>Data last refreshed at: "+hai._updated_at+"</li></ul>"
+      html += "</li>"      
+    }
+  })
+  html += "</ul>"
+  return html
+}
+
+function renderHcHacsObject(obj){
+  html = "<h6><a href='http://www.medicare.gov/hospitalcompare/Data/Hospital-Acquired-Conditions.html' target='blank'>Hospital Acquired Condition (from CMS Hospital Compare/CDC)</a></h6>"
+  html += "<ul class='side-nav'>"
+  $.each(obj, function(k,hac){
+    if(hac.rate_per_1_000_discharges_ != undefined){
+      html += "<li>"+hac.measure+""
+      html += "<ul class=''><li>Rate per 1,000: "+hac.rate_per_1_000_discharges_+"</li><li>Source: "+formatSource(hac._source)+"</li><li>Data last refreshed at: "+hac._updated_at+"</li></ul>"
       html += "</li>"      
     }
   })

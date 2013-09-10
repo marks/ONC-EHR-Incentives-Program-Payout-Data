@@ -62,11 +62,11 @@ Procedure
 
         bundle exec rake mongodb:mongoid_create_indexes
 
-  10. If you intend to run the visualization in a prodution-like environemnt: 
+  10. If you intend to run the visualization in a prodution environemnt: 
 
         # You will want to create a static `.geojson` 
         bundle exec ruby web_app.rb -p 4567 -e development
-        curl http://localhost:4567/db/cms_incentives/EH/all_hospitals_with_geo.geojson -o public/data/ProvidersPaidByEHRProgram_June2013_EH/ProvidersPaidByEHRProgram_June2013_EH-all_with_geo.geojson
+        curl http://localhost:4567/db/cms_incentives/EH/all_hospitals_with_geo.geojson -o public/data/ProvidersPaidByEHRProgram_June2013_EH/geojson/all.geojson
 
         # Refresh the minified static assets
         rm public/static/*
@@ -92,3 +92,7 @@ Procedure
         mongoimport --type csv -d cms_incentives -c ProvidersPaidByEHRProgram_June2013_EP --headerline --file public/data/ProvidersPaidByEHRProgram_June2013_EP/ProvidersPaidByEHRProgram_June2013_EP-normalizedByBrianNorris.csv
 
         bundle exec rake providers:ensure_fields_are_properly_formatted
+
+  5. If you are running in a production environment, export the geojson to flat files (instead of hitting the database) by running the following rake task:
+
+        bundle exec rake providers:output_provider_geojson_by_state

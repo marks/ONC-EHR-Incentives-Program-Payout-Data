@@ -95,6 +95,10 @@ class Hospital
   scope :received_2011_incentive, where("PROGRAM YEAR 2011" => "TRUE")
   scope :never_received_any_incentives, where({"PROGRAM YEAR 2012" => nil, "PROGRAM YEAR 2011" => nil, "PROGRAM YEAR 2013" => nil})
 
+  def self.exclude_from_geojson
+    [:hcahps,:hc_hais,:hc_hacs]
+  end
+
   def hcahps_or_not
     self["hcahps"].present? ? self["hcahps"] : nil
   end

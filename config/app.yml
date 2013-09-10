@@ -8,4 +8,4 @@ development: &common_settings
 production:
   <<: *common_settings
   google_analytics_id: 'UA-31592977-6' # override the default value
-  public_host: 'http://d24fc9v5gux58s.cloudfront.net'
+  public_host: ''

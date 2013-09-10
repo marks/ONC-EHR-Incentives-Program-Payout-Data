@@ -57,7 +57,13 @@ assets do
 end
 
 get '/' do
-  @default_data_url = '/db/cms_incentives/EH/all_hospitals_with_geo.geojson'
+  if settings.production?
+    @all_hospitals_with_geo_url = "/data/ProvidersPaidByEHRProgram_June2013_EH/-all_with_geo.geojson"
+    @state_providers_url = "/db/cms_incentives/EP/"    
+  else
+    @all_hospitals_with_geo_url = "#{settings.public_host}/public/data/ProvidersPaidByEHRProgram_June2013_EH/geojson/all.geojson"
+    @state_providers_url = "#{settings.public_host}/data/ProvidersPaidByEHRProgram_June2013_EP/geojson/"
+  end
   haml :main
 end
 
@@ -71,7 +77,7 @@ get '/db/cms_incentives/EH/all_hospitals_with_geo.geojson' do
   content_type :json
   geojson = Hash.new
   geojson["type"] = "FeatureCollection"
-  features = Hospital.with_geo.without(:hc_hais,:hcahps)
+  features = Hospital.with_geo.without(Hospital.exclude_from_geojson)
   features = settings.development? ? features.with_hcahps.limit(100) : features
   geojson["features"] = features.map {|h| h.to_geojson}
   return geojson.to_json

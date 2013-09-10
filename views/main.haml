@@ -157,9 +157,9 @@
         .row
           .large-8.columns
             %select#dropdown{:name => "dropdown"}
-              %option{:value => "#{settings.public_host}#{@default_data_url}"} ALL US Hospitals (updated June 2013)
+              %option{:value => "#{@all_hospitals_with_geo_url}"} All US hospitals (updated June 2013)
               - STATES.each do |state|
-                %option{:value => "#{settings.public_host}/db/cms_incentives/EP/#{state}.geojson"}= "#{state} Providers who received CMS HITECH incentives (updated June 2013)"
+                %option{:value => "#{@state_providers_url}/#{state}.geojson"}= "#{state} providers who received CMS incentives (updated June 2013)"
           .large-4.columns
             %a.tiny.secondary.button{:href => "#", :onclick => "map.locate({setView:true})"} Zoom to current location
        
@@ -222,5 +222,5 @@
 
         L.control.layers(baseMaps, overlayMaps).addTo(map);
 
-        load_geojson_as_cluster("#{@default_data_url}",true)
+        load_geojson_as_cluster("#{@all_hospitals_with_geo_url}",true)
       });

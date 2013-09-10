@@ -96,7 +96,7 @@ class Hospital
   scope :never_received_any_incentives, where({"PROGRAM YEAR 2012" => nil, "PROGRAM YEAR 2011" => nil, "PROGRAM YEAR 2013" => nil})
 
   def self.exclude_from_geojson
-    [:hcahps,:hc_hais,:hc_hacs]
+    [:hcahps,:hc_hais,:hc_hacs,:ahrq_m]
   end
 
   def hcahps_or_not

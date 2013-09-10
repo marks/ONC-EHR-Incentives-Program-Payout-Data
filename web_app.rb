@@ -78,7 +78,6 @@ get '/db/cms_incentives/EH/all.geojson' do
   geojson = Hash.new
   geojson["type"] = "FeatureCollection"
   features = Hospital.with_geo.without(Hospital.exclude_from_geojson)
-  features = settings.development? ? features.with_hcahps.limit(100) : features
   geojson["features"] = features.map {|h| h.to_geojson}
   return geojson.to_json
 end

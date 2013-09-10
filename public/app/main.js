@@ -112,31 +112,42 @@ function renderHospitalDetails(){
           feature_content += "<h4>"+props.name+"</h4>"
           feature_content += "<div class='feature_content' style='display:none'><p>"
           
+          key_value_content = ""
+          object_content = ""
           $.each( props, function(k, v){
             key = formatKey(k)
-            if(v == null || v.length === 0){
-              // do nothing
-            }
+            if(v == null || v.length === 0){ /* do nothing */ }
             else if(typeof(v) === "object"){
-              feature_content += "<hr />"
               if(k == "hc_hais"){
-                feature_content += "</p>"+renderHcHaisObject(v)+"<p>"
+                object_content += "</p>"+renderHcHaisObject(v)+"<p>"
               } else if (k == "hcahps"){
-                feature_content += "</p>"+renderHcahpsObject(v)+"<p>"
-              } 
-              else {
-                feature_content += "</p><h6>"+key+"</h6><p>"
-                $.each(v, function(k2,v2){
-                  key2 = formatKey(k2)
-                  feature_content += "<u>"+key2+":</u> "+v2+"<br />"
-                })                
+                // feature_content += "</p>"+renderHcahpsObject(v)+"<p>"
+                object_content += "</p><h6><a href='http://www.hcahpsonline.org/home.aspx' target='blank'>Patient Experience Surveys (HCAHPS via CMS Hospital Compare</a></h6><p>"
+                object_content += renderKeyValueObject(v)
+              } else if (k == "ahrq_m"){
+                object_content += "</p><h6><a href='https://data.medicare.gov/Hospital-Compare/Agency-For-Healthcare-Research-And-Quality-Measure/vs3q-rxc5' target='blank'>Agency for Healthcare Research and Quality Measues</a></h6><p>"
+                object_content += renderKeyValueObject(v)
+              } else if (k == "address"){
+                object_content += "</p><h6>Address</h6><p>"
+                object_content += renderKeyValueObject(v,false) 
+              } else if (k == "geo"){
+                object_content += "</p><h6>Geocoding</h6><p>"
+                object_content += "<u>source:</u> "+v._source+"<br />"
+                object_content += "<u>updated at:</u> "+v._updated_at+"<br />"
               }
+              else {
+                object_content += "</p><h6>"+key+"</h6><p>"
+                object_content += renderKeyValueObject(v)
+              }
+              object_content += "<hr />"
             } 
             else {
-              feature_content += "<u>"+key+":</u> "+v+"<br />"
+              key_value_content += "<u>"+key+":</u> "+v+"<br />"
             }
 
           });
+
+          feature_content+= key_value_content + object_content
 
           feature_content += "</p></div></div>"
           $(selector).html(feature_content)
@@ -237,15 +248,17 @@ function renderHcHaisObject(obj){
   return html
 }
 
-function renderHcahpsObject(obj){
-  html = "<h6><a href='http://www.hcahpsonline.org/home.aspx' target='blank'>Patient Experience Surveys (HCAHPS via CMS Hospital Compare</a></h6>"
-  html += "<ul class='side-nav'>"
+function renderKeyValueObject(obj,exclude_duplicate_fields){
+  if(typeof(exclude_duplicate_fields) == "undefined"){exclude_duplicate_fields = true}
+  html = ""
   $.each(obj, function(k,v){
+    if(exclude_duplicate_fields){
+      if($.inArray(k, ["provider_number","address_1","address_2","zip_code","phone_number","state","city","county_name","hospital_name"]) != -1 ){return true}
+    }
     key = formatKey(k)
-    html += "<li><u>"+key+":</u> "+v+"</li>"
-  })                
-  html += "</ul>"
-  return html
+    html += "<u>"+key+":</u> "+v+"<br />"
+  })       
+  return html         
 }
 
 function formatKey(input){

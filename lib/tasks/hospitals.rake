@@ -104,6 +104,34 @@ namespace :hospitals do
     
   end
 
+  desc "Fetch AHRQ Measures from Socrata API"
+  task :ingest_ahrq_m do
+    socrata_endpoint = "http://data.medicare.gov/resource/vs3q-rxc5.json"
+
+    puts "Number of hospitals in collection: #{Hospital.count}"
+    hospitals_without_ahrq_m = Hospital.without_ahrq_m
+    puts "Number of hospitals in collection w/o AHRQ measures: #{hospitals_without_ahrq_m.count}"
+
+    data = fetch_whole_socrata_dataset(socrata_endpoint, settings.socrata_key)
+
+    puts "Ingesting new data"
+    data.each do |row|
+      new_data = {
+        "_source" => socrata_endpoint,
+        "_updated_at" => Time.now,
+      }.merge(row)
+      h = Hospital.find_by("PROVIDER CCN" => format_ccn(new_data["provider_number"]))
+      if h.nil?
+        Hospital.create("ahrq_m" => new_data, "PROVIDER CCN" => format_ccn(new_data["provider_number"]))
+      else
+        h.update_attribute("ahrq_m",new_data)
+      end
+    end
+    
+    puts "#{Hospital.count} hospitals in db"
+    puts "Number of hospitals in collection w/o AHRQ Measures: #{Hospital.without_ahrq_m.count}"
+  end
+
 
   #desc "Calculate HCAHPS national averages for each value and store in a hcahps_averages collection"
   #task :calculate_national_averages do

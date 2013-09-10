@@ -53,9 +53,6 @@ module ModelHelpers
   def full_address
     "#{address[:address]}, #{address[:city]}, #{address[:state]} #{address[:zip]}"
   end
-
-
-
 end
 
 class Hospital
@@ -76,7 +73,7 @@ class Hospital
     :"PROVIDER CCN" => { }, :id => {:type => :reference, :definiton => :_id}, :incentives_received => {:type => :reference},
     :geo => {}, :phone_number => {:type => :reference},
     :address => {:type => :reference}, :name => {:type => :reference}, :npi => {:type => :reference},
-    :hc_hais => { :type => :reference}, :general => {:type => :reference, :definition => :general_or_not}, :hcahps => {:type => :reference, :definition => :hcahps_or_not}, :jc_id => {:type => :reference}
+    :hc_hais => { :type => :reference}, :general => {:type => :reference, :definition => :general_or_not}, :hcahps => {:type => :reference, :definition => :hcahps_or_not}, :jc_id => {:type => :reference, :definition => :jc_id_or_not}, :ahrq_m => {:type => :reference, :definition => :ahrq_m_or_not}
 
   scope :without_hcahps, where("hcahps" => nil)
   scope :with_hcahps, where("hcahps" => {"$ne" => nil})
@@ -86,6 +83,8 @@ class Hospital
   scope :without_general, where("general" => nil)
   scope :with_jc_id, where("jc" => {"$ne" => nil})
   scope :without_jc_id, where("jc" => nil)
+  scope :with_ahrq_m, where("ahrq_m" => {"$ne" => nil})
+  scope :without_ahrq_m, where("ahrq_m" => nil)
 
   scope :received_any_incentives, any_of([{"PROGRAM YEAR 2011" => "TRUE"},{"PROGRAM YEAR 2012" => "TRUE"},{"PROGRAM YEAR 2013" => "TRUE"}])
   scope :received_2011_incentive, where("PROGRAM YEAR 2011" => "TRUE")
@@ -95,12 +94,16 @@ class Hospital
     self["hcahps"].present? ? self["hcahps"] : nil
   end
 
-  def jc_id
+  def jc_id_or_not
     self["jc"].present? ? self["jc"]["org_id"] : nil
   end
 
   def general_or_not
     self["general"].present? ? self["general"] : nil
+  end
+
+  def ahrq_m_or_not
+    self["ahrq_m"].present? ? self["ahrq_m"] : nil
   end
 
   # Usage: Hospital.mr_compute_descriptive_stats_excluding_nulls("hcahps.percent_of_patients_who_reported_that_the_area_around_their_room_was_always_quiet_at_night_")

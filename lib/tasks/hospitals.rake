@@ -80,7 +80,7 @@ namespace :hospitals do
     
   end
 
-  desc "Fetch HAI (hospital acquired infection) data from Socrata API for hospitals that are already in our system (aka received incentive payments)"
+  desc "Fetch HAI (hospital acquired infection) data from Socrata API for hospitals"
   task :ingest_hc_hais do
     socrata_endpoint = "http://data.medicare.gov/resource/ihvx-zkyp.json"
 
@@ -103,6 +103,32 @@ namespace :hospitals do
     end
     
   end
+
+
+  desc "Fetch HAC (hospital acquired condition) data from Socrata API for hospitals"
+  task :ingest_hc_hacs do
+    socrata_endpoint = "http://data.medicare.gov/resource/qd2y-qcgs.json"
+
+    data = fetch_whole_socrata_dataset(socrata_endpoint, settings.socrata_key, 1000, "rate_per_1_000_discharges_ != 'Not Available'")
+
+    puts "Ingesting new data"
+    data.each do |row|
+      new_data = {
+        "_source" => socrata_endpoint,
+        "_updated_at" => Time.now,
+      }.merge(row)
+      ["hospital_name","phone_number","zip_code","state","address_1","city","county_name"].each {|k| new_data.delete(k)}
+      h = Hospital.find_by("PROVIDER CCN" => format_ccn(new_data["provider_id"]))
+      if h.nil?
+        new_h = Hospital.create("PROVIDER CCN" => format_ccn(new_data["provider_id"]))
+        new_h.hc_hacs << HcHac.new(new_data)
+      else
+        h.hc_hacs << HcHac.new(new_data)
+      end
+    end
+    
+  end
+
 
   desc "Fetch AHRQ Measures from Socrata API"
   task :ingest_ahrq_m do
@@ -144,7 +170,7 @@ namespace :hospitals do
 
   task :simple_report do
     puts "\nWe started by analyzing hospitals that received incentive payments in program year 2011, 2012, or 2013. We then added all hospitals in the hospital compare (general information) data set, and added HCAHPS data for as many hospitals as we could, using their CCN as the look-up variable.\n\n"
-    # Documents with a root-level key of "PROGRAM YEAR 2012" DID receive incentive payments
+    # Hospitals that DID receive incentive payments
     puts "  # received an incentive* (* in any of 2011, 2012, _or_ 2013) = #{Hospital.received_any_incentives.count}"
     puts "    # received an incentive* and we were able to geocode = #{Hospital.received_any_incentives.with_geo.count}"
     puts "    # received an incentive* and we found HCAHPS data = #{Hospital.received_any_incentives.with_hcahps.count}"
@@ -152,7 +178,9 @@ namespace :hospitals do
     puts "    # received an incentive* and we found a Joint Commission ID = #{Hospital.received_any_incentives.with_jc_id.count}"
     puts "    # received an incentive* and we found AHRQ measures = #{Hospital.received_any_incentives.with_ahrq_m.count}"
     puts "    # received an incentive* and we found HAI data = #{Hospital.received_any_incentives.with_hc_hais.count}"
+    puts "    # received an incentive* and we found HAC data = #{Hospital.received_any_incentives.with_hc_hacs.count}"
     puts " -> # received an incentive* and we found general information, HCAHPS, AND geocoded = #{Hospital.received_any_incentives.with_general.with_hcahps.with_geo.count} \n\n"
+    # Hospitals that DID NOT receive incentives
     puts "  # did not received an incentive*  = #{Hospital.never_received_any_incentives.count}"
     puts "    # did not received an incentive* and we were able to geocode = #{Hospital.never_received_any_incentives.with_geo.count}"
     puts "    # did not received an incentive* and we found HCAHPS data = #{Hospital.never_received_any_incentives.with_hcahps.count}"
@@ -160,6 +188,7 @@ namespace :hospitals do
     puts "    # did not received an incentive* and we found Joint Commission ID = #{Hospital.never_received_any_incentives.with_jc_id.count}"
     puts "    # did not received an incentive* and we found AHRQ measures = #{Hospital.never_received_any_incentives.with_ahrq_m.count}"
     puts "    # did not received an incentive* and we found HAI data = #{Hospital.never_received_any_incentives.with_hc_hais.count}\n\n"
+    puts "    # did not received an incentive* and we found HAC data = #{Hospital.never_received_any_incentives.with_hc_hacs.count}\n\n"
 
     puts "TOTAL HOSPITALS IN DB = #{Hospital.count} (# received any incentives* + # never received an incentive)\n\n"
 

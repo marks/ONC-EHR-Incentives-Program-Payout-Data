@@ -68,12 +68,13 @@ class Hospital
   store_in collection: "ProvidersPaidByEHRProgram_June2013_EH"
 
   embeds_many :hc_hais
+  embeds_many :hc_hacs
 
   json_fields \
     :"PROVIDER CCN" => { }, :id => {:type => :reference, :definiton => :_id}, :incentives_received => {:type => :reference},
     :geo => {}, :phone_number => {:type => :reference},
     :address => {:type => :reference}, :name => {:type => :reference}, :npi => {:type => :reference},
-    :hc_hais => { :type => :reference}, :general => {:type => :reference, :definition => :general_or_not}, :hcahps => {:type => :reference, :definition => :hcahps_or_not}, :jc_id => {:type => :reference, :definition => :jc_id_or_not}, :ahrq_m => {:type => :reference, :definition => :ahrq_m_or_not}
+    :hc_hais => { :type => :reference}, :hc_hacs => { :type => :reference}, :general => {:type => :reference, :definition => :general_or_not}, :hcahps => {:type => :reference, :definition => :hcahps_or_not}, :jc_id => {:type => :reference, :definition => :jc_id_or_not}, :ahrq_m => {:type => :reference, :definition => :ahrq_m_or_not}
 
   scope :without_hcahps, where("hcahps" => nil)
   scope :with_hcahps, where("hcahps" => {"$ne" => nil})
@@ -87,6 +88,8 @@ class Hospital
   scope :without_ahrq_m, where("ahrq_m" => nil)
   scope :with_hc_hais, where("hc_hais" => {"$ne" => nil})
   scope :without_hc_hais, where("hc_hais" => nil)
+  scope :with_hc_hacs, where("hc_hacs" => {"$ne" => nil})
+  scope :without_hc_hacs, where("hc_hacs" => nil)
 
   scope :received_any_incentives, any_of([{"PROGRAM YEAR 2011" => "TRUE"},{"PROGRAM YEAR 2012" => "TRUE"},{"PROGRAM YEAR 2013" => "TRUE"}])
   scope :received_2011_incentive, where("PROGRAM YEAR 2011" => "TRUE")
@@ -169,15 +172,21 @@ end
 
 class HcHai
   include Mongoid::Document
-
   embedded_in :hospital
-
   index({ "measure" => 1})
   index({ "measure" => 1, "score" => -1})
-
   field :measure
   field :score
   field :footnote
+end
+
+class HcHac
+  include Mongoid::Document
+  embedded_in :hospital
+  index({ "measure" => 1})
+  index({ "measure" => 1, "rate_per_1_000_discharges_" => -1})
+  field :measure
+  field :rate_per_1_000_discharges_
 end
 
 class Provider

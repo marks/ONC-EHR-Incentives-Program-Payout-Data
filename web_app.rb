@@ -58,7 +58,7 @@ end
 
 get '/' do
   if settings.production?
-    @all_hospitals_with_geo_url = "#{settings.public_host}/public/data/ProvidersPaidByEHRProgram_June2013_EH/geojson/all.geojson"
+    @all_hospitals_with_geo_url = "#{settings.public_host}/data/ProvidersPaidByEHRProgram_June2013_EH/geojson/all.geojson"
     @state_providers_url = "#{settings.public_host}/data/ProvidersPaidByEHRProgram_June2013_EP/geojson/"
   else
     @all_hospitals_with_geo_url = "/db/cms_incentives/EH/all.geojson"

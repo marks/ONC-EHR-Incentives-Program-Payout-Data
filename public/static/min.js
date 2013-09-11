@@ -255,11 +255,16 @@ object_content+=renderKeyValueObject(v)}else if(k=="ahrq_m"){object_content+="</
 object_content+=renderKeyValueObject(v)}else if(k=="address"){object_content+="</p><h6>Address</h6><p>"
 object_content+=renderKeyValueObject(v,false)}else if(k=="geo"){object_content+="</p><h6>Geocoding</h6><p>"
 object_content+="<u>source:</u> "+v._source+"<br />"
-object_content+="<u>updated at:</u> "+v._updated_at+"<br />"}
+object_content+="<u>updated at:</u> "+v._updated_at+"<br />"}else if(k=="incentives_received"){object_content+="</p><h6>EHR Incentives Received</h6><p>"
+if(v.year_2011===true){object_content+="<span class='radius secondary label'>2011</span> "}
+if(v.year_2012===true){object_content+="<span class='radius secondary label'>2012</span> "}
+if(v.year_2013===true){object_content+="<span class='radius secondary label'>2013</span> "}
+if(v.year_2011===false&&v.year_2012===false&&v.year_2013==false){object_content+="None"}
+object_content+="<br /><em><a href='http://socialhealthinsights.com/2013/09/visualizing-meaningful-use-attestation-data-by-ehr-and-technology-vendor/' target='blank'>Interested in which vendors are supporting eligible hospitals and providers? This blog post includes analysis and a link to an interactive visualization of vendor stats.</a></em>"}
 else{object_content+="</p><h6>"+key+"</h6><p>"
 object_content+=renderKeyValueObject(v)}
 object_content+="<hr />"}
-else{key_value_content+="<u>"+key+":</u> "+v+"<br />"}});feature_content+=key_value_content+object_content
+else{if($.inArray(k,["_id","jc_id"])!=-1){key_value_content+="<u>"+key+":</u> "+v+"<br />"}}});feature_content+=key_value_content+object_content
 feature_content+="</p></div></div>"
 $(selector).html(feature_content)}else{}}});})}
 function toggle_column_mode(){$('div#side_section').toggleClass('large-5')

@@ -2,8 +2,8 @@ A repo for working with data from [ONC's EHR Incentive Programs Data and Program
 
 Screenshot
 ----------
-![iPad (Landscape) Screenshot](public/screenshots/ipad-landscape-2013-03-04.png "iPad Screenshot")
-*Screenshot last updated 3/4/2013 at 9pm EST*
+![Screenshot](public/screenshots/US_Healthcare_Provider_Mashup-2.png"Screenshot")
+*Screenshot last updated 9/12/2013 at 12pm EST*
 
 Notes
 -----

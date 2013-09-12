@@ -85,6 +85,10 @@ end
 
 get '/db/cms_incentives/EH/find_by_bson_id/:bson_id.json' do
   content_type :json
-  provider = Hospital.find(params[:bson_id])
+  if params[:bson_id] == "random"
+    provider = Hospital.skip(rand(Hospital.count-1)).first
+  else
+    provider = Hospital.find(params[:bson_id])
+  end
   return provider.nil? ? nil.to_json : provider.as_json.to_json
 end

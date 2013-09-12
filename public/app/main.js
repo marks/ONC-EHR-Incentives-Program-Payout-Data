@@ -2,7 +2,7 @@
 // document.ready calls will stay in layout.haml/page level code, for now
 
 var map, markers; // for leaflet mapping
-var features_clicked = [] // for comparison features
+var hospitals_clicked = [] // for comparison features
 
 var incentiveTrueIcon = L.icon({
     // http://mapicons.nicolasmollet.com/markers/health-education/health/hospital/?custom_color=1aa12a
@@ -59,8 +59,8 @@ function onFeatureClick(e){
 
   if(props["PROVIDER CCN"]){ 
     // hospital
-    features_clicked.push(e.target.feature)
-    renderHospitalDetails()
+    hospitals_clicked.push(e.target.feature.id)
+    renderHospitalComparison()
   }
   else if(props.npi) {
     id = props.npi
@@ -90,10 +90,20 @@ function onClusterClick(e){
   if(typeof(_gaq) != "undefined"){ _gaq.push(['_trackEvent', 'Map', 'Click (Cluster)', label]); }
 }
 
-function renderHospitalDetails(){
+function clearHospitalComparison(){
+  hospitals_clicked = [];
+  renderHospitalComparison();  
+}
+
+function addRandomHospitalToComparison(){
+  hospitals_clicked.push("random")
+  renderHospitalComparison();  
+}
+
+function renderHospitalComparison(){
   $("#feature_container").html("")
-  $.each(features_clicked, function(n,feature){
-    provider_url = "/db/cms_incentives/EH/find_by_bson_id/"+feature.id+".json"
+  $.each(hospitals_clicked, function(n,feature_id){
+    provider_url = "/db/cms_incentives/EH/find_by_bson_id/"+feature_id+".json"
     $.getJSON(provider_url, function(props){
       if(props != null){
         id = props.id
@@ -131,18 +141,19 @@ function renderHospitalDetails(){
                 object_content += renderKeyValueObject(v)
               } else if (k == "address"){
                 object_content += "</p><h6>Address</h6><p>"
-                object_content += renderKeyValueObject(v,false) 
+                object_content += formatAddress(v)
+                // object_content += renderKeyValueObject(v,false) 
               } else if (k == "geo"){
                 object_content += "</p><h6>Geocoding</h6><p>"
-                object_content += "<u>source:</u> "+v._source+"<br />"
-                object_content += "<u>updated at:</u> "+v._updated_at+"<br />"
+                // object_content += "<u>source:</u> "+v._source+"<br />"
+                // object_content += "<u>updated at:</u> "+v._updated_at+"<br />"
               } else if (k == "incentives_received"){
                 object_content += "</p><h6>EHR Incentives Received</h6><p>"
                 if(v.year_2011 === true){object_content += "<span class='radius secondary label'>2011</span> " }
                 if(v.year_2012 === true){object_content += "<span class='radius secondary label'>2012</span> " }
                 if(v.year_2013 === true){object_content += "<span class='radius secondary label'>2013</span> " }
                 if(v.year_2011 === false && v.year_2012 === false && v.year_2013 == false){object_content += "None"}
-                object_content += "<br /><em><a href='http://socialhealthinsights.com/2013/09/visualizing-meaningful-use-attestation-data-by-ehr-and-technology-vendor/' target='blank'>Interested in which vendors are supporting eligible hospitals and providers? This blog post includes analysis and a link to an interactive visualization of vendor stats.</a></em>"
+                object_content += "<br /><em class='small'><a href='http://socialhealthinsights.com/2013/09/visualizing-meaningful-use-attestation-data-by-ehr-and-technology-vendor/' target='blank'>Interested in which vendors are supporting eligible hospitals and providers? This blog post includes analysis and a link to an interactive visualization of vendor stats.</a></em>"
               }
               else {
                 object_content += "</p><h6>"+key+"</h6><p>"
@@ -168,6 +179,7 @@ function renderHospitalDetails(){
         }
       }
       
+      // old way of visualizing HCAHPS.. consider bring it back
       // if(data == null || data.hcahps == undefined){
       //   // do nothing
       // } else {
@@ -219,8 +231,7 @@ function handleFeature(feature, layer){
   popup += "<strong>" + props.name + "</strong>"
 
   if(props.address){
-    popup += "<br />"+props.address["address"]
-    popup += "<br />"+props.address["city"]+", " + props.address["state"] + " " + props.address["zip"]
+    popup += "<br />"+formatAddress(props.address)
   }
   
   if(props.general){
@@ -306,4 +317,11 @@ function toggle(input,what_to_toggle){
     $("#"+str+" .toggler i").toggleClass("foundicon-general-minus")
     $("#"+str+" .toggler i").toggleClass("foundicon-general-plus")
   }
+}
+
+function formatAddress(obj){
+  html = ""
+  html += obj["address"]
+  html += "<br />"+obj["city"]+", " + obj["state"] + " " + obj["zip"]
+  return html
 }

@@ -159,7 +159,9 @@
             %p.title{"data-section-title" => "data"}
               %a{:href => "#"} Data
             .content{"data-section-content" => ""}
-              %p To see data about a healthcare provider, click on their icon on the map.
+              %p
+                To see data about a healthcare provider, click their icon on the map
+                %a{:href => "#", :onclick => "addRandomHospitalToComparison()"} or click here for a random hospital.
               .row
                 #feature_container_container.large-12.columns
                   #feature_container

@@ -206,7 +206,10 @@ return this;},hide:function(){if(this._icon)
 this._icon.style.display='none';if(this._shadow)
 this._shadow.style.display='none';if(this._circleLoc)
 this._circleLoc.setStyle({fill:false,stroke:false});return this;},animate:function(){var circle=this._circleLoc,tInt=200,ss=10,mr=parseInt(circle._radius/ss),oldrad=this.options.radius,newrad=circle._radius*2.5,acc=0;circle._timerAnimLoc=setInterval(function(){acc+=0.5;mr+=acc;newrad-=mr;circle.setRadius(newrad);if(newrad<oldrad)
-{clearInterval(circle._timerAnimLoc);circle.setRadius(oldrad);}},tInt);return this;}});L.Map.addInitHook(function(){if(this.options.searchControl){this.searchControl=L.control.search();this.addControl(this.searchControl);}});L.control.search=function(options){return new L.Control.Search(options);};}).call(this);var map,markers;var features_clicked=[]
+{clearInterval(circle._timerAnimLoc);circle.setRadius(oldrad);}},tInt);return this;}});L.Map.addInitHook(function(){if(this.options.searchControl){this.searchControl=L.control.search();this.addControl(this.searchControl);}});L.control.search=function(options){return new L.Control.Search(options);};}).call(this);jQuery.fn.fastLiveFilter=function(list,options){options=options||{};list=jQuery(list);var input=this;var timeout=options.timeout||0;var callback=options.callback||function(){};var keyTimeout;var lis=list.children();var len=lis.length;var oldDisplay=len>0?lis[0].style.display:"block";callback(len);input.change(function(){var filter=input.val().toLowerCase();var li;var numShown=0;for(var i=0;i<len;i++){li=lis[i];if((li.textContent||li.innerText||"").toLowerCase().indexOf(filter)>=0){if(li.style.display=="none"){li.style.display=oldDisplay;}
+numShown++;}else{if(li.style.display!="none"){li.style.display="none";}}}
+callback(numShown);return false;}).keydown(function(){clearTimeout(keyTimeout);keyTimeout=setTimeout(function(){input.change();},timeout);});return this;}
+var map,markers;var hospitals_clicked=[]
 var incentiveTrueIcon=L.icon({iconUrl:PUBLIC_HOST+'/mapicons.nicolasmollet.com/hospital-building-green.png',iconSize:[32,37],iconAnchor:[15,37],popupAnchor:[2,-37]});var incentiveFalseIcon=L.icon({iconUrl:PUBLIC_HOST+'/mapicons.nicolasmollet.com/hospital-building-red.png',iconSize:[32,37],iconAnchor:[15,37],popupAnchor:[2,-37]});function load_geojson_as_cluster(data_url,fit_bounds){$("#map").showLoading();$.getJSON(data_url,function(data){if(typeof(markers)!="undefined"){map.removeLayer(markers);}
 if(typeof(searchControl)!="undefined"){map.removeControl(searchControl)}
 markers=new L.MarkerClusterGroup();var geoJsonLayer=L.geoJson(data,{onEachFeature:handleFeature});markers.on('clusterclick',onClusterClick);markers.addLayer(geoJsonLayer);map.addLayer(markers);searchControl=new L.Control.Search({layer:markers,propertyName:"name",circleLocation:true});searchControl.on('search_locationfound',function(e){map.fitBounds(new L.LatLngBounds(new L.LatLng(e.layer.getLatLng().lat,e.layer.getLatLng().lng),new L.LatLng(e.layer.getLatLng().lat,e.layer.getLatLng().lng)))
@@ -220,8 +223,8 @@ if(props["PROVIDER CCN"]){label="CCN_"+e.target.feature.properties["PROVIDER CCN
 else if(props["PROVIDER NPI"]){label="NPI_"+e.target.feature.properties.npi}
 else{label="Unknown"}
 if(typeof(_gaq)!="undefined"){_gaq.push(['_trackEvent','Map','Click (Feature)',label]);}
-if(props["PROVIDER CCN"]){features_clicked.push(e.target.feature)
-renderHospitalDetails()}
+if(props["PROVIDER CCN"]){hospitals_clicked.push(e.target.feature.id)
+renderHospitalComparison()}
 else if(props.npi){id=props.npi
 selector="#feature_container #"+id
 if($('div#content').hasClass("large-12")){feature_stub_div_class="large-4 columns"}else{feature_stub_div_class=""}
@@ -236,8 +239,11 @@ else{}}
 function onClusterClick(e){if(e.layer.getAllChildMarkers().length){label=e.layer.getAllChildMarkers().length+" children"}
 else{label="Unknown children"}
 if(typeof(_gaq)!="undefined"){_gaq.push(['_trackEvent','Map','Click (Cluster)',label]);}}
-function renderHospitalDetails(){$("#feature_container").html("")
-$.each(features_clicked,function(n,feature){provider_url="/db/cms_incentives/EH/find_by_bson_id/"+feature.id+".json"
+function clearHospitalComparison(){hospitals_clicked=[];renderHospitalComparison();}
+function addRandomHospitalToComparison(){hospitals_clicked.push("random")
+renderHospitalComparison();}
+function renderHospitalComparison(){$("#feature_container").html("")
+$.each(hospitals_clicked,function(n,feature_id){provider_url="/db/cms_incentives/EH/find_by_bson_id/"+feature_id+".json"
 $.getJSON(provider_url,function(props){if(props!=null){id=props.id
 selector="#feature_container #"+id
 if($(selector).length===0){if($('div#content').hasClass("large-12")){feature_stub_div_class="large-4 columns"}else{feature_stub_div_class=""}
@@ -253,14 +259,12 @@ if(v==null||v.length===0){}
 else if(typeof(v)==="object"){if(k=="hc_hais"){object_content+="</p>"+renderHcHaisObject(v)+"<p>"}else if(k=="hc_hacs"){object_content+="</p>"+renderHcHacsObject(v)+"<p>"}else if(k=="hcahps"){object_content+="</p><h6><a href='http://www.hcahpsonline.org/home.aspx' target='blank'>Patient Experience Surveys (HCAHPS via CMS Hospital Compare</a></h6><p>"
 object_content+=renderKeyValueObject(v)}else if(k=="ahrq_m"){object_content+="</p><h6><a href='https://data.medicare.gov/Hospital-Compare/Agency-For-Healthcare-Research-And-Quality-Measure/vs3q-rxc5' target='blank'>Agency for Healthcare Research and Quality Measues</a></h6><p>"
 object_content+=renderKeyValueObject(v)}else if(k=="address"){object_content+="</p><h6>Address</h6><p>"
-object_content+=renderKeyValueObject(v,false)}else if(k=="geo"){object_content+="</p><h6>Geocoding</h6><p>"
-object_content+="<u>source:</u> "+v._source+"<br />"
-object_content+="<u>updated at:</u> "+v._updated_at+"<br />"}else if(k=="incentives_received"){object_content+="</p><h6>EHR Incentives Received</h6><p>"
+object_content+=formatAddress(v)}else if(k=="geo"){object_content+="</p><h6>Geocoding</h6><p>"}else if(k=="incentives_received"){object_content+="</p><h6>EHR Incentives Received</h6><p>"
 if(v.year_2011===true){object_content+="<span class='radius secondary label'>2011</span> "}
 if(v.year_2012===true){object_content+="<span class='radius secondary label'>2012</span> "}
 if(v.year_2013===true){object_content+="<span class='radius secondary label'>2013</span> "}
 if(v.year_2011===false&&v.year_2012===false&&v.year_2013==false){object_content+="None"}
-object_content+="<br /><em><a href='http://socialhealthinsights.com/2013/09/visualizing-meaningful-use-attestation-data-by-ehr-and-technology-vendor/' target='blank'>Interested in which vendors are supporting eligible hospitals and providers? This blog post includes analysis and a link to an interactive visualization of vendor stats.</a></em>"}
+object_content+="<br /><em class='small'><a href='http://socialhealthinsights.com/2013/09/visualizing-meaningful-use-attestation-data-by-ehr-and-technology-vendor/' target='blank'>Interested in which vendors are supporting eligible hospitals and providers? This blog post includes analysis and a link to an interactive visualization of vendor stats.</a></em>"}
 else{object_content+="</p><h6>"+key+"</h6><p>"
 object_content+=renderKeyValueObject(v)}
 object_content+="<hr />"}
@@ -278,8 +282,7 @@ else{layer.setIcon(incentiveFalseIcon)}}
 else{layer.setIcon(incentiveFalseIcon)}
 popup=""
 popup+="<strong>"+props.name+"</strong>"
-if(props.address){popup+="<br />"+props.address["address"]
-popup+="<br />"+props.address["city"]+", "+props.address["state"]+" "+props.address["zip"]}
+if(props.address){popup+="<br />"+formatAddress(props.address)}
 if(props.general){popup+="<br /><br />Hosp. Name: "+props.general["hospital_name"]
 popup+="<br />Hosp. Owner: "+props.general["hospital_owner"]
 popup+="<br />Hosp. Type: "+props.general["hospital_type"]}
@@ -322,3 +325,7 @@ $("#"+str+" "+what_to_toggle).toggle('blind')
 if($("#"+str+" .toggler i").hasClass("foundicon-general-minus")){$("#"+str+" .toggler i").toggleClass("foundicon-general-minus")
 $("#"+str+" .toggler i").toggleClass("foundicon-general-plus")}else{$("#"+str+" .toggler i").toggleClass("foundicon-general-minus")
 $("#"+str+" .toggler i").toggleClass("foundicon-general-plus")}}
+function formatAddress(obj){html=""
+html+=obj["address"]
+html+="<br />"+obj["city"]+", "+obj["state"]+" "+obj["zip"]
+return html}

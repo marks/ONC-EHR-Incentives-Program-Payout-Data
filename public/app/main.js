@@ -75,7 +75,7 @@ function onFeatureClick(e){
       $("#feature_container").append(feature_stub)
       feature_content = ""
       feature_content += "<h4>"+props.name+"</h4>"
-      feature_content += "<div class='feature_content'><p><a href='http://www.bloomapi.com/search#/npis/"+id+"' target='blank'>Visit BloomAPI for data about this provider from the CMS NPPES database</a></p>"
+      feature_content += "<div class='feature_content'><p><a href='"+linkForNPI(id)+"' target='blank'>Visit BloomAPI for data about this provider from the CMS NPPES database</a></p>"
       feature_content += "</p></div></div>"
       $(selector).html(feature_content)
     }
@@ -122,7 +122,12 @@ function renderHospitalComparison(){
           feature_content += "<h4>"+props.name+"</h4>"
           feature_content += "<div class='feature_content' style='display:none'><p>"
           
-          key_value_content = ""
+          // handle root key value content
+          key_value_content = "<u>CMS ID (CCN):</u> <a href='"+linkForCCN(props["PROVIDER CCN"])+"'>"+props["PROVIDER CCN"]+"</a><br />"
+          if(props.npi){key_value_content += "<u>NPI:</u> <a href='"+linkForNPI(props.npi)+"'>"+props.npi+"</a><br />"}
+          if(props.jc_id){key_value_content += "<u>Joint Commission ID:</u> <a href='"+linkForJC(props.jc_id)+"'>"+props.jc_id+"</a><br />"}
+
+          // handle content stored in nested objects
           object_content = ""
           $.each( props, function(k, v){
             key = formatKey(k)
@@ -162,9 +167,7 @@ function renderHospitalComparison(){
               object_content += "<hr />"
             } 
             else {
-              if($.inArray(k, ["_id","jc_id"]) != -1 ){
-                key_value_content += "<u>"+key+":</u> "+v+"<br />"
-              }
+              // do nothing
             }
 
           });
@@ -244,9 +247,9 @@ function handleFeature(feature, layer){
   if(props.phone_number){popup += "<br /><br /> Phone: " + props.phone_number}
 
   // other attributes (NPI, CCN, Incentive Program Years)
-  if(props["PROVIDER CCN"]){ popup += "<br /><br /> CCN: <a href='http://www.medicare.gov/hospitalcompare/profile.html#profTab=0&ID="+props["PROVIDER CCN"]+"' target='blank'>"+props["PROVIDER CCN"]+"</a>"}
-  if(props.npi){popup += "<br />NPI: " + "<a href='http://www.bloomapi.com/search#/npis/"+props.npi+"' target=_blank>"+props.npi+"</a>"}
-  if(props.jc_id){popup+= "<br />Joint Commisison ID: <a target='blank' href='http://www.qualitycheck.org/consumer/searchresults.aspx?nm="+props.jc_id+"'>"+props.jc_id+"</a>"}
+  if(props["PROVIDER CCN"]){ popup += "<br /><br /> CCN: <a href='"+linkForCCN(props["PROVIDER CCN"])+"' target='blank'>"+props["PROVIDER CCN"]+"</a>"}
+  if(props.npi){popup += "<br />NPI: " + "<a href='"+linkForNPI(props.npi)+"' target=_blank>"+props.npi+"</a>"}
+  if(props.jc_id){popup+= "<br />Joint Commisison ID: <a target='blank' href='"+linkForJC(props.jc_id)+"'>"+props.jc_id+"</a>"}
   popup += "<br /><br />Incentive Program Year(s), if any: "
   if(props["incentives_received"]["year_2011"] === true){popup += "<span class='radius secondary label'>2011</span> " }
   if(props["incentives_received"]["year_2012"] === true){ popup += " <span class='radius secondary label'>2012</span>" }
@@ -324,4 +327,16 @@ function formatAddress(obj){
   html += obj["address"]
   html += "<br />"+obj["city"]+", " + obj["state"] + " " + obj["zip"]
   return html
+}
+
+function linkForNPI(npi){
+  return "http://www.bloomapi.com/search#/npis/"+npi;
+}
+
+function linkForCCN(ccn){
+  return "http://www.medicare.gov/hospitalcompare/profile.html#profTab=0&ID="+ccn;
+}
+
+function linkForJC(jc_id){
+  return "http://www.qualitycheck.org/consumer/searchresults.aspx?nm="+jc_id;
 }

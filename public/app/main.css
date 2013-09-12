@@ -10,6 +10,7 @@ div.progress span.meter{color:#000; font-weight:bold;}
 #feature_container .toggler{float:right;margin-top:5px;}
 #feature_container_container.large-12.columns .feature.panel.large-4.columns {margin-right: 10px; width: 302px;}
 
-.content ul{margin-left:25px;}
+.content ul.fix{margin-left:25px;}
 .content .small{font-size:75%;}
-
+.content ul.filterable{list-style-type: none;}
+input.filterable_input{width:100%; margin-bottom:25px;}

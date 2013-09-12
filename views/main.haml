@@ -112,7 +112,7 @@
                 saw an opportunity develop data visualizations and tools showing not only the progress but also potential impact of this and other important pieces of legislation.
 
               %h4 Leveraging Available Open Data
-              %ul
+              %ul.fix
                 %li
                   %a{:href => "http://www.cms.gov/Regulations-and-Guidance/Legislation/EHRIncentivePrograms/Meaningful_Use.html", :target => "blank"}
                     EHR Incentive Program Payment Data (Eligble Hospital and Eligible Provider CSVs from CMS website)
@@ -162,6 +162,9 @@
               %p
                 To see data about a healthcare provider, click their icon on the map
                 %a{:href => "#", :onclick => "addRandomHospitalToComparison()"} or click here for a random hospital.
+              .row
+                .large-12.columns
+                  %input.filterable_input{:placeholder => 'Type to filter data within provider detail panels'}
               .row
                 #feature_container_container.large-12.columns
                   #feature_container

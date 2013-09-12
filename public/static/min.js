@@ -252,16 +252,20 @@ $("#feature_container").append(feature_stub)
 feature_content="<a href=# onclick=toggle('"+id+"','.feature_content') title='show/hide details' class='toggler'><i class='foundicon-general-plus'></i></a>"
 feature_content+="<h4>"+props.name+"</h4>"
 feature_content+="<div class='feature_content' style='display:none'><p>"
-key_value_content="<u>CMS ID (CCN):</u> <a href='"+linkForCCN(props["PROVIDER CCN"])+"'>"+props["PROVIDER CCN"]+"</a><br />"
-if(props.npi){key_value_content+="<u>NPI:</u> <a href='"+linkForNPI(props.npi)+"'>"+props.npi+"</a><br />"}
-if(props.jc_id){key_value_content+="<u>Joint Commission ID:</u> <a href='"+linkForJC(props.jc_id)+"'>"+props.jc_id+"</a><br />"}
+key_value_content=""
+key_value_content+="<ul class=filterable>"
+key_value_content+="<li><u>CMS ID (CCN):</u> <a href='"+linkForCCN(props["PROVIDER CCN"])+"'>"+props["PROVIDER CCN"]+"</a></li>"
+if(props.npi){key_value_content+="<li><u>NPI:</u> <a href='"+linkForNPI(props.npi)+"'>"+props.npi+"</a></li>"}
+if(props.jc_id){key_value_content+="<li><u>Joint Commission ID:</u> <a href='"+linkForJC(props.jc_id)+"'>"+props.jc_id+"</a></li>"}
+key_value_content+="</ul>"
 object_content=""
 $.each(props,function(k,v){key=formatKey(k)
 if(v==null||v.length===0){}
 else if(typeof(v)==="object"){if(k=="hc_hais"){object_content+="</p>"+renderHcHaisObject(v)+"<p>"}else if(k=="hc_hacs"){object_content+="</p>"+renderHcHacsObject(v)+"<p>"}else if(k=="hcahps"){object_content+="</p><h6><a href='http://www.hcahpsonline.org/home.aspx' target='blank'>Patient Experience Surveys (HCAHPS via CMS Hospital Compare</a></h6><p>"
 object_content+=renderKeyValueObject(v)}else if(k=="ahrq_m"){object_content+="</p><h6><a href='https://data.medicare.gov/Hospital-Compare/Agency-For-Healthcare-Research-And-Quality-Measure/vs3q-rxc5' target='blank'>Agency for Healthcare Research and Quality Measues</a></h6><p>"
-object_content+=renderKeyValueObject(v)}else if(k=="address"){object_content+="</p><h6>Address</h6><p>"
-object_content+=formatAddress(v)}else if(k=="geo"){object_content+="</p><h6>Geocoding</h6><p>"}else if(k=="incentives_received"){object_content+="</p><h6>EHR Incentives Received</h6><p>"
+object_content+=renderKeyValueObject(v)}else if(k=="address"){object_content+="</p><h6>Address</h6><ul class='filterable'><p>"
+object_content+=formatAddress(v)
+object_content+="</ul><p>"}else if(k=="geo"){object_content+="</p><h6>Geocoding</h6><p>"}else if(k=="incentives_received"){object_content+="</p><h6>EHR Incentives Received</h6><p>"
 if(v.year_2011===true){object_content+="<span class='radius secondary label'>2011</span> "}
 if(v.year_2012===true){object_content+="<span class='radius secondary label'>2012</span> "}
 if(v.year_2013===true){object_content+="<span class='radius secondary label'>2013</span> "}
@@ -299,24 +303,25 @@ if(props["incentives_received"]["year_2013"]===true){popup+=" <span class='radiu
 layer.bindPopup(popup)
 layer.on('click',onFeatureClick);}
 function renderHcHaisObject(obj){html="<h6><a href='http://www.medicare.gov/hospitalcompare/Data/Healthcare-Associated-Infections.html' target='blank'>Hospital Associated Infections (from CMS Hospital Compare/CDC)</a></h6>"
-html+="<ul class='side-nav'>"
+html+="<ul class='filterable'>"
 $.each(obj,function(k,hai){if(hai.score!=undefined){html+="<li><a href='http://www.cdc.gov/HAI/infectionTypes.html' target='blank'>"+hai.measure+"</a>"
 html+="<ul class=''><li>Score: "+hai.score+"</li><li>Footnote: "+hai.footnote+"</li><li>Source: "+formatSource(hai._source)+"</li><li>Data last refreshed at: "+hai._updated_at+"</li></ul>"
 html+="</li>"}})
 html+="</ul>"
 return html}
 function renderHcHacsObject(obj){html="<h6><a href='http://www.medicare.gov/hospitalcompare/Data/Hospital-Acquired-Conditions.html' target='blank'>Hospital Acquired Condition (from CMS Hospital Compare/CDC)</a></h6>"
-html+="<ul class='side-nav'>"
+html+="<ul class='filterable'>"
 $.each(obj,function(k,hac){if(hac.rate_per_1_000_discharges_!=undefined){html+="<li>"+hac.measure+""
 html+="<ul class=''><li>Rate per 1,000: "+hac.rate_per_1_000_discharges_+"</li><li>Source: "+formatSource(hac._source)+"</li><li>Data last refreshed at: "+hac._updated_at+"</li></ul>"
 html+="</li>"}})
 html+="</ul>"
 return html}
 function renderKeyValueObject(obj,exclude_duplicate_fields){if(typeof(exclude_duplicate_fields)=="undefined"){exclude_duplicate_fields=true}
-html=""
+html="<ul class='filterable'>"
 $.each(obj,function(k,v){if(exclude_duplicate_fields){if($.inArray(k,["provider_number","address_1","address_2","zip_code","phone_number","state","city","county_name","hospital_name"])!=-1){return true}}
 key=formatKey(k)
-html+="<u>"+key+":</u> "+v+"<br />"})
+html+="<li><u>"+key+":</u> "+v+"</li>"})
+html+="</ul>"
 return html}
 function formatKey(input){string=String(input)
 return string.toLowerCase().split("_").join(" ")}
@@ -326,7 +331,8 @@ function toggle(input,what_to_toggle){str=String(input)
 $("#"+str+" "+what_to_toggle).toggle('blind')
 if($("#"+str+" .toggler i").hasClass("foundicon-general-minus")){$("#"+str+" .toggler i").toggleClass("foundicon-general-minus")
 $("#"+str+" .toggler i").toggleClass("foundicon-general-plus")}else{$("#"+str+" .toggler i").toggleClass("foundicon-general-minus")
-$("#"+str+" .toggler i").toggleClass("foundicon-general-plus")}}
+$("#"+str+" .toggler i").toggleClass("foundicon-general-plus")}
+$('.filterable_input').fastLiveFilter('.filterable');}
 function formatAddress(obj){html=""
 html+=obj["address"]
 html+="<br />"+obj["city"]+", "+obj["state"]+" "+obj["zip"]

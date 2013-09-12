@@ -2,7 +2,7 @@ A repo for working with data from [ONC's EHR Incentive Programs Data and Program
 
 Screenshot
 ----------
-![Screenshot](public/screenshots/US_Healthcare_Provider_Mashup-2.png"Screenshot")
+![Screenshot](public/screenshots/US_Healthcare_Provider_Mashup-2.png "Screenshot")
 *Screenshot last updated 9/12/2013 at 12pm EST*
 
 Notes

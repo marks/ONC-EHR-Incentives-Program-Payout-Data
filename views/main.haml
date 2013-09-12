@@ -97,25 +97,52 @@
             %p.title{"data-section-title" => "about"}
               %a{:href => "#"} About
             .content{"data-section-content" => ""}
+              %h4 Introduction
               %p
-                The Center for Medicare and Medicaid Services (CMS) released raw data of providers and hospitals attesting to
-                %a{:href => "http://www.cms.gov/Regulations-and-Guidance/Legislation/EHRIncentivePrograms/Meaningful_Use.html", :target => "_blank"} Meaningful Use
-                under the Health Information Technology for Economic and Clinical Health Act
+                The Center for Medicare and Medicaid Services (CMS) releases data about 
+                %a{:href => "http://www.cms.gov/Regulations-and-Guidance/Legislation/EHRIncentivePrograms/Meaningful_Use.html", :target => "_blank"} providers and hospitals
+                who have successfully attested to Meaningful Use and received incentives for using electronic health records (EHRs) under the Health Information Technology for Economic and Clinical Health Act
                 = precede "(" do
                   = succeed ")." do
                     %a{:href => "http://www.healthit.gov/policy-researchers-implementers/final-rules-regulations", :target => "_blank"}HITECH
-                As
-                %a{:href => "http://www.healthit.gov", :target => "_blank"}healthit.gov
-                data has been made more and more open we saw opportunity to start the development of intuitive data visualizations showing the progress of this important piece of legislation. The following map provides you the ability to see the number of Medicare hospitals and providers that have attested to Meaningful Use as available in the CMS data set. We will keep this updated as the CMS updates their data set.
-                %br
-                %strong This is only the beginning.
+              %p With these and additional data being made more and more open, we saw an opportunity develop data visualizations and tools showing not only the progress buit also potential impact of this important piece of legislation. 
+
+              %h4 Leveraging Available Open Data
+              %ul
+                %li
+                  %a{:href => "http://www.cms.gov/Regulations-and-Guidance/Legislation/EHRIncentivePrograms/Meaningful_Use.html", :target => "blank"}
+                    EHR Incentive Program Payment Data (Eligble Hospital and Eligible Provider CSVs from CMS website)
+                %li
+                  %a{:href => "http://www.medicare.gov/hospitalcompare/Data/About.html", :target => "blank"}
+                    General Hospital Info from CMS Hospital Compare (via CMS)
+                %li
+                  %a{:href => "http://www.hcahpsonline.org/home.aspx", :target => "blank"}
+                    Hospital Consumer Assessment of Healthcare Providers and Systems (HCAHPS) Survey Data
+                %li
+                  %a{:href => "http://www.medicare.gov/hospitalcompare/Data/Data-Sources.html", :target => "blank"}
+                    Healthcare Associated Infections (via CDC)
+                %li
+                  %a{:href => "http://www.medicare.gov/hospitalcompare/Data/Data-Sources.html", :target => "blank"}
+                    Healthcare Acquired Conditions (via CDC)
+                %li
+                  %a{:href => "http://www.medicare.gov/hospitalcompare/Data/Data-Sources.html", :target => "blank"}
+                    Agency For Healthcare Research And Quality (AHRQ) Measures
+                %li
+                  %a{:href => "http://www.bloomapi.com", :target => "blank"}
+                    Detailed information for NPIs (National Provider Identifiers) through BloomAPI, an open source project
+
+              %h4 More Information
               %p
-                Visit Mark's
+                %em We see this as being just the beginning and are interested in adding more data sets and ideas to this open source piece of software.
+              %p
+                For more background information, visit Mark's
                 %a{:href => "http://socialhealthinsights.com/2013/03/hhscms-open-data-exploration-ehr-incentive-payments-to-eligible-hospitals-and-professionals/", :target => "_blank"}blog post about this project
-                to see the presentation introducing it at the health edition of Data Business DC meetup.
+                and/or the
+                %a{:href => "https://speakerdeck.com/silverberg/cms-meaningful-use-data/", :target => "_blank"}presentation introducing an earlier version
+                at the health edition of a Data Business DC meetup.
 
               %p
-                We envision a mash-up of various open data sets including but not limited to quality data, social data, and others to provide further insight. This is open source and on Github so please do help us keep the innovation going and let us know what you have done by tweeting to
+                We envision a mash-up of various open data sets including but not limited to quality, social, and other data to provide continuing insight. This is open source and on Github so please do help us keep  going and let us know what you have done by tweeting to
                 = succeed "," do
                   %a{:href => "http://twitter.com/skram", :target => "_blank"}@Skram
                 = succeed "," do

@@ -95,7 +95,7 @@
         .section-container.tabs{"data-section" => "tabs"}
           %section
             %p.title{"data-section-title" => "about"}
-              %a{:href => "#"} About
+              %a{:href => "#"} About This Site
             .content{"data-section-content" => ""}
               %h4 Introduction
               %p
@@ -105,7 +105,11 @@
                 = precede "(" do
                   = succeed ")." do
                     %a{:href => "http://www.healthit.gov/policy-researchers-implementers/final-rules-regulations", :target => "_blank"}HITECH
-              %p With these and additional data being made more and more open, we saw an opportunity develop data visualizations and tools showing not only the progress buit also potential impact of this important piece of legislation. 
+              %p
+                With these and additional data being made more and more open,
+                %a{:href => "http://socialhealthinsights.com/", :target => "blank"}
+                  we (a team of clinicans, developers, and designers)
+                saw an opportunity develop data visualizations and tools showing not only the progress but also potential impact of this and other important pieces of legislation.
 
               %h4 Leveraging Available Open Data
               %ul
@@ -150,42 +154,6 @@
                 and/or
                 = succeed "." do
                   %a{:href => "http://twitter.com/CheckQM", :target => "_blank"}@CheckQM
-      
-          %section
-            %p.title{"data-section-title" => ""}
-              %a{:href => "#"} Icon Legend
-            .content{"data-section-content" => ""}
-              %table#legend
-                %thead
-                  %tr
-                    %th Icon
-                    %th Description
-                %tbody
-                  %tr
-                    %td
-                      %img{:src => "#{settings.public_host}/mapicons.nicolasmollet.com/hospital-building-green.png"}
-                    %td Received MU/HITECH incentive payments in 2011, 2012 and/or 2013
-                  %tr
-                    %td
-                      %img{:src => "#{settings.public_host}/mapicons.nicolasmollet.com/hospital-building-red.png"}
-                    %td
-                      Did not receive any MU/HITECH incentive payments in 2011, 2012, or 2013
-                  %tr
-                    %td
-                      %i.foundicon-accessibility-view-mode
-                    %td
-                      Toggle between one and two column mode (desktop only)
-                  %tr
-                    %td
-                      %i.foundicon-general-plus
-                    %td
-                      Show more additional details
-                  %tr
-                    %td
-                      %i.foundicon-general-minus
-                    %td
-                      Hide additional details
-
 
           %section
             %p.title{"data-section-title" => "data"}
@@ -211,6 +179,38 @@
           To see more information about a facility, select its marker on the map and then visit the "Data" tab on the left.
 
         #map
+        %br
+        %h4 Map and Icon Legend
+        %table#legend
+          %thead
+            %tr
+              %th Icon
+              %th Description
+          %tbody
+            %tr
+              %td
+                %img{:src => "#{settings.public_host}/mapicons.nicolasmollet.com/hospital-building-green.png"}
+              %td Received MU/HITECH incentive payments in 2011, 2012 and/or 2013
+            %tr
+              %td
+                %img{:src => "#{settings.public_host}/mapicons.nicolasmollet.com/hospital-building-red.png"}
+              %td
+                Did not receive any MU/HITECH incentive payments in 2011, 2012, or 2013
+            %tr
+              %td
+                %i.foundicon-accessibility-view-mode
+              %td
+                Toggle between one and two column mode (desktop only)
+            %tr
+              %td
+                %i.foundicon-general-plus
+              %td
+                Show more additional details
+            %tr
+              %td
+                %i.foundicon-general-minus
+              %td
+                Hide additional details
 
 
     %footer.row

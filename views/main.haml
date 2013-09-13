@@ -262,8 +262,8 @@
             midnight  = L.tileLayer(cloudmadeUrl, {styleId: 999,   attribution: cloudmadeAttribution});
         
         map = L.map('map', {
-            maxZoom: 12,
-            layers: [minimal]
+            maxZoom: 8,
+            closePopupOnClick: false,
         });
         
         var baseMaps = {"Light theme": minimal, "Dark theme": midnight },

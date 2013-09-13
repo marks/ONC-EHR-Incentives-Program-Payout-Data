@@ -298,11 +298,11 @@ else{layer.setIcon(incentiveFalseIcon)}
 popup=""
 popup+="<strong>"+props.name+"</strong>"
 if(props.address){popup+="<br />"+formatAddress(props.address)}
-if(props.general){popup+="<br />"+formatGeneralHospitalInformation(props.general)}
-if(props.phone_number){popup+="<br /><br /> Phone: "+props.phone_number}
-if(props["PROVIDER CCN"]){popup+="<br /><br /> CCN: <a href='"+linkForCCN(props["PROVIDER CCN"])+"' target='blank'>"+props["PROVIDER CCN"]+"</a>"}
-if(props.npi){popup+="<br />NPI: "+"<a href='"+linkForNPI(props.npi)+"' target=_blank>"+props.npi+"</a>"}
-if(props.jc_id){popup+="<br />Joint Commisison ID: <a target='blank' href='"+linkForJC(props.jc_id)+"'>"+props.jc_id+"</a>"}
+if(props.general){popup+="<br /><br />"+formatGeneralHospitalInformation(props.general)}
+if(props.phone_number){popup+="<u>Phone:</u> "+props.phone_number}
+if(props["PROVIDER CCN"]){popup+="<br /><br /> <u>CCN:</u> <a href='"+linkForCCN(props["PROVIDER CCN"])+"' target='blank'>"+props["PROVIDER CCN"]+"</a>"}
+if(props.npi){popup+="<br /><u>NPI:</u> "+"<a href='"+linkForNPI(props.npi)+"' target=_blank>"+props.npi+"</a>"}
+if(props.jc_id){popup+="<br /><u>Joint Commisison ID:</u> <a target='blank' href='"+linkForJC(props.jc_id)+"'>"+props.jc_id+"</a>"}
 popup+="<br /><br />Incentive Program Year(s), if any: "
 if(props["incentives_received"]["year_2011"]===true){popup+="<span class='radius secondary label'>2011</span> "}
 if(props["incentives_received"]["year_2012"]===true){popup+=" <span class='radius secondary label'>2012</span>"}

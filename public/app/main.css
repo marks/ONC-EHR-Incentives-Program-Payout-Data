@@ -14,3 +14,17 @@ div.progress span.meter{color:#000; font-weight:bold;}
 .content .small{font-size:75%;}
 ul.filterable{list-style-type: none;}
 input.filterable_input{width:100%; margin-bottom:25px;}
+
+.leaflet-control-search .search-button{width: 23px; height: 23px;margin-top: 2px;margin-left:2px;}
+.leaflet-control-search.leaflet-control{margin-left:10px; margin-top:10px;}
+
+/* https://github.com/azavea/Leaflet.zoomdisplay */
+.leaflet-control-zoom-display {
+    width: 26px;
+    height: 26px;
+    /*left: 3px;*/
+    text-align: center;
+    font: bold 12px/20px Tahoma, Verdana, sans-serif;
+    padding-top: 0.3em;
+    background-color: #FFF;
+}

@@ -26,7 +26,7 @@ function load_geojson_as_cluster(data_url,fit_bounds){
   $.getJSON(data_url, function(data){
     if(typeof(markers) != "undefined"){map.removeLayer(markers);}    // clear all markers
     if(typeof(searchControl)!= "undefined"){map.removeControl(searchControl)}
-    markers = new L.MarkerClusterGroup();
+    markers = new L.MarkerClusterGroup({ disableClusteringAtZoom: 8 });
     var geoJsonLayer = L.geoJson(data, {onEachFeature: handleFeature });
     markers.on('clusterclick', onClusterClick);
     markers.addLayer(geoJsonLayer);

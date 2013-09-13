@@ -35,6 +35,7 @@ assets do
     '/Leaflet.markercluster/dist/leaflet.markercluster-src.js',
     '/stefanocudini-leaflet-search/leaflet-search.js',
     '/jquery.fastLiveFilter.js',
+    '/leaflet.zoomdisplay.js',
     '/app/main.js'
   ]
 

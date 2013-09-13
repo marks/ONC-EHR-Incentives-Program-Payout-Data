@@ -214,7 +214,7 @@ this._container.innerHTML=zoom;}});L.Map.mergeOptions({zoomDisplayControl:true})
 var incentiveTrueIcon=L.icon({iconUrl:PUBLIC_HOST+'/mapicons.nicolasmollet.com/hospital-building-green.png',iconSize:[32,37],iconAnchor:[15,37],popupAnchor:[2,-37]});var incentiveFalseIcon=L.icon({iconUrl:PUBLIC_HOST+'/mapicons.nicolasmollet.com/hospital-building-red.png',iconSize:[32,37],iconAnchor:[15,37],popupAnchor:[2,-37]});function load_geojson_as_cluster(data_url,fit_bounds){$("#map").showLoading();$.getJSON(data_url,function(data){if(typeof(markers)!="undefined"){map.removeLayer(markers);}
 if(typeof(searchControl)!="undefined"){map.removeControl(searchControl)}
 markers=new L.MarkerClusterGroup()
-var geoJsonLayer=L.geoJson(data,{onEachFeature:handleFeature});markers.on('clusterclick',onClusterClick);markers.addLayer(geoJsonLayer);map.addLayer(markers);searchControl=new L.Control.Search({layer:markers,propertyName:"name",circleLocation:true});searchControl.on('search_locationfound',function(e){map.fitBounds(new L.LatLngBounds(new L.LatLng(e.layer.getLatLng().lat,e.layer.getLatLng().lng),new L.LatLng(e.layer.getLatLng().lat,e.layer.getLatLng().lng)))
+var geoJsonLayer=L.geoJson(data,{onEachFeature:handleGeoJSONFeature,filter:filterGeoJSON});markers.on('clusterclick',onClusterClick);markers.addLayer(geoJsonLayer);map.addLayer(markers);searchControl=new L.Control.Search({layer:markers,propertyName:"name",circleLocation:true});searchControl.on('search_locationfound',function(e){map.fitBounds(new L.LatLngBounds(new L.LatLng(e.layer.getLatLng().lat,e.layer.getLatLng().lng),new L.LatLng(e.layer.getLatLng().lat,e.layer.getLatLng().lng)))
 e.layer.openPopup()})
 map.addControl(searchControl);$("#map").hideLoading();if(fit_bounds==true){map.fitBounds(markers.getBounds());}})}
 function onFeatureClick(e){$("p.title[data-section-title=data]").effect("highlight")
@@ -289,7 +289,7 @@ $(selector).html(feature_content)}else{}}});})}
 function toggle_column_mode(){$('div#side_section').toggleClass('large-5')
 $('div#side_section .feature').toggleClass("columns large-4")
 $('div#content').toggleClass('large-9').toggleClass('large-12')}
-function handleFeature(feature,layer){props=feature.properties
+function handleGeoJSONFeature(feature,layer){props=feature.properties
 if(props.incentives_received){if(props["incentives_received"]["year_2011"]==true){layer.setIcon(incentiveTrueIcon)}
 else if(props["incentives_received"]["year_2012"]==true){layer.setIcon(incentiveTrueIcon)}
 else if(props["incentives_received"]["year_2013"]==true){layer.setIcon(incentiveTrueIcon)}
@@ -312,7 +312,9 @@ layer.on('click',onFeatureClick);}
 function renderHcHaisObject(array_in){html="<h6><a href='http://www.medicare.gov/hospitalcompare/Data/Healthcare-Associated-Infections.html' target='blank'>Hospital Associated Infections (from CMS Hospital Compare/CDC)</a></h6>"
 if(array_in.length===0){html+="<p>None</p>"}else{html+="<ul class='filterable'>"
 $.each(array_in,function(k,hai){if(hai.score!=undefined){html+="<li><a href='http://www.cdc.gov/HAI/infectionTypes.html' target='blank'>"+hai.measure+"</a>"
-html+="<ul class=''><li>Score: "+hai.score+"</li><li>Footnote: "+hai.footnote+"</li><li>Source: "+formatSource(hai._source)+"</li><li>Data last refreshed at: "+hai._updated_at+"</li></ul>"
+html+="<ul class=''><li>Score: "+hai.score+"</li>"
+if(hai.footnote!=null){html+="<li>Footnote: "+hai.footnote+"</li>"}
+html+="<li>Source: "+formatSource(hai._source)+"</li><li>Data last refreshed at: "+hai._updated_at+"</li></ul>"
 html+="</li>"}})
 html+="</ul>"}
 return html}
@@ -360,3 +362,4 @@ return html;}
 function linkForNPI(npi){return"http://www.bloomapi.com/search#/npis/"+npi;}
 function linkForCCN(ccn){return"http://www.medicare.gov/hospitalcompare/profile.html#profTab=0&ID="+ccn;}
 function linkForJC(jc_id){return"http://www.qualitycheck.org/consumer/searchresults.aspx?nm="+jc_id;}
+function filterGeoJSON(feature,layer){return true;}

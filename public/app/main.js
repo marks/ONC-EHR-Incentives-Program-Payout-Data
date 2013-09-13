@@ -27,7 +27,7 @@ function load_geojson_as_cluster(data_url,fit_bounds){
     if(typeof(markers) != "undefined"){map.removeLayer(markers);}    // clear all markers
     if(typeof(searchControl)!= "undefined"){map.removeControl(searchControl)}
     markers = new L.MarkerClusterGroup()
-    var geoJsonLayer = L.geoJson(data, {onEachFeature: handleFeature });
+    var geoJsonLayer = L.geoJson(data, {onEachFeature: handleGeoJSONFeature, filter: filterGeoJSON});
     markers.on('clusterclick', onClusterClick);
     markers.addLayer(geoJsonLayer);
     map.addLayer(markers);
@@ -223,7 +223,7 @@ function toggle_column_mode(){
   $('div#content').toggleClass('large-9').toggleClass('large-12')
 }
 
-function handleFeature(feature, layer){
+function handleGeoJSONFeature(feature, layer){
   props = feature.properties
   // set icon (green or red) depending on incentive receive status
   if(props.incentives_received){
@@ -274,7 +274,9 @@ function renderHcHaisObject(array_in){
     $.each(array_in, function(k,hai){
       if(hai.score != undefined){
         html += "<li><a href='http://www.cdc.gov/HAI/infectionTypes.html' target='blank'>"+hai.measure+"</a>"
-        html += "<ul class=''><li>Score: "+hai.score+"</li><li>Footnote: "+hai.footnote+"</li><li>Source: "+formatSource(hai._source)+"</li><li>Data last refreshed at: "+hai._updated_at+"</li></ul>"
+        html += "<ul class=''><li>Score: "+hai.score+"</li>"
+        if(hai.footnote != null){html += "<li>Footnote: "+hai.footnote+"</li>"}
+        html += "<li>Source: "+formatSource(hai._source)+"</li><li>Data last refreshed at: "+hai._updated_at+"</li></ul>"
         html += "</li>"      
       }
     })
@@ -379,4 +381,10 @@ function linkForCCN(ccn){
 
 function linkForJC(jc_id){
   return "http://www.qualitycheck.org/consumer/searchresults.aspx?nm="+jc_id;
+}
+
+function filterGeoJSON(feature, layer){
+  return true;
+  // console.log("feature: ",feature)
+  // console.log("layer: ",layer)
 }

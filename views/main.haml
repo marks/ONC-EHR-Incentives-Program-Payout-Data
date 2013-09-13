@@ -156,6 +156,43 @@
                   %a{:href => "http://twitter.com/CheckQM", :target => "_blank"}@CheckQM
 
           %section
+            %p.title{"data-section-title" => "legend"}
+              %a{:href => "#"} Legend & Icons
+            .content{"data-section-content" => ""}
+              %h4 Map and Icon Legend
+              %table#legend
+                %thead
+                  %tr
+                    %th Icon
+                    %th Description
+                %tbody
+                  %tr
+                    %td
+                      %img{:src => "#{settings.public_host}/mapicons.nicolasmollet.com/hospital-building-green.png"}
+                    %td Received MU/HITECH incentive payments in 2011, 2012 and/or 2013
+                  %tr
+                    %td
+                      %img{:src => "#{settings.public_host}/mapicons.nicolasmollet.com/hospital-building-red.png"}
+                    %td
+                      Did not receive any MU/HITECH incentive payments in 2011, 2012, or 2013
+                  %tr
+                    %td
+                      %i.foundicon-accessibility-view-mode
+                    %td
+                      Toggle between one and two column mode (desktop only)
+                  %tr
+                    %td
+                      %i.foundicon-general-plus
+                    %td
+                      Show more additional details
+                  %tr
+                    %td
+                      %i.foundicon-general-minus
+                    %td
+                      Hide additional details
+
+
+          %section
             %p.title{"data-section-title" => "data"}
               %a{:href => "#"} Data
             .content{"data-section-content" => ""}
@@ -170,53 +207,43 @@
                   #feature_container
 
       .large-7.columns#content
-        %h3 Map of United States Healthcare Providers
-        .row
-          .large-8.columns
-            %select#dropdown{:name => "dropdown"}
-              %option{:value => "#{@all_hospitals_with_geo_url}"} All US hospitals (updated June 2013)
-              - STATES.each do |state|
-                %option{:value => "#{@state_providers_url}/#{state}.geojson"}= "#{state} providers who received CMS incentives (updated June 2013)"
-          .large-4.columns
-            %a.tiny.secondary.button{:href => "#", :onclick => "map.locate({setView:true})"} Zoom to current location
-       
+        %h3 Map of United States Healthcare Providers       
         %p
-          To see more information about a facility, select its marker on the map. Individual markers will show at zoom levels 8 and higher.
+          To see more information about a provider, select its marker on the map.
+          %em Options to filter the data are available below the map.
 
         #map
         %br
-        %h4 Map and Icon Legend
-        %table#legend
-          %thead
-            %tr
-              %th Icon
-              %th Description
-          %tbody
-            %tr
-              %td
-                %img{:src => "#{settings.public_host}/mapicons.nicolasmollet.com/hospital-building-green.png"}
-              %td Received MU/HITECH incentive payments in 2011, 2012 and/or 2013
-            %tr
-              %td
-                %img{:src => "#{settings.public_host}/mapicons.nicolasmollet.com/hospital-building-red.png"}
-              %td
-                Did not receive any MU/HITECH incentive payments in 2011, 2012, or 2013
-            %tr
-              %td
-                %i.foundicon-accessibility-view-mode
-              %td
-                Toggle between one and two column mode (desktop only)
-            %tr
-              %td
-                %i.foundicon-general-plus
-              %td
-                Show more additional details
-            %tr
-              %td
-                %i.foundicon-general-minus
-              %td
-                Hide additional details
 
+        .row
+          .large-12.columns
+            %fieldset
+              %legend Map Filters
+              %h6 Choose provider type (Eligible Hospital/Eligible Provider)
+              %select#dropdown{:name => "dropdown"}
+                %option{:value => "#{@all_hospitals_with_geo_url}"} All US hospitals (updated June 2013)
+                - STATES.each do |state|
+                  %option{:value => "#{@state_providers_url}/#{state}.geojson"}= "#{state} providers who received CMS incentives (updated June 2013)"
+              %hr
+              %h6 Filter by EHR Incentives Received
+              - ["never","2011","2012","2013"].each do |year|
+                .large-3.columns
+                  %label
+                    - if year == "never"
+                      Never
+                    - else
+                      In Year
+                      = year
+                  .switch.tiny.switch-paid
+                    %input{:id => "switch-paid-#{year}-off", :name => "switch-paid-#{year}", :type => "radio", :value => "false"}/
+                    %label{:for => "switch-paid-#{year}-off", :onclick => ""} Off
+                    %input{:id => "switch-paid-#{year}-on", :checked => "", :name => "switch-paid-#{year}", :type => "radio", :value => "true"}/
+                    %label{:for => "switch-paid-#{year}-on", :onclick => ""} On
+                    %span
+              %hr
+              %h6 Looking for more filtering and reporting options?
+              %p 
+                %a{:href => "http://socialhealthinsights.com/contact-us"} Let's talk. We like doing this type of work.
 
     %footer.row
       .large-12.columns
@@ -246,11 +273,6 @@
 
     :javascript
       $(document).foundation();
-
-      $("#dropdown").change(function(){
-        load_geojson_as_cluster($(this).val(),true)
-      });
-
       $(document).ready(function() {
         // initialize and create Leaflet map
         L.Icon.Default.imagePath = '/leaflet-0.6.4/images'
@@ -272,4 +294,8 @@
         L.control.layers(baseMaps, overlayMaps).addTo(map);
 
         load_geojson_as_cluster("#{@all_hospitals_with_geo_url}",true)
+      });
+
+      $("#dropdown,.switch-paid").change(function(){
+        load_geojson_as_cluster($("#dropdown").val(),true)
       });

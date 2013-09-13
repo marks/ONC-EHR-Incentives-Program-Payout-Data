@@ -31,7 +31,6 @@ function load_geojson_as_cluster(data_url,fit_bounds){
     markers.on('clusterclick', onClusterClick);
     markers.addLayer(geoJsonLayer);
     map.addLayer(markers);
-
     searchControl = new L.Control.Search({layer: markers, propertyName: "name", circleLocation:true});
     searchControl.on('search_locationfound', function(e) {
       map.fitBounds(new L.LatLngBounds(new L.LatLng(e.layer.getLatLng().lat, e.layer.getLatLng().lng), new L.LatLng(e.layer.getLatLng().lat, e.layer.getLatLng().lng)))
@@ -250,7 +249,7 @@ function handleGeoJSONFeature(feature, layer){
   }
 
   // phone number
-  if(props.phone_number){popup += "<u>Phone:</u> " + props.phone_number}
+  if(props.phone_number){popup += "<br /><u>Phone:</u> " + props.phone_number}
 
   // other attributes (NPI, CCN, Incentive Program Years)
   if(props["PROVIDER CCN"]){ popup += "<br /><br /> <u>CCN:</u> <a href='"+linkForCCN(props["PROVIDER CCN"])+"' target='blank'>"+props["PROVIDER CCN"]+"</a>"}
@@ -384,7 +383,19 @@ function linkForJC(jc_id){
 }
 
 function filterGeoJSON(feature, layer){
-  return true;
-  // console.log("feature: ",feature)
-  // console.log("layer: ",layer)
+  if($('input[name=switch-paid-2013]:checked').val() == "true" && feature.properties.incentives_received["year_2013"] == true){
+    return true;
+  }
+  else if($('input[name=switch-paid-2012]:checked').val() == "true" && feature.properties.incentives_received["year_2012"] == true){
+    return true;
+  }
+  else if($('input[name=switch-paid-2011]:checked').val() == "true" && feature.properties.incentives_received["year_2011"] == true){
+    return true;
+  }
+  else if($('input[name=switch-paid-never]:checked').val() == "true" && feature.properties.incentives_received["year_2013"] == false && feature.properties.incentives_received["year_2012"] == false && feature.properties.incentives_received["year_2011"] == false){
+    return true;
+  }
+  else {
+    return false;
+  }
 }

@@ -299,7 +299,7 @@ popup=""
 popup+="<strong>"+props.name+"</strong>"
 if(props.address){popup+="<br />"+formatAddress(props.address)}
 if(props.general){popup+="<br /><br />"+formatGeneralHospitalInformation(props.general)}
-if(props.phone_number){popup+="<u>Phone:</u> "+props.phone_number}
+if(props.phone_number){popup+="<br /><u>Phone:</u> "+props.phone_number}
 if(props["PROVIDER CCN"]){popup+="<br /><br /> <u>CCN:</u> <a href='"+linkForCCN(props["PROVIDER CCN"])+"' target='blank'>"+props["PROVIDER CCN"]+"</a>"}
 if(props.npi){popup+="<br /><u>NPI:</u> "+"<a href='"+linkForNPI(props.npi)+"' target=_blank>"+props.npi+"</a>"}
 if(props.jc_id){popup+="<br /><u>Joint Commisison ID:</u> <a target='blank' href='"+linkForJC(props.jc_id)+"'>"+props.jc_id+"</a>"}
@@ -362,4 +362,8 @@ return html;}
 function linkForNPI(npi){return"http://www.bloomapi.com/search#/npis/"+npi;}
 function linkForCCN(ccn){return"http://www.medicare.gov/hospitalcompare/profile.html#profTab=0&ID="+ccn;}
 function linkForJC(jc_id){return"http://www.qualitycheck.org/consumer/searchresults.aspx?nm="+jc_id;}
-function filterGeoJSON(feature,layer){return true;}
+function filterGeoJSON(feature,layer){if($('input[name=switch-paid-2013]:checked').val()=="true"&&feature.properties.incentives_received["year_2013"]==true){return true;}
+else if($('input[name=switch-paid-2012]:checked').val()=="true"&&feature.properties.incentives_received["year_2012"]==true){return true;}
+else if($('input[name=switch-paid-2011]:checked').val()=="true"&&feature.properties.incentives_received["year_2011"]==true){return true;}
+else if($('input[name=switch-paid-never]:checked').val()=="true"&&feature.properties.incentives_received["year_2013"]==false&&feature.properties.incentives_received["year_2012"]==false&&feature.properties.incentives_received["year_2011"]==false){return true;}
+else{return false;}}

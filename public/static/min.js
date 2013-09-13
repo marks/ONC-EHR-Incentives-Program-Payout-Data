@@ -260,19 +260,27 @@ if(props.jc_id){key_value_content+="<li><u>Joint Commission ID:</u> <a href='"+l
 key_value_content+="</ul>"
 object_content=""
 $.each(props,function(k,v){key=formatKey(k)
-if(v==null||v.length===0){}
-else if(typeof(v)==="object"){if(k=="hc_hais"){object_content+="</p>"+renderHcHaisObject(v)+"<p>"}else if(k=="hc_hacs"){object_content+="</p>"+renderHcHacsObject(v)+"<p>"}else if(k=="hcahps"){object_content+="</p><h6><a href='http://www.hcahpsonline.org/home.aspx' target='blank'>Patient Experience Surveys (HCAHPS via CMS Hospital Compare</a></h6><p>"
-object_content+=renderKeyValueObject(v)}else if(k=="ahrq_m"){object_content+="</p><h6><a href='https://data.medicare.gov/Hospital-Compare/Agency-For-Healthcare-Research-And-Quality-Measure/vs3q-rxc5' target='blank'>Agency for Healthcare Research and Quality Measues</a></h6><p>"
-object_content+=renderKeyValueObject(v)}else if(k=="address"){object_content+="</p><h6>Address</h6><ul class='filterable'><p>"
-object_content+=formatAddress(v)
-object_content+="</ul><p>"}else if(k=="geo"){object_content+="</p><h6>Geocoding</h6><p>"}else if(k=="incentives_received"){object_content+="</p><h6>EHR Incentives Received</h6><p>"
+if(v==null){}
+else if(typeof(v)==="object"){switch(k){case'incentives_received':object_content+="</p><h6>EHR Incentives Received</h6><p>"
 if(v.year_2011===true){object_content+="<span class='radius secondary label'>2011</span> "}
 if(v.year_2012===true){object_content+="<span class='radius secondary label'>2012</span> "}
 if(v.year_2013===true){object_content+="<span class='radius secondary label'>2013</span> "}
 if(v.year_2011===false&&v.year_2012===false&&v.year_2013==false){object_content+="None"}
-object_content+="<br /><em class='small'><a href='http://socialhealthinsights.com/2013/09/visualizing-meaningful-use-attestation-data-by-ehr-and-technology-vendor/' target='blank'>Interested in which vendors are supporting eligible hospitals and providers? This blog post includes analysis and a link to an interactive visualization of vendor stats.</a></em>"}
-else{object_content+="</p><h6>"+key+"</h6><p>"
-object_content+=renderKeyValueObject(v)}
+object_content+="<br /><em class='small'><a href='http://socialhealthinsights.com/2013/09/visualizing-meaningful-use-attestation-data-by-ehr-and-technology-vendor/' target='blank'>Interested in which vendors are supporting eligible hospitals and providers? This blog post includes analysis and a link to an interactive visualization of vendor stats.</a></em>"
+break;case'hc_hais':object_content+=renderHcHaisObject(v)
+break;case'hc_hacs':object_content+=renderHcHacsObject(v)
+break;case'ahrq_m':object_content+="<h6><a href='https://data.medicare.gov/Hospital-Compare/Agency-For-Healthcare-Research-And-Quality-Measure/vs3q-rxc5' target='blank'>Agency for Healthcare Research and Quality Measues</a></h6>"
+object_content+=renderKeyValueObject(v)
+break;case'general':object_content+="<h6>General Information</h6>"
+object_content+=formatGeneralHospitalInformation(v)
+break;case'address':object_content+="</p><h6>Address</h6><ul class='filterable'><p>"
+object_content+=formatAddress(v)
+object_content+="</ul><p>"
+break;case'hcahps':object_content+="</p><h6><a href='http://www.hcahpsonline.org/home.aspx' target='blank'>Patient Experience Surveys (HCAHPS via CMS Hospital Compare</a></h6>"
+object_content+=renderHcahpsObject(v)
+break;default:object_content+="</p><h6>"+key+"</h6><p>"
+object_content+=renderKeyValueObject(v)
+break;}
 object_content+="<hr />"}
 else{}});feature_content+=key_value_content+object_content
 feature_content+="</p></div></div>"
@@ -289,9 +297,7 @@ else{layer.setIcon(incentiveFalseIcon)}
 popup=""
 popup+="<strong>"+props.name+"</strong>"
 if(props.address){popup+="<br />"+formatAddress(props.address)}
-if(props.general){popup+="<br /><br />Hosp. Name: "+props.general["hospital_name"]
-popup+="<br />Hosp. Owner: "+props.general["hospital_owner"]
-popup+="<br />Hosp. Type: "+props.general["hospital_type"]}
+if(props.general){popup+="<br />"+formatGeneralHospitalInformation(props.general)}
 if(props.phone_number){popup+="<br /><br /> Phone: "+props.phone_number}
 if(props["PROVIDER CCN"]){popup+="<br /><br /> CCN: <a href='"+linkForCCN(props["PROVIDER CCN"])+"' target='blank'>"+props["PROVIDER CCN"]+"</a>"}
 if(props.npi){popup+="<br />NPI: "+"<a href='"+linkForNPI(props.npi)+"' target=_blank>"+props.npi+"</a>"}
@@ -302,26 +308,33 @@ if(props["incentives_received"]["year_2012"]===true){popup+=" <span class='radiu
 if(props["incentives_received"]["year_2013"]===true){popup+=" <span class='radius secondary label'>2013</span>"}
 layer.bindPopup(popup)
 layer.on('click',onFeatureClick);}
-function renderHcHaisObject(obj){html="<h6><a href='http://www.medicare.gov/hospitalcompare/Data/Healthcare-Associated-Infections.html' target='blank'>Hospital Associated Infections (from CMS Hospital Compare/CDC)</a></h6>"
-html+="<ul class='filterable'>"
-$.each(obj,function(k,hai){if(hai.score!=undefined){html+="<li><a href='http://www.cdc.gov/HAI/infectionTypes.html' target='blank'>"+hai.measure+"</a>"
+function renderHcHaisObject(array_in){html="<h6><a href='http://www.medicare.gov/hospitalcompare/Data/Healthcare-Associated-Infections.html' target='blank'>Hospital Associated Infections (from CMS Hospital Compare/CDC)</a></h6>"
+if(array_in.length===0){html+="<p>None</p>"}else{html+="<ul class='filterable'>"
+$.each(array_in,function(k,hai){if(hai.score!=undefined){html+="<li><a href='http://www.cdc.gov/HAI/infectionTypes.html' target='blank'>"+hai.measure+"</a>"
 html+="<ul class=''><li>Score: "+hai.score+"</li><li>Footnote: "+hai.footnote+"</li><li>Source: "+formatSource(hai._source)+"</li><li>Data last refreshed at: "+hai._updated_at+"</li></ul>"
 html+="</li>"}})
-html+="</ul>"
+html+="</ul>"}
 return html}
-function renderHcHacsObject(obj){html="<h6><a href='http://www.medicare.gov/hospitalcompare/Data/Hospital-Acquired-Conditions.html' target='blank'>Hospital Acquired Condition (from CMS Hospital Compare/CDC)</a></h6>"
-html+="<ul class='filterable'>"
-$.each(obj,function(k,hac){if(hac.rate_per_1_000_discharges_!=undefined){html+="<li>"+hac.measure+""
+function renderHcHacsObject(array_in){html="<h6><a href='http://www.medicare.gov/hospitalcompare/Data/Hospital-Acquired-Conditions.html' target='blank'>Hospital Acquired Condition (from CMS Hospital Compare/CDC)</a></h6>"
+if(array_in.length===0){html+="<p>None</p>"}else{html+="<ul class='filterable'>"
+$.each(array_in,function(k,hac){if(hac.rate_per_1_000_discharges_!=undefined){html+="<li>"+hac.measure+""
 html+="<ul class=''><li>Rate per 1,000: "+hac.rate_per_1_000_discharges_+"</li><li>Source: "+formatSource(hac._source)+"</li><li>Data last refreshed at: "+hac._updated_at+"</li></ul>"
-html+="</li>"}})
+html+="</li>"}})}
 html+="</ul>"
 return html}
-function renderKeyValueObject(obj,exclude_duplicate_fields){if(typeof(exclude_duplicate_fields)=="undefined"){exclude_duplicate_fields=true}
-html="<ul class='filterable'>"
-$.each(obj,function(k,v){if(exclude_duplicate_fields){if($.inArray(k,["provider_number","address_1","address_2","zip_code","phone_number","state","city","county_name","hospital_name"])!=-1){return true}}
-key=formatKey(k)
-html+="<li><u>"+key+":</u> "+v+"</li>"})
-html+="</ul>"
+function renderKeyValueObject(obj){html="<ul class='filterable'>"
+array=$.map(obj,function(k,v){key=formatKey(k)
+value=formatKey(v)
+return"<li><u>"+key+":</u> "+value+"</li>"})
+if(array.length===0){array.push("<li>None</li>")}
+html+=array.join("")+"</ul>"
+return html}
+function renderHcahpsObject(obj){html="<ul class='filterable'>"
+array=$.map(obj,function(k,v){key=formatKey(k)
+value=formatKey(v)
+return"<li><u>"+key+":</u> "+value+"</li>"})
+if(array.length===0){array.push("<li>None</li>")}
+html+=array.join("")+"</ul>"
 return html}
 function formatKey(input){string=String(input)
 return string.toLowerCase().split("_").join(" ")}
@@ -337,6 +350,12 @@ function formatAddress(obj){html=""
 html+=obj["address"]
 html+="<br />"+obj["city"]+", "+obj["state"]+" "+obj["zip"]
 return html}
+function formatGeneralHospitalInformation(obj){html="<ul class=filterable>"
+html+="<li><u>Hosp. Name:</u> "+obj["hospital_name"]+"</li>"
+html+="<li><u>Hosp. Owner:</u> "+obj["hospital_owner"]+"</li>"
+html+="<li><u>Hosp. Type:</u> "+obj["hospital_type"]+"</li>"
+html+="</ul>"
+return html;}
 function linkForNPI(npi){return"http://www.bloomapi.com/search#/npis/"+npi;}
 function linkForCCN(ccn){return"http://www.medicare.gov/hospitalcompare/profile.html#profTab=0&ID="+ccn;}
 function linkForJC(jc_id){return"http://www.qualitycheck.org/consumer/searchresults.aspx?nm="+jc_id;}

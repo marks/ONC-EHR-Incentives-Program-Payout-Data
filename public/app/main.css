@@ -12,5 +12,5 @@ div.progress span.meter{color:#000; font-weight:bold;}
 
 .content ul.fix{margin-left:25px;}
 .content .small{font-size:75%;}
-.content ul.filterable{list-style-type: none;}
+ul.filterable{list-style-type: none;}
 input.filterable_input{width:100%; margin-bottom:25px;}

@@ -53,3 +53,9 @@ def fetch_whole_socrata_dataset(endpoint, token, per_page = 1000, where_clause =
   puts "Collected a total of #{all_results.size} records"
   return all_results
 end
+
+
+def remove_keys(hash,keys)
+  hash.delete_if{|k,v| keys.include?(k)}
+  hash
+end

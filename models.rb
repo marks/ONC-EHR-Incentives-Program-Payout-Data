@@ -72,7 +72,7 @@ class Hospital
 
   json_fields \
     :"PROVIDER CCN" => { }, :id => {:type => :reference, :definiton => :_id}, :incentives_received => {:type => :reference},
-    :geo => {}, :phone_number => {:type => :reference},
+    :phone_number => {:type => :reference},
     :address => {:type => :reference}, :name => {:type => :reference}, :npi => {:type => :reference},
     :hc_hais => { :type => :reference}, :hc_hacs => { :type => :reference}, :general => {:type => :reference, :definition => :general_or_not}, :hcahps => {:type => :reference, :definition => :hcahps_or_not}, :jc_id => {:type => :reference, :definition => :jc_id_or_not}, :ahrq_m => {:type => :reference, :definition => :ahrq_m_or_not}
 
@@ -99,8 +99,12 @@ class Hospital
     [:hcahps,:hc_hais,:hc_hacs,:ahrq_m]
   end
 
+  def exclude_from_json
+    ["provider_number","address_1","address_2","zip_code","phone_number","state","city","county_name","hospital_name","_source","_updated_at"]
+  end
+
   def hcahps_or_not
-    self["hcahps"].present? ? self["hcahps"] : nil
+    self["hcahps"].present? ? remove_keys(self["hcahps"],exclude_from_json) : {}
   end
 
   def jc_id_or_not
@@ -108,11 +112,11 @@ class Hospital
   end
 
   def general_or_not
-    self["general"].present? ? self["general"] : nil
+    self["general"].present? ? remove_keys(self["general"],exclude_from_json) : {}
   end
 
   def ahrq_m_or_not
-    self["ahrq_m"].present? ? self["ahrq_m"] : nil
+    self["ahrq_m"].present? ? remove_keys(self["ahrq_m"],exclude_from_json) : []
   end
 
   # Usage: Hospital.mr_compute_descriptive_stats_excluding_nulls("hcahps.percent_of_patients_who_reported_that_the_area_around_their_room_was_always_quiet_at_night_")

@@ -13,7 +13,12 @@ configure :production do
   set :session_secret, rand(36**10).to_s(36)
   set :raise_errors, false
   set :show_exceptions, false
+  set :static_cache_control, [:public, :max_age => settings.cache_time] # cache static assets for two hours 
   use Rack::Deflater
+
+  before do
+    expires settings.cache_time, :public
+  end
 end
 
 assets do

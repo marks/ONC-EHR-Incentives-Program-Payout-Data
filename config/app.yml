@@ -9,3 +9,4 @@ production:
   <<: *common_settings
   google_analytics_id: 'UA-31592977-6' # override the default value
   public_host: ''
+  cache_time: 7200 # used for static assets and all routes

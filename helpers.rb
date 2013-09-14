@@ -38,16 +38,16 @@ end
 
 def fetch_whole_socrata_dataset(endpoint, token, per_page = 1000, where_clause = nil)
   all_results = []
-  page = 1
+  page = 0
   request_url = "#{endpoint}?$limit=#{per_page}&$offset=#{per_page*page}"
   request_url += "&$where=#{URI.encode(where_clause)}" if where_clause
   puts "Fetching all results from #{request_url}"
   page_results = JSON.parse(RestClient.get(request_url), {"X-App-Token" => token})
   until page_results.empty?
     all_results = all_results + page_results
-    puts "Added #{page_results.size} results from page #{page} for a total of #{all_results.size}"
+    puts "Added #{page_results.size} results from page #{page+1} for a total of #{all_results.size}"
     page = page + 1
-    request_url = "#{endpoint}?$limit=#{per_page}&$offset=#{per_page*page}"
+    request_url = "#{endpoint}?$limit=#{per_page}&$offset=#{per_page*(page)}"
     page_results = JSON.parse(RestClient.get(request_url), {"X-App-Token" => token})
   end
   puts "Collected a total of #{all_results.size} records"

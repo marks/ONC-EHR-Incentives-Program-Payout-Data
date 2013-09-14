@@ -169,7 +169,7 @@ namespace :hospitals do
   #end
 
   task :simple_report do
-    puts "\nWe started by analyzing hospitals that received incentive payments in program year 2011, 2012, or 2013. We then added all hospitals in the hospital compare (general information) data set, and added HCAHPS data for as many hospitals as we could, using their CCN as the look-up variable.\n\n"
+    puts "\nWe started by analyzing hospitals that received incentive payments in program year 2011, 2012, or 2013. We then added all hospitals in the hospital compare (general information) data set, and added several data sets' data for as many hospitals as we could (using their CCN as the look-up variable.)\n\n"
     # Hospitals that DID receive incentive payments
     puts "  # received an incentive* (* in any of 2011, 2012, _or_ 2013) = #{Hospital.received_any_incentives.count}"
     puts "    # received an incentive* and we were able to geocode = #{Hospital.received_any_incentives.with_geo.count}"
@@ -187,7 +187,7 @@ namespace :hospitals do
     puts "    # did not received an incentive* and we found general information = #{Hospital.never_received_any_incentives.with_general.count}"
     puts "    # did not received an incentive* and we found Joint Commission ID = #{Hospital.never_received_any_incentives.with_jc_id.count}"
     puts "    # did not received an incentive* and we found AHRQ measures = #{Hospital.never_received_any_incentives.with_ahrq_m.count}"
-    puts "    # did not received an incentive* and we found HAI data = #{Hospital.never_received_any_incentives.with_hc_hais.count}\n\n"
+    puts "    # did not received an incentive* and we found HAI data = #{Hospital.never_received_any_incentives.with_hc_hais.count}"
     puts "    # did not received an incentive* and we found HAC data = #{Hospital.never_received_any_incentives.with_hc_hacs.count}\n\n"
 
     puts "TOTAL HOSPITALS IN DB = #{Hospital.count} (# received any incentives* + # never received an incentive)\n\n"

@@ -95,7 +95,7 @@
         .section-container.tabs{"data-section" => "tabs"}
           %section
             %p.title{"data-section-title" => "about"}
-              %a{:href => "#"} About This Site
+              %a{:href => "#"} About
             .content{"data-section-content" => ""}
               %h4 Introduction
               %p
@@ -157,7 +157,7 @@
 
           %section
             %p.title{"data-section-title" => "legend"}
-              %a{:href => "#"} Legend & Icons
+              %a{:href => "#"} Icon Legend
             .content{"data-section-content" => ""}
               %h4 Map and Icon Legend
               %table#legend
@@ -190,6 +190,18 @@
                       %i.foundicon-general-minus
                     %td
                       Hide additional details
+
+          %section
+            %p.title{"data-section-title" => "legend"}
+              %a{:href => "#"} Metadata
+            .content{"data-section-content" => ""}
+              .alert-box.alert{:style => "padding-top:10px"} Work in progress
+              %h4 Hospital (EH) Data Summary
+              %script{:src => "https://gist.github.com/marks/6563510.js"}
+              %hr
+              %h4 Provider (EP) Data Summary
+              %p
+                %em Coming soon
 
 
           %section

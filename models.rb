@@ -72,7 +72,7 @@ class Hospital
 
   json_fields \
     :"PROVIDER CCN" => { }, :id => {:type => :reference, :definiton => :_id}, :incentives_received => {:type => :reference},
-    :phone_number => {:type => :reference},
+    :phone_number => {:type => :reference}, :geo => {},
     :address => {:type => :reference}, :name => {:type => :reference}, :npi => {:type => :reference},
     :hc_hais => { :type => :reference}, :hc_hacs => { :type => :reference}, :general => {:type => :reference, :definition => :general_or_not}, :hcahps => {:type => :reference, :definition => :hcahps_or_not}, :jc_id => {:type => :reference, :definition => :jc_id_or_not}, :ahrq_m => {:type => :reference, :definition => :ahrq_m_or_not}
 
@@ -168,10 +168,11 @@ class Hospital
     Hospital.where(query).map_reduce(map, reduce).finalize(finalize).out(merge: DescriptiveStatistic.collection.name).each{|x| puts x}
   end
 
-  def to_geojson(keys_to_exclude = [:hcahps,:hc_hais,:geo])
+  def to_geojson(keys_to_exclude = Hospital.exclude_from_geojson, include_full_geo = false)
     hash = self.as_json
     coordinates = [hash[:geo]["geometry"]["location"]["lng"],hash[:geo]["geometry"]["location"]["lat"]]
-    keys_to_exclude.each{|k| hash.delete(k)}
+    keys_to_exclude.each{|k| hash.delete(k) if hash[k]}
+    hash.delete(:geo) unless include_full_geo
     {"type" => "Feature", "id" => hash[:id].to_s, "properties" => hash, "geometry" => {"type" => "Point", "coordinates" => coordinates}}
   end
 

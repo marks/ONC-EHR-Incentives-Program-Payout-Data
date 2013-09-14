@@ -213,7 +213,7 @@ L.Control.ZoomDisplay=L.Control.extend({options:{position:'topleft'},onAdd:funct
 this._container.innerHTML=zoom;}});L.Map.mergeOptions({zoomDisplayControl:true});L.Map.addInitHook(function(){if(this.options.zoomDisplayControl){this.zoomDisplayControl=new L.Control.ZoomDisplay();this.addControl(this.zoomDisplayControl);}});L.control.zoomDisplay=function(options){return new L.Control.ZoomDisplay(options);};var map,markers;var hospitals_clicked=[]
 var incentiveTrueIcon=L.icon({iconUrl:PUBLIC_HOST+'/mapicons.nicolasmollet.com/hospital-building-green.png',iconSize:[32,37],iconAnchor:[15,37],popupAnchor:[2,-37]});var incentiveFalseIcon=L.icon({iconUrl:PUBLIC_HOST+'/mapicons.nicolasmollet.com/hospital-building-red.png',iconSize:[32,37],iconAnchor:[15,37],popupAnchor:[2,-37]});function load_geojson_as_cluster(data_url,fit_bounds){$("#map").showLoading();$.getJSON(data_url,function(data){if(typeof(markers)!="undefined"){map.removeLayer(markers);}
 if(typeof(searchControl)!="undefined"){map.removeControl(searchControl)}
-markers=new L.MarkerClusterGroup()
+markers=new L.MarkerClusterGroup({maxClusterRadius:30})
 var geoJsonLayer=L.geoJson(data,{onEachFeature:handleGeoJSONFeature,filter:filterGeoJSON});markers.on('clusterclick',onClusterClick);markers.addLayer(geoJsonLayer);map.addLayer(markers);searchControl=new L.Control.Search({layer:markers,propertyName:"name",circleLocation:true});searchControl.on('search_locationfound',function(e){map.fitBounds(new L.LatLngBounds(new L.LatLng(e.layer.getLatLng().lat,e.layer.getLatLng().lng),new L.LatLng(e.layer.getLatLng().lat,e.layer.getLatLng().lng)))
 e.layer.openPopup()})
 map.addControl(searchControl);$("#map").hideLoading();if(fit_bounds==true){map.fitBounds(markers.getBounds());}})}

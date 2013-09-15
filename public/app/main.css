@@ -15,9 +15,9 @@ div.progress span.meter{color:#000; font-weight:bold;}
 ul.filterable{list-style-type: none;}
 input.filterable_input{width:100%; margin-bottom:25px;}
 
-/*fieldset{padding:0.5em;}*/
-/*select{margin-left:0.5em; margin-right:0.5em;}*/
-/*select,div.switch{margin-bottom:0.5em;}*/
+.reveal-modal{z-index:1001;} /* one-up up on leaflet (.leaflet-top) */
+.reveal-modal.open ul{margin-left:20px;}
+
 fieldset div.columns{padding-left:0em;}
 
 .leaflet-control-search .search-button{width: 23px; height: 23px;margin-top: 2px;margin-left:2px;}

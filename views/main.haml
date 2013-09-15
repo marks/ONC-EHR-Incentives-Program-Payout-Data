@@ -112,6 +112,9 @@
                 saw an opportunity develop data visualizations and tools showing not only the progress but also potential impact of this and other important pieces of legislation.
 
               %h4 Leveraging Available Open Data
+              %p
+                We are collecting data from a number of great sources and encourage you to read our 
+                %a{:href => "#", :"data-reveal-id" => "dataQualityModal"} note about data quality.
               %ul.fix
                 %li
                   %a{:href => "http://www.cms.gov/Regulations-and-Guidance/Legislation/EHRIncentivePrograms/Meaningful_Use.html", :target => "blank"}
@@ -222,7 +225,10 @@
         %h3 Map of United States Healthcare Providers       
         %p
           To see more information about a provider, select its marker on the map.
-          %em Options to filter the data are available below the map.
+          %br
+          %em
+            Options to filter the data are available below the map.
+            %a{:href => "#", :"data-reveal-id" => "dataQualityModal"} Note about data quality.
 
         #map
         %br
@@ -311,3 +317,33 @@
       $("#dropdown,.switch-paid").change(function(){
         load_geojson_as_cluster($("#dropdown").val(),true)
       });
+
+  #dataQualityModal.reveal-modal.medium
+    %h2 A Note About Data Quality
+    %p.lead Data quality: it's important to us and should be to you too.
+    %p
+      As you read in the 'About' text, this website is compilation of open and freely available data from a number of data providers and stewards. We are bringing these disparate sources together as carefully as possible using unique entity identifiers (CMS CCN for hospitals and NPI for providers) but anomalies
+      %em can
+      occur and we want you to be aware of these.
+    %h3 Sources of issues
+    %ul
+      %li Sometimes the data sources we pull from have errors due to any number of reasons including typos
+      %li
+        The data we have 'added' is the georaphic coding (aka 'geocoding') of all 200,000+ hospitals and eligible providers we report on. Geocoding in of itself is a science and doing it in a economical and automated fashion is no small feat. We use the awesome open source geocoding software package at 
+        %a{:href => "http://datasciencetoolkit.org", :target => "blank"} datasciencetoolkit.org
+        but are open to suggestions and software licensing donations too.
+    %h3 Known issues
+    %ul
+      %li
+        It appears as though a number of eligible providers' NPI records report an inaccurate state while the address on record, along with its zip, appear correct. This causes outliers to be shown when you select, for example, Indiana EPs, and see one with an address and map marker in Nevada.
+        %em We are working to get in contact with the right people and help solve this issue.
+      %li
+        We are also aware that some addresses are not being geocoded with the accuracy we would like. For example, some addresses are not in the geocoding database and the provider's marker will show in the center of its city or other administrative area. 
+    %h3 How you can help:
+    %p
+      If you see something odd,
+      %a{:href => "http://socialhealthinsights.com/contact-us/", :target => "blank"} please let us know.
+      We're here to make this better. You can even
+      %a{:href => "http://github.com/marks/ONC-EHR-Incentives-Program-Payout-Data", :target => "blank"}contribute a fix on Github
+      but we certainly don't expect you to. We'll dig into it if you bring the problem to our attention.
+    %a.close-reveal-modal ×

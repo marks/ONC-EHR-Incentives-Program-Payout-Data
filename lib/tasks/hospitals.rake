@@ -158,6 +158,34 @@ namespace :hospitals do
     puts "Number of hospitals in collection w/o AHRQ Measures: #{Hospital.without_ahrq_m.count}"
   end
 
+  desc "Fetch Hospital Outcome of Measures from Socrata API"
+  task :ingest_ooc do
+    socrata_endpoint = "http://data.medicare.gov/resource/rcw8-6swd.json"
+
+    puts "Number of hospitals in collection: #{Hospital.count}"
+    hospitals_without_ooc = Hospital.without_ooc
+    puts "Number of hospitals in collection w/o Outcome of Care measures: #{hospitals_without_ooc.count}"
+
+    data = fetch_whole_socrata_dataset(socrata_endpoint, settings.socrata_key)
+
+    puts "Ingesting new data"
+    data.each do |row|
+      new_data = {
+        "_source" => socrata_endpoint,
+        "_updated_at" => Time.now,
+      }.merge(row)
+      h = Hospital.find_by("PROVIDER CCN" => format_ccn(new_data["provider_number"]))
+      if h.nil?
+        Hospital.create("ooc" => new_data, "PROVIDER CCN" => format_ccn(new_data["provider_number"]))
+      else
+        h.update_attribute("ooc",new_data)
+      end
+    end
+    
+    puts "#{Hospital.count} hospitals in db"
+    puts "Number of hospitals in collection w/o Outcome of Care Measures: #{Hospital.without_ahrq_m.count}"
+  end
+
 
   #desc "Calculate HCAHPS national averages for each value and store in a hcahps_averages collection"
   #task :calculate_national_averages do
@@ -177,6 +205,7 @@ namespace :hospitals do
     puts "    # received an incentive* and we found general information = #{Hospital.received_any_incentives.with_general.count}"
     puts "    # received an incentive* and we found a Joint Commission ID = #{Hospital.received_any_incentives.with_jc_id.count}"
     puts "    # received an incentive* and we found AHRQ measures = #{Hospital.received_any_incentives.with_ahrq_m.count}"
+    puts "    # received an incentive* and we found Outcome of Care measures = #{Hospital.received_any_incentives.with_ooc.count}"
     puts "    # received an incentive* and we found HAI data = #{Hospital.received_any_incentives.with_hc_hais.count}"
     puts "    # received an incentive* and we found HAC data = #{Hospital.received_any_incentives.with_hc_hacs.count}"
     puts " -> # received an incentive* and we found general information, HCAHPS, AND geocoded = #{Hospital.received_any_incentives.with_general.with_hcahps.with_geo.count} \n\n"
@@ -187,6 +216,7 @@ namespace :hospitals do
     puts "    # did not received an incentive* and we found general information = #{Hospital.never_received_any_incentives.with_general.count}"
     puts "    # did not received an incentive* and we found Joint Commission ID = #{Hospital.never_received_any_incentives.with_jc_id.count}"
     puts "    # did not received an incentive* and we found AHRQ measures = #{Hospital.never_received_any_incentives.with_ahrq_m.count}"
+    puts "    # did not received an incentive* and we found Outcome of Care measures = #{Hospital.never_received_any_incentives.with_ooc.count}"
     puts "    # did not received an incentive* and we found HAI data = #{Hospital.never_received_any_incentives.with_hc_hais.count}"
     puts "    # did not received an incentive* and we found HAC data = #{Hospital.never_received_any_incentives.with_hc_hacs.count}\n\n"
 

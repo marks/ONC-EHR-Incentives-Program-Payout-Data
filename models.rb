@@ -74,7 +74,7 @@ class Hospital
     :"PROVIDER CCN" => { }, :id => {:type => :reference, :definiton => :_id}, :incentives_received => {:type => :reference},
     :phone_number => {:type => :reference}, :geo => {},
     :address => {:type => :reference}, :name => {:type => :reference}, :npi => {:type => :reference},
-    :hc_hais => { :type => :reference}, :hc_hacs => { :type => :reference}, :general => {:type => :reference, :definition => :general_or_not}, :hcahps => {:type => :reference, :definition => :hcahps_or_not}, :jc_id => {:type => :reference, :definition => :jc_id_or_not}, :ahrq_m => {:type => :reference, :definition => :ahrq_m_or_not}
+    :hc_hais => { :type => :reference}, :hc_hacs => { :type => :reference}, :general => {:type => :reference, :definition => :general_or_not}, :hcahps => {:type => :reference, :definition => :hcahps_or_not}, :jc_id => {:type => :reference, :definition => :jc_id_or_not}, :ahrq_m => {:type => :reference, :definition => :ahrq_m_or_not}, :ooc => {:type => :reference, :definition => :ooc_or_not}
 
   scope :without_hcahps, where("hcahps" => nil)
   scope :with_hcahps, where("hcahps" => {"$ne" => nil})
@@ -86,6 +86,8 @@ class Hospital
   scope :without_jc_id, where("jc" => nil)
   scope :with_ahrq_m, where("ahrq_m" => {"$ne" => nil})
   scope :without_ahrq_m, where("ahrq_m" => nil)
+  scope :with_ooc, where("ooc" => {"$ne" => nil})
+  scope :without_ooc, where("ooc" => nil)
   scope :with_hc_hais, where("hc_hais" => {"$ne" => nil})
   scope :without_hc_hais, where("hc_hais" => nil)
   scope :with_hc_hacs, where("hc_hacs" => {"$ne" => nil})
@@ -96,15 +98,15 @@ class Hospital
   scope :never_received_any_incentives, where({"PROGRAM YEAR 2012" => nil, "PROGRAM YEAR 2011" => nil, "PROGRAM YEAR 2013" => nil})
 
   def self.exclude_from_geojson
-    [:hcahps,:hc_hais,:hc_hacs,:ahrq_m]
+    [:hcahps,:hc_hais,:hc_hacs,:ahrq_m,:ooc]
   end
 
-  def exclude_from_json
+  def keys_to_exclude_from_json
     ["provider_number","address_1","address_2","zip_code","phone_number","state","city","county_name","hospital_name","_source","_updated_at"]
   end
 
   def hcahps_or_not
-    self["hcahps"].present? ? remove_keys(self["hcahps"],exclude_from_json) : {}
+    self["hcahps"].present? ? remove_keys(self["hcahps"],keys_to_exclude_from_json) : {}
   end
 
   def jc_id_or_not
@@ -112,11 +114,15 @@ class Hospital
   end
 
   def general_or_not
-    self["general"].present? ? remove_keys(self["general"],exclude_from_json) : {}
+    self["general"].present? ? remove_keys(self["general"],keys_to_exclude_from_json) : {}
   end
 
   def ahrq_m_or_not
-    self["ahrq_m"].present? ? remove_keys(self["ahrq_m"],exclude_from_json) : []
+    self["ahrq_m"].present? ? remove_keys(self["ahrq_m"],keys_to_exclude_from_json) : []
+  end
+
+  def ooc_or_not
+    self["ooc"].present? ? remove_keys(self["ooc"],keys_to_exclude_from_json) : []
   end
 
   # Usage: Hospital.mr_compute_descriptive_stats_excluding_nulls("hcahps.percent_of_patients_who_reported_that_the_area_around_their_room_was_always_quiet_at_night_")

@@ -268,10 +268,13 @@ if(v.year_2012===true){object_content+="<span class='radius secondary label'>201
 if(v.year_2013===true){object_content+="<span class='radius secondary label'>2013</span> "}
 if(v.year_2011===false&&v.year_2012===false&&v.year_2013==false){object_content+="None"}
 object_content+="<br /><em class='small'><a href='http://socialhealthinsights.com/2013/09/visualizing-meaningful-use-attestation-data-by-ehr-and-technology-vendor/' target='blank'>Interested in which vendors are supporting eligible hospitals and providers? This blog post includes analysis and a link to an interactive visualization of vendor stats.</a></em>"
-break;case'hc_hais':object_content+=renderHcHaisObject(v)
+break;case'geo':break;case'hc_hais':object_content+=renderHcHaisObject(v)
 break;case'hc_hacs':object_content+=renderHcHacsObject(v)
 break;case'ahrq_m':object_content+="<h6><a href='https://data.medicare.gov/Hospital-Compare/Agency-For-Healthcare-Research-And-Quality-Measure/vs3q-rxc5' target='blank'>Agency for Healthcare Research and Quality Measues</a></h6>"
-object_content+="<p><br /><a target='blank' href='https://data.medicare.gov/Hospital-Compare/Agency-For-Healthcare-Research-And-Quality-Nationa/sdhm-um6i'>See National Averages</a></p>"
+object_content+="<p><br /><a class='compare-national-average' target='blank' href='https://data.medicare.gov/Hospital-Compare/Agency-For-Healthcare-Research-And-Quality-Nationa/sdhm-um6i'>See National Averages</a></p>"
+object_content+=renderKeyValueObject(v)
+break;case'ooc':object_content+="<h6><a href='https://data.medicare.gov/Hospital-Compare/Hospital-Outcome-Of-Care-Measures/rcw8-6swd' target='blank'>Outcome Of Care Measures (provider data)</a></h6>"
+object_content+="<p><br /><a target='blank' href='https://data.medicare.gov/Hospital-Compare/Hospital-Outcome-Of-Care-Measures-National-Average/i2h8-79qx'>See National Averages</a></p>"
 object_content+=renderKeyValueObject(v)
 break;case'general':object_content+="<h6>General Information</h6>"
 object_content+=formatGeneralHospitalInformation(v)
@@ -332,7 +335,7 @@ return html}
 function renderKeyValueObject(obj){html="<ul class='filterable'>"
 array=$.map(obj,function(k,v){key=formatKey(k)
 value=formatKey(v)
-return"<li><u>"+key+":</u> "+value+"</li>"})
+return"<li><u>"+value+":</u> "+key+"</li>"})
 if(array.length===0){array.push("<li>None</li>")}
 html+=array.join("")+"</ul>"
 return html}

@@ -196,6 +196,7 @@ namespace :hospitals do
   #  end
   #end
 
+  desc "Print simple report"
   task :simple_report do
     puts "\nWe started by analyzing hospitals that received incentive payments in program year 2011, 2012, or 2013. We then added all hospitals in the hospital compare (general information) data set, and added several data sets' data for as many hospitals as we could (using their CCN as the look-up variable.)\n\n"
     # Hospitals that DID receive incentive payments

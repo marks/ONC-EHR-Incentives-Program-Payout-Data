@@ -8,7 +8,7 @@ namespace :mongodb do
 		end
 	end
 
-
+	desc "Export to MongoHQ"
 	task :export_to_mongohq do
 		db_name = Mongoid.sessions["default"]["database"]
 		mongohq_url = %x(heroku config:get MONGOHQ_URL).gsub("\n","")

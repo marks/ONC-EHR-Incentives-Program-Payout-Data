@@ -151,6 +151,7 @@ function renderHospitalComparison(){
                 break;
               case 'ahrq_m':
                 object_content += "<h6><a href='https://data.medicare.gov/Hospital-Compare/Agency-For-Healthcare-Research-And-Quality-Measure/vs3q-rxc5' target='blank'>Agency for Healthcare Research and Quality Measues</a></h6>"
+                object_content += "<p><br /><a target='blank' href='https://data.medicare.gov/Hospital-Compare/Agency-For-Healthcare-Research-And-Quality-Nationa/sdhm-um6i'>See National Averages</a></p>"
                 object_content += renderKeyValueObject(v)
                 break;
               case 'general':
@@ -164,6 +165,7 @@ function renderHospitalComparison(){
                 break;
               case 'hcahps':
                 object_content += "</p><h6><a href='http://www.hcahpsonline.org/home.aspx' target='blank'>Patient Experience Surveys (HCAHPS via CMS Hospital Compare</a></h6>"
+                object_content += "<p><br /><a target='blank' href='https://data.medicare.gov/Hospital-Compare/Survey-of-Patients-Hospital-Experiences-HCAHPS-Nat/89u8-shx4'>See National Averages</a></p>"
                 object_content += renderHcahpsObject(v)
                 break;
               default:
@@ -266,6 +268,7 @@ function handleGeoJSONFeature(feature, layer){
 
 function renderHcHaisObject(array_in){
   html = "<h6><a href='http://www.medicare.gov/hospitalcompare/Data/Healthcare-Associated-Infections.html' target='blank'>Hospital Associated Infections (from CMS Hospital Compare/CDC)</a></h6>"
+  html += "<p><br /><a target='blank' href='https://data.medicare.gov/Hospital-Compare/Healthcare-Associated-Infections-National/6kcz-q57c'>See National Averages</a></p>"
   if(array_in.length === 0){
     html += "<p>None</p>"
   } else {
@@ -286,6 +289,7 @@ function renderHcHaisObject(array_in){
 
 function renderHcHacsObject(array_in){
   html = "<h6><a href='http://www.medicare.gov/hospitalcompare/Data/Hospital-Acquired-Conditions.html' target='blank'>Hospital Acquired Condition (from CMS Hospital Compare/CDC)</a></h6>"
+  html += "<p><br /><a target='blank' href='https://data.medicare.gov/Hospital-Compare/Hospital-Acquired-Condition-National-Measures/zqjn-m8m8'>See National Averages</a></p>"
   if(array_in.length === 0){
     html += "<p>None</p>"
   } else {

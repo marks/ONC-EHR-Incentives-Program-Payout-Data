@@ -271,6 +271,7 @@ object_content+="<br /><em class='small'><a href='http://socialhealthinsights.co
 break;case'hc_hais':object_content+=renderHcHaisObject(v)
 break;case'hc_hacs':object_content+=renderHcHacsObject(v)
 break;case'ahrq_m':object_content+="<h6><a href='https://data.medicare.gov/Hospital-Compare/Agency-For-Healthcare-Research-And-Quality-Measure/vs3q-rxc5' target='blank'>Agency for Healthcare Research and Quality Measues</a></h6>"
+object_content+="<p><br /><a target='blank' href='https://data.medicare.gov/Hospital-Compare/Agency-For-Healthcare-Research-And-Quality-Nationa/sdhm-um6i'>See National Averages</a></p>"
 object_content+=renderKeyValueObject(v)
 break;case'general':object_content+="<h6>General Information</h6>"
 object_content+=formatGeneralHospitalInformation(v)
@@ -278,6 +279,7 @@ break;case'address':object_content+="</p><h6>Address</h6><ul class='filterable'>
 object_content+=formatAddress(v)
 object_content+="</ul><p>"
 break;case'hcahps':object_content+="</p><h6><a href='http://www.hcahpsonline.org/home.aspx' target='blank'>Patient Experience Surveys (HCAHPS via CMS Hospital Compare</a></h6>"
+object_content+="<p><br /><a target='blank' href='https://data.medicare.gov/Hospital-Compare/Survey-of-Patients-Hospital-Experiences-HCAHPS-Nat/89u8-shx4'>See National Averages</a></p>"
 object_content+=renderHcahpsObject(v)
 break;default:object_content+="</p><h6>"+key+"</h6><p>"
 object_content+=renderKeyValueObject(v)
@@ -310,6 +312,7 @@ if(props["incentives_received"]["year_2013"]===true){popup+=" <span class='radiu
 layer.bindPopup(popup)
 layer.on('click',onFeatureClick);}
 function renderHcHaisObject(array_in){html="<h6><a href='http://www.medicare.gov/hospitalcompare/Data/Healthcare-Associated-Infections.html' target='blank'>Hospital Associated Infections (from CMS Hospital Compare/CDC)</a></h6>"
+html+="<p><br /><a target='blank' href='https://data.medicare.gov/Hospital-Compare/Healthcare-Associated-Infections-National/6kcz-q57c'>See National Averages</a></p>"
 if(array_in.length===0){html+="<p>None</p>"}else{html+="<ul class='filterable'>"
 $.each(array_in,function(k,hai){if(hai.score!=undefined){html+="<li><a href='http://www.cdc.gov/HAI/infectionTypes.html' target='blank'>"+hai.measure+"</a>"
 html+="<ul class=''><li>Score: "+hai.score+"</li>"
@@ -319,6 +322,7 @@ html+="</li>"}})
 html+="</ul>"}
 return html}
 function renderHcHacsObject(array_in){html="<h6><a href='http://www.medicare.gov/hospitalcompare/Data/Hospital-Acquired-Conditions.html' target='blank'>Hospital Acquired Condition (from CMS Hospital Compare/CDC)</a></h6>"
+html+="<p><br /><a target='blank' href='https://data.medicare.gov/Hospital-Compare/Hospital-Acquired-Condition-National-Measures/zqjn-m8m8'>See National Averages</a></p>"
 if(array_in.length===0){html+="<p>None</p>"}else{html+="<ul class='filterable'>"
 $.each(array_in,function(k,hac){if(hac.rate_per_1_000_discharges_!=undefined){html+="<li>"+hac.measure+""
 html+="<ul class=''><li>Rate per 1,000: "+hac.rate_per_1_000_discharges_+"</li><li>Source: "+formatSource(hac._source)+"</li><li>Data last refreshed at: "+hac._updated_at+"</li></ul>"

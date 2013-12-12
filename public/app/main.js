@@ -20,6 +20,8 @@ var incentiveFalseIcon = L.icon({
     popupAnchor: [2,-37]
 });
 
+var years_of_incentives = ['2011', '2012', '2013'];
+
 
 function load_geojson_as_cluster(data_url,fit_bounds){
   $("#map").showLoading();
@@ -137,9 +139,16 @@ function renderHospitalComparison(){
               switch(k){
               case 'incentives_received':
                 object_content += "</p><h6>EHR Incentives Received</h6><p>"
-                if(v.year_2011 === true){object_content += "<span class='radius secondary label'>2011</span> " }
-                if(v.year_2012 === true){object_content += "<span class='radius secondary label'>2012</span> " }
-                if(v.year_2013 === true){object_content += "<span class='radius secondary label'>2013</span> " }
+                // this can be refactored
+                $.each(years_of_incentives, function( index, year ) {
+                  if(v['year_'+year] === true){
+                    object_content += "<span class='radius secondary label'>"+year
+                    if(v['year_'+year+'_amt'] != null){
+                      object_content += " ($"+v['year_'+year+'_amt']+")"
+                    }  
+                    object_content += "</span>"
+                  }
+                })
                 if(v.year_2011 === false && v.year_2012 === false && v.year_2013 == false){object_content += "None"}
                 object_content += "<br /><em class='small'><a href='http://socialhealthinsights.com/2013/09/visualizing-meaningful-use-attestation-data-by-ehr-and-technology-vendor/' target='blank'>Interested in which vendors are supporting eligible hospitals and providers? This blog post includes analysis and a link to an interactive visualization of vendor stats.</a></em>"
                 break;
@@ -266,9 +275,17 @@ function handleGeoJSONFeature(feature, layer){
   if(props.npi){popup += "<br /><u>NPI:</u> " + "<a href='"+linkForNPI(props.npi)+"' target=_blank>"+props.npi+"</a>"}
   if(props.jc_id){popup+= "<br /><u>Joint Commisison ID:</u> <a target='blank' href='"+linkForJC(props.jc_id)+"'>"+props.jc_id+"</a>"}
   popup += "<br /><br />Incentive Program Year(s), if any: "
-  if(props["incentives_received"]["year_2011"] === true){popup += "<span class='radius secondary label'>2011</span> " }
-  if(props["incentives_received"]["year_2012"] === true){ popup += " <span class='radius secondary label'>2012</span>" }
-  if(props["incentives_received"]["year_2013"] === true){ popup += " <span class='radius secondary label'>2013</span>" }
+
+  // this can be refactored
+  $.each(years_of_incentives, function( index, year ) {
+    if(props["incentives_received"]["year_"+year] === true){
+      popup += "<span class='radius secondary label'>"+year
+      if(props["incentives_received"]["year_"+year+"_amt"] != null){
+        popup += " ($"+props["incentives_received"]["year_"+year+"_amt"]+")"
+      }
+      popup += "</span>"
+    }
+  });
 
   layer.bindPopup(popup)
   layer.on('click', onFeatureClick);
@@ -375,7 +392,7 @@ function formatAddress(obj){
 
 function formatGeneralHospitalInformation(obj){
   html = "<ul class=filterable>"
-  html += "<li><u>Hosp. Name:</u> "+obj["hospital_name"]+"</li>"
+  // html += "<li><u>Hosp. Name:</u> "+obj["hospital_name"]+"</li>"
   html += "<li><u>Hosp. Owner:</u> "+obj["hospital_owner"]+"</li>"
   html += "<li><u>Hosp. Type:</u> "+obj["hospital_type"]+"</li>"
   html += "</ul>"

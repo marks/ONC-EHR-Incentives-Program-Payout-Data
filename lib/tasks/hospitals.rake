@@ -1,4 +1,24 @@
+require 'csv'
+
 namespace :hospitals do
+
+  task :ingest_latest_payments_csv do
+    CSV.foreach("public/data/ProvidersPaidByEHRProgram_Sep2013_EH/EH_ProvidersPaidByEHRProgram_Sep2013_FINAL.csv",:headers => true) do |row|
+      next if row["PROVIDER NPI"] == ""
+      h = Hospital.find_or_create_by(:"PROVIDER CCN" => row["PROVIDER CCN"], :"PROVIDER NPI" => row["PROVIDER NPI"] )
+      attrs = row.to_hash
+
+      year = attrs["PROGRAM YEAR"]
+      attrs["PROGRAM YEAR #{year}"] = row["PROGRAM YEAR"] == "#{year}"
+      attrs["PROGRAM YEAR #{year} CALC PAYMENT"] = row["CALC PAYMENT  AMT ($)"]
+      attrs.delete("PROGRAM YEAR")
+      attrs.delete("CALC PAYMENT  AMT ($)")
+
+      h.update_attributes!(attrs)
+      puts "Updated/inserted CCN=#{h["PROVIDER CCN"]} / NPI=#{h["PROVIDER NPI"]}"
+    end
+  end
+
 
   task :ensure_fields_are_properly_formatted do
     Hospital.all.each do |h|
@@ -63,8 +83,6 @@ namespace :hospitals do
 
   desc "Using a CSV mapping file, bring in Joint Commission IDs so we can link to qualitycheck.org"
   task :ingest_joint_commission_ids do
-    require 'csv'
-
     puts "Number of hospitals in collection: #{Hospital.count}"
     puts "Number of hospitals in collection w/o JC org id: #{Hospital.without_jc_id.count}"
 

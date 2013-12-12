@@ -211,7 +211,7 @@ numShown++;}else{if(li.style.display!="none"){li.style.display="none";}}}
 callback(numShown);return false;}).keydown(function(){clearTimeout(keyTimeout);keyTimeout=setTimeout(function(){input.change();},timeout);});return this;}
 L.Control.ZoomDisplay=L.Control.extend({options:{position:'topleft'},onAdd:function(map){this._map=map;this._container=L.DomUtil.create('div','leaflet-control-zoom-display leaflet-bar-part leaflet-bar');this.updateMapZoom(map.getZoom());map.on('zoomend',this.onMapZoomEnd,this);return this._container;},onRemove:function(map){map.off('zoomend',this.onMapZoomEnd,this);},onMapZoomEnd:function(e){this.updateMapZoom(this._map.getZoom());},updateMapZoom:function(zoom){if(typeof(zoom)==="undefined"){zoom=""}
 this._container.innerHTML=zoom;}});L.Map.mergeOptions({zoomDisplayControl:true});L.Map.addInitHook(function(){if(this.options.zoomDisplayControl){this.zoomDisplayControl=new L.Control.ZoomDisplay();this.addControl(this.zoomDisplayControl);}});L.control.zoomDisplay=function(options){return new L.Control.ZoomDisplay(options);};var map,markers;var hospitals_clicked=[]
-var incentiveTrueIcon=L.icon({iconUrl:PUBLIC_HOST+'/mapicons.nicolasmollet.com/hospital-building-green.png',iconSize:[32,37],iconAnchor:[15,37],popupAnchor:[2,-37]});var incentiveFalseIcon=L.icon({iconUrl:PUBLIC_HOST+'/mapicons.nicolasmollet.com/hospital-building-red.png',iconSize:[32,37],iconAnchor:[15,37],popupAnchor:[2,-37]});function load_geojson_as_cluster(data_url,fit_bounds){$("#map").showLoading();$.getJSON(data_url,function(data){if(typeof(markers)!="undefined"){map.removeLayer(markers);}
+var incentiveTrueIcon=L.icon({iconUrl:PUBLIC_HOST+'/mapicons.nicolasmollet.com/hospital-building-green.png',iconSize:[32,37],iconAnchor:[15,37],popupAnchor:[2,-37]});var incentiveFalseIcon=L.icon({iconUrl:PUBLIC_HOST+'/mapicons.nicolasmollet.com/hospital-building-red.png',iconSize:[32,37],iconAnchor:[15,37],popupAnchor:[2,-37]});var years_of_incentives=['2011','2012','2013'];function load_geojson_as_cluster(data_url,fit_bounds){$("#map").showLoading();$.getJSON(data_url,function(data){if(typeof(markers)!="undefined"){map.removeLayer(markers);}
 if(typeof(searchControl)!="undefined"){map.removeControl(searchControl)}
 markers=new L.MarkerClusterGroup({maxClusterRadius:30})
 var geoJsonLayer=L.geoJson(data,{onEachFeature:handleGeoJSONFeature,filter:filterGeoJSON});markers.on('clusterclick',onClusterClick);markers.addLayer(geoJsonLayer);map.addLayer(markers);searchControl=new L.Control.Search({layer:markers,propertyName:"name",circleLocation:true});searchControl.on('search_locationfound',function(e){map.fitBounds(new L.LatLngBounds(new L.LatLng(e.layer.getLatLng().lat,e.layer.getLatLng().lng),new L.LatLng(e.layer.getLatLng().lat,e.layer.getLatLng().lng)))
@@ -263,9 +263,9 @@ object_content=""
 $.each(props,function(k,v){key=formatKey(k)
 if(v==null){}
 else if(typeof(v)==="object"){switch(k){case'incentives_received':object_content+="</p><h6>EHR Incentives Received</h6><p>"
-if(v.year_2011===true){object_content+="<span class='radius secondary label'>2011</span> "}
-if(v.year_2012===true){object_content+="<span class='radius secondary label'>2012</span> "}
-if(v.year_2013===true){object_content+="<span class='radius secondary label'>2013</span> "}
+$.each(years_of_incentives,function(index,year){if(v['year_'+year]===true){object_content+="<span class='radius secondary label'>"+year
+if(v['year_'+year+'_amt']!=null){object_content+=" ($"+v['year_'+year+'_amt']+")"}
+object_content+="</span>"}})
 if(v.year_2011===false&&v.year_2012===false&&v.year_2013==false){object_content+="None"}
 object_content+="<br /><em class='small'><a href='http://socialhealthinsights.com/2013/09/visualizing-meaningful-use-attestation-data-by-ehr-and-technology-vendor/' target='blank'>Interested in which vendors are supporting eligible hospitals and providers? This blog post includes analysis and a link to an interactive visualization of vendor stats.</a></em>"
 break;case'geo':break;case'hc_hais':object_content+=renderHcHaisObject(v)
@@ -309,10 +309,9 @@ if(props["PROVIDER CCN"]){popup+="<br /><br /> <u>CCN:</u> <a href='"+linkForCCN
 if(props.npi){popup+="<br /><u>NPI:</u> "+"<a href='"+linkForNPI(props.npi)+"' target=_blank>"+props.npi+"</a>"}
 if(props.jc_id){popup+="<br /><u>Joint Commisison ID:</u> <a target='blank' href='"+linkForJC(props.jc_id)+"'>"+props.jc_id+"</a>"}
 popup+="<br /><br />Incentive Program Year(s), if any: "
-if(props["incentives_received"]["year_2011"]===true){popup+="<span class='radius secondary label'>2011</span> "}
-if(props["incentives_received"]["year_2012"]===true){popup+=" <span class='radius secondary label'>2012</span>"}
-if(props["incentives_received"]["year_2013"]===true){popup+=" <span class='radius secondary label'>2013</span>"}
-layer.bindPopup(popup)
+$.each(years_of_incentives,function(index,year){if(props["incentives_received"]["year_"+year]===true){popup+="<span class='radius secondary label'>"+year
+if(props["incentives_received"]["year_"+year+"_amt"]!=null){popup+=" ($"+props["incentives_received"]["year_"+year+"_amt"]+")"}
+popup+="</span>"}});layer.bindPopup(popup)
 layer.on('click',onFeatureClick);}
 function renderHcHaisObject(array_in){html="<h6><a href='http://www.medicare.gov/hospitalcompare/Data/Healthcare-Associated-Infections.html' target='blank'>Hospital Associated Infections (from CMS Hospital Compare/CDC)</a></h6>"
 html+="<p><br /><a target='blank' href='https://data.medicare.gov/Hospital-Compare/Healthcare-Associated-Infections-National/6kcz-q57c'>See National Averages</a></p>"
@@ -361,7 +360,6 @@ html+=obj["address"]
 html+="<br />"+obj["city"]+", "+obj["state"]+" "+obj["zip"]
 return html}
 function formatGeneralHospitalInformation(obj){html="<ul class=filterable>"
-html+="<li><u>Hosp. Name:</u> "+obj["hospital_name"]+"</li>"
 html+="<li><u>Hosp. Owner:</u> "+obj["hospital_owner"]+"</li>"
 html+="<li><u>Hosp. Type:</u> "+obj["hospital_type"]+"</li>"
 html+="</ul>"

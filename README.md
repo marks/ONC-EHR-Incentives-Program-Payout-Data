@@ -20,23 +20,20 @@ Procedure
   
   1. Create a directory for the raw data and later exports:
   
-        mkdir -p public/data/ProvidersPaidByEHRProgram_June2013_EH/
+        mkdir -p public/data/ProvidersPaidByEHRProgram_Sep2013_EH/
 
   2. Download data file:
 
-        curl http://www.cms.gov/Regulations-and-Guidance/Legislation/EHRIncentivePrograms/Downloads/ProvidersPaidByEHRProgram_June2013_EH.zip -o public/data/ProvidersPaidByEHRProgram_June2013_EH/ProvidersPaidByEHRProgram_June2013_EH.zip
+        curl http://www.cms.gov/Regulations-and-Guidance/Legislation/EHRIncentivePrograms/Downloads/EH_ProvidersPaidByEHRProgram_Sep2013_FINAL.zip -o public/data/ProvidersPaidByEHRProgram_Sep2013_EH/EH_ProvidersPaidByEHRProgram_Sep2013_FINAL.zip
 
   3. Unzip data file:
 
-        unzip public/data/ProvidersPaidByEHRProgram_June2013_EH/ProvidersPaidByEHRProgram_June2013_EH.zip -d public/data/ProvidersPaidByEHRProgram_June2013_EH/
+        unzip public/data/ProvidersPaidByEHRProgram_Sep2013_EH/EH_ProvidersPaidByEHRProgram_Sep2013_FINAL.zip -d public/data/ProvidersPaidByEHRProgram_Sep2013_EH/
 
-  4. Import CSV into MongoDB and ensure the fields are properly formatted. _Note_ how we use ProvidersPaidByEHRProgram_June2013_EH-normalizedByBrianNorris.csv instead of ProvidersPaidByEHRProgram_June2013_EH.csv. Unfortunately, the CMS download is formatted where each provider gets multiple rows. We decided to use Excel skills to normalize the data and import that into MongoDB. A pull request to automatically and scalably normalize the messy CSV from CMS would be very much welcomed.    
+  4. Import CSV into MongoDB and ensure the fields are properly formatted. 
 
-        mongoimport --type csv -d cms_incentives -c ProvidersPaidByEHRProgram_June2013_EH --headerline --file public/data/ProvidersPaidByEHRProgram_June2013_EH/ProvidersPaidByEHRProgram_June2013_EH-normalizedByBrianNorris.csv
-
+        bundle exec rake hospitals:ingest_latest_payments_csv
         bundle exec rake hospitals:ensure_fields_are_properly_formatted
-
-
 
   5. Bring in additional data from the General Hospital Information and HCAHPS (patient experience) data sets on Socrata:
 
@@ -64,11 +61,11 @@ Procedure
 
         bundle exec rake mongodb:mongoid_create_indexes
 
-  10. If you intend to run the visualization in a prodution environemnt: 
+  10. *If you intend to run the visualization in a production environemnt:*
 
         # You will want to create a static `.geojson` 
         bundle exec ruby web_app.rb -p 4567 -e development
-        curl http://localhost:4567/db/cms_incentives/EH/all_hospitals_with_geo.geojson -o public/data/ProvidersPaidByEHRProgram_June2013_EH/geojson/all.geojson
+        curl http://localhost:4567/db/cms_incentives/EH/all.geojson -o public/data/ProvidersPaidByEHRProgram_Sep2013_EH/geojson/all.geojson
 
         # Refresh the minified static assets
         rm public/static/*

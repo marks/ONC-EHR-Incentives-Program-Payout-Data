@@ -5,7 +5,8 @@ module ModelHelpers
   def incentives_received
     incentives = {}
     (2011..2013).each do |year|
-      incentives["year_#{year}"] = (self["PROGRAM YEAR #{year}"] == "TRUE")
+      incentives["year_#{year}"] = (self["PROGRAM YEAR #{year}"].to_s.upcase == "TRUE")
+      incentives["year_#{year}_amt"] = (self["PROGRAM YEAR #{year} CALC PAYMENT"].to_s.gsub(",","").to_f)
     end
     return incentives
   end
@@ -65,7 +66,7 @@ class Hospital
   index({ "PROGRAM YEAR 2011" => 1, "PROGRAM YEAR 2012" => 1, "PROGRAM YEAR 2013" => 1})
   index({ "geo.geometry.location" => "2d"})
   index({ "geo" => 1})
-  store_in collection: "ProvidersPaidByEHRProgram_June2013_EH"
+  store_in collection: "ProvidersPaidByEHRProgram_Sept2013_EH"
 
   embeds_many :hc_hais
   embeds_many :hc_hacs

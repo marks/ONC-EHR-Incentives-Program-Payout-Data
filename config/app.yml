@@ -3,7 +3,7 @@ development: &common_settings
   public_host: ''
   leaflet_key: 'ed5940a5e0724173aba9da0d77368912'
   socrata_key: 'c1qN0TO6e65zh9oxVD6XrVJyT'
-  dstk_host: www.datasciencetoolkit.org 
+  dstk_host: www.datasciencetoolkit.org
 
 production:
   <<: *common_settings

@@ -6,6 +6,13 @@ task :geocode do
   puts "Number of hospitals in collection w/o geolocation: #{hospitals_without_geo.count}"
 
   hospitals_without_geo.each do |h|
+    # Let's not deal with non-US 50
+    next if h["general"]["state"] == "PR"
+    next if h["general"]["state"] == "VI" 
+    next if h["general"]["state"] == "MP" 
+    next if h["general"]["state"] == "GU" 
+    next if h["PROVIDER STATE"] == "Guam" 
+
     geo_results = dstk_geocode(h.full_address)
     h.update_attribute("geo",geo_results) if geo_results
   end

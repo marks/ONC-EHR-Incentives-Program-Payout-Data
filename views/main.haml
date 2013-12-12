@@ -252,7 +252,7 @@
               %legend Map Filters
               %h6 Choose provider type (Eligible Hospital/Eligible Provider)
               %select#dropdown{:name => "dropdown"}
-                %option{:value => "#{@all_hospitals_with_geo_url}"} All US hospitals (updated June 2013)
+                %option{:value => "#{@all_hospitals_with_geo_url}"} All US hospitals (updated September 20, 2013)
                 - STATES.each do |state|
                   %option{:value => "#{@state_providers_url}/#{state}.geojson"}= "#{state} providers who received CMS incentives (updated June 2013)"
               %hr

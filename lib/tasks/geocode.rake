@@ -13,8 +13,12 @@ task :geocode do
     next if h["general"]["state"] == "GU" 
     next if h["PROVIDER STATE"] == "Guam" 
 
-    geo_results = dstk_geocode(h.full_address)
-    h.update_attribute("geo",geo_results) if geo_results
+    begin
+      geo_results = dstk_geocode(h.full_address)
+      h.update_attribute("geo",geo_results) if geo_results
+    rescue => e 
+      puts "\n   GEOCODE ERROR: #{e}"
+    end
   end
 
   # GEOCODE ELIGIBLE PROVIDERS (~106k)
@@ -23,7 +27,11 @@ task :geocode do
   puts "Number of providers in collection w/o geolocation: #{providers_without_geo.count}"
 
   providers_without_geo.each do |p|
-    geo_results = dstk_geocode("#{p["PROVIDER  ADDRESS"]}, #{p["PROVIDER CITY"]}, #{p["PROVIDER STATE"]} #{p["PROVIDER ZIP 5 CD"]}")
-    p.update_attribute("geo",geo_results) if geo_results
+    begin
+      geo_results = dstk_geocode("#{p["PROVIDER  ADDRESS"]}, #{p["PROVIDER CITY"]}, #{p["PROVIDER STATE"]} #{p["PROVIDER ZIP 5 CD"]}")
+      p.update_attribute("geo",geo_results) if geo_results
+    rescue => e 
+      puts "\n   GEOCODE ERROR: #{e}"
+    end
   end
 end

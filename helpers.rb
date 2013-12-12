@@ -7,7 +7,6 @@ def dstk_geocode(string)
   address_to_lookup = cleanup_string(string)
   print "Geocoding: #{address_to_lookup}"
   url = "http://#{settings.dstk_host}/maps/api/geocode/json?sensor=false&address="+URI.encode(address_to_lookup)
-  puts url
   geo_results = JSON.parse(RestClient.get(url))
   if geo_results["status"] == "OK"
     if geo_results["results"].first["geometry"]["location"]["lng"].to_i >= -45

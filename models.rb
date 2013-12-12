@@ -6,7 +6,7 @@ module ModelHelpers
     incentives = {}
     (2011..2013).each do |year|
       incentives["year_#{year}"] = (self["PROGRAM YEAR #{year}"].to_s.upcase == "TRUE")
-      incentives["year_#{year}_amt"] = (self["PROGRAM YEAR #{year} CALC PAYMENT"].to_s.gsub(",","").to_f)
+      incentives["year_#{year}_amt"] = (self["PROGRAM YEAR #{year} CALC PAYMENT"])
     end
     return incentives
   end

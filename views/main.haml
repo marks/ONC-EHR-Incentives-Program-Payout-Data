@@ -90,7 +90,7 @@
         .alert-box
           %p
             %strong Update:
-            EH and EP data has been updated to be up to date as of Septmber 20 2013, the latest quarterly update by CMS. Both EH and EP data now show calculated payment amounts as reported by CMS as well. 
+            EH and EP data has been updated to be up to date as of September 2013, the latest quarterly update by CMS. Both EH and EP data now show calculated payment amounts as reported by CMS as well. 
           %p
             %strong
               Please also note
@@ -110,7 +110,7 @@
               %h4 Introduction
               %p
                 The Center for Medicare and Medicaid Services (CMS) releases data about 
-                %a{:href => "http://www.cms.gov/Regulations-and-Guidance/Legislation/EHRIncentivePrograms/Meaningful_Use.html", :target => "_blank"} providers and hospitals
+                %a{:href => "https://www.google.com/url?q=http://www.cms.gov/Regulations-and-Guidance/Legislation/EHRIncentivePrograms/DataAndReports.html", :target => "_blank"} providers and hospitals
                 who have successfully attested to Meaningful Use and received incentives for using electronic health records (EHRs) under the Health Information Technology for Economic and Clinical Health Act
                 = precede "(" do
                   = succeed ")." do
@@ -252,9 +252,9 @@
               %legend Map Filters
               %h6 Choose provider type (Eligible Hospital/Eligible Provider)
               %select#dropdown{:name => "dropdown"}
-                %option{:value => "#{@all_hospitals_with_geo_url}"} All US hospitals (updated September 20, 2013)
+                %option{:value => "#{@all_hospitals_with_geo_url}"} All US hospitals (updated September 2013)
                 - STATES.each do |state|
-                  %option{:value => "#{@state_providers_url}/#{state}.geojson"}= "#{state} providers who received CMS incentives (updated June 2013)"
+                  %option{:value => "#{@state_providers_url}/#{state}.geojson"}= "#{state} providers who received CMS incentives (updated September 2013)"
               %hr
               %h6 Filter by EHR Incentives Received
               - ["never","2011","2012","2013"].each do |year|

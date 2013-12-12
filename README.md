@@ -16,11 +16,11 @@ Notes
 
 Procedure
 ---------
-**EH: Providers Paid By EHR Program: June 2013 Eligible Hospitals**
+**EH: Providers Paid By EHR Program: September 2013 Eligible Hospitals**
   
   1. Create a directory for the raw data and later exports:
   
-        mkdir -p public/data/ProvidersPaidByEHRProgram_Sep2013_EH/
+        mkdir -p public/data/ProvidersPaidByEHRProgram_Sep2013_EH/geojson
 
   2. Download data file:
 
@@ -92,6 +92,17 @@ Procedure
         mongoimport --type csv -d cms_incentives -c ProvidersPaidByEHRProgram_June2013_EP --headerline --file public/data/ProvidersPaidByEHRProgram_June2013_EP/ProvidersPaidByEHRProgram_June2013_EP-normalizedByBrianNorris.csv
 
         bundle exec rake providers:ensure_fields_are_properly_formatted
+
+  5. Update for latest CSV which includes payment data:
+        mkdir -p public/data/ProvidersPaidByEHRProgram_Sep2013_EP/geojson
+
+        curl http://www.cms.gov/Regulations-and-Guidance/Legislation/EHRIncentivePrograms/Downloads/EP_ProvidersPaidByEHRProgram_Sep2013_FINAL.zip -o public/data/ProvidersPaidByEHRProgram_Sep2013_EP/ProvidersPaidByEHRProgram_Sep2013_EP.zip
+
+        unzip public/data/ProvidersPaidByEHRProgram_Sep2013_EP/ProvidersPaidByEHRProgram_Sep2013_EP.zip -d public/data/ProvidersPaidByEHRProgram_Sep2013_EP/
+
+        iconv -f ISO-8859-1 -t UTF-8 public/data/ProvidersPaidByEHRProgram_Sep2013_EP/EP_ProvidersPaidByEHRProgram_Sep2013_FINAL.csv > public/data/ProvidersPaidByEHRProgram_Sep2013_EP/EP_ProvidersPaidByEHRProgram_Sep2013_FINAL-utf8.csv
+
+        bundle exec rake providers:ingest_latest_payments_csv
 
   5. If you are running in a production environment, export the geojson to flat files (instead of hitting the database) by running the following rake task:
 

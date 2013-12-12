@@ -10,12 +10,30 @@ namespace :providers do
   desc "Write state provider GeoJSON files to public/data"
   task :output_provider_geojson_by_state do
     STATES.each do |state|
-      filename = "public/data/ProvidersPaidByEHRProgram_June2013_EP/geojson/#{state}.geojson"
+      filename = "public/data/ProvidersPaidByEHRProgram_Sep2013_EP/geojson/#{state}.geojson"
       print "Starting #{state} geojson export to #{filename} "
       geojson = Provider.where("PROVIDER STATE" => state, "geo" => {"$ne" => nil}).map {|p| p.to_geojson}
       File.open(filename, 'w') { |file| file.write(geojson.to_json) }
       print "... done.\n"
     end
   end
+
+  task :ingest_latest_payments_csv do
+    CSV.foreach("public/data/ProvidersPaidByEHRProgram_Sep2013_EP/EP_ProvidersPaidByEHRProgram_Sep2013_FINAL-utf8.csv",:headers => true) do |row|
+      next if row["PROGRAM YEAR"] == ""
+      p = Provider.find_or_create_by(:"PROVIDER NPI" => row["PROVIDER NPI"] )
+      attrs = row.to_hash
+
+      year = attrs["PROGRAM YEAR"]
+      attrs["PROGRAM YEAR #{year}"] = row["PROGRAM YEAR"] == "#{year}"
+      attrs["PROGRAM YEAR #{year} CALC PAYMENT"] = row["CALC PAYMENT  AMT ($)"].to_s.gsub("$","")
+      attrs.delete("PROGRAM YEAR")
+      attrs.delete("CALC PAYMENT  AMT ($)")
+
+      p.update_attributes!(attrs)
+      puts "Updated/inserted NPI=#{p["PROVIDER NPI"]}"
+    end
+  end
+
 
 end

@@ -21,6 +21,7 @@ namespace :providers do
   task :ingest_latest_payments_csv do
     CSV.foreach("public/data/ProvidersPaidByEHRProgram_Sep2013_EP/EP_ProvidersPaidByEHRProgram_Sep2013_FINAL-utf8.csv",:headers => true) do |row|
       next if row["PROGRAM YEAR"] == ""
+      row["PROVIDER NPI"] = row["PROVIDER NPI"].to_i
       p = Provider.find_or_create_by(:"PROVIDER NPI" => row["PROVIDER NPI"] )
       attrs = row.to_hash
 

@@ -412,19 +412,23 @@ function linkForJC(jc_id){
 }
 
 function filterGeoJSON(feature, layer){
+  show = false;
+
+  // Year switches
   if($('input[name=switch-paid-2013]:checked').val() == "true" && feature.properties.incentives_received["year_2013"] == true){
-    return true;
+    show = true;
   }
   else if($('input[name=switch-paid-2012]:checked').val() == "true" && feature.properties.incentives_received["year_2012"] == true){
-    return true;
+    show = true;
   }
   else if($('input[name=switch-paid-2011]:checked').val() == "true" && feature.properties.incentives_received["year_2011"] == true){
-    return true;
+    show = true;
   }
   else if($('input[name=switch-paid-never]:checked').val() == "true" && feature.properties.incentives_received["year_2013"] == false && feature.properties.incentives_received["year_2012"] == false && feature.properties.incentives_received["year_2011"] == false){
-    return true;
+    show = true;
   }
-  else {
-    return false;
-  }
+
+  // Payment switches
+
+  return show;
 }

@@ -272,6 +272,15 @@
                     %label{:for => "switch-paid-#{year}-on", :onclick => ""} On
                     %span
               %hr
+              %h6 Filter by EH/EP's Calcuated Incentive Payment
+              .large-4.columns
+                %label Minimum
+                %input{:id => "filter-calc-payment-min", :type => "text", :value => "0", :name => "filter-calc-payment-min"}
+              .large-4.columns
+                %label Maximum 
+                %input{:id => "filter-calc-payment-max", :type => "text", :value => "999,999,999", :name => "filter-calc-payment-max"}
+              
+              %hr
               %h6 Looking for more filtering and reporting options?
               %p 
                 %a{:href => "http://socialhealthinsights.com/contact-us"} Let's talk. We like doing this type of work.

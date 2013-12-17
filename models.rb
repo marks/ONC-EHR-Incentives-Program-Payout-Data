@@ -72,7 +72,7 @@ class Hospital
   embeds_many :hc_hacs
 
   json_fields \
-    :"PROVIDER CCN" => { }, :id => {:type => :reference, :definiton => :_id}, :incentives_received => {:type => :reference},
+    :"PROVIDER CCN" => { }, :id => {:type => :reference, :definiton => :_id}, :incentives_received => {:type => :reference}, :cms255210 => {:type => :reference},
     :phone_number => {:type => :reference}, :geo => {},
     :address => {:type => :reference}, :name => {:type => :reference}, :npi => {:type => :reference},
     :hc_hais => { :type => :reference}, :hc_hacs => { :type => :reference}, :general => {:type => :reference, :definition => :general_or_not}, :hcahps => {:type => :reference, :definition => :hcahps_or_not}, :jc_id => {:type => :reference, :definition => :jc_id_or_not}, :ahrq_m => {:type => :reference, :definition => :ahrq_m_or_not}, :ooc => {:type => :reference, :definition => :ooc_or_not}
@@ -124,6 +124,14 @@ class Hospital
 
   def ooc_or_not
     self["ooc"].present? ? remove_keys(self["ooc"],keys_to_exclude_from_json) : []
+  end
+
+  def cms255210
+    data = {}
+    (2010..2013).each do |year|
+      data[year] = self["CMS255210_#{year}"]
+    end
+    return data
   end
 
   # Usage: Hospital.mr_compute_descriptive_stats_excluding_nulls("hcahps.percent_of_patients_who_reported_that_the_area_around_their_room_was_always_quiet_at_night_")

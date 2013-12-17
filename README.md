@@ -44,6 +44,7 @@ Procedure
         bundle exec rake hospitals:ingest_hc_hacs
         bundle exec rake hospitals:ingest_ahrq_m
         bundle exec rake hospitals:ingest_ooc
+        bundle exec rake hospitals:ingest_cms_form_2552_10
 
   6. Geocode provider addresses:
 

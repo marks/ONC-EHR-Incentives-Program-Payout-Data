@@ -20,7 +20,6 @@ namespace :hospitals do
     end
   end
 
-
   task :ensure_fields_are_properly_formatted do
     Hospital.all.each do |h|
       h.update_attribute("PROVIDER CCN",format_ccn(h["PROVIDER CCN"]))
@@ -205,6 +204,26 @@ namespace :hospitals do
     puts "Number of hospitals in collection w/o Outcome of Care Measures: #{Hospital.without_ahrq_m.count}"
   end
 
+  task :ingest_cms_form_2552_10 do
+    # TODO - automatically download CMS form 2552-10 data.. currently on an airplane so will do later
+    [2010,2011,2012,2013].each do |year|
+      CSV.foreach("public/data/CMS_Form_2552-10/IME_GME#{year}.CSV",:headers => true) do |row|
+        h = Hospital.find_by(:"PROVIDER CCN" => row["PROVIDER_NUMBER"])
+        if h
+          ime_data = row.to_hash
+          ime_data["FYB"] = Date.parse(ime_data["FYB"]) if ime_data["FYB"]
+          ime_data["FYE"] = Date.parse(ime_data["FYE"]) if ime_data["FYE"]
+          data_key = "CMS255210_#{year}"
+          h.update_attributes!(:"#{data_key}" => ime_data)
+          puts "Updated/inserted #{data_key} for CCN=#{h["PROVIDER CCN"]}"
+        else
+          # TODO - figure out why we dont have records for some of the hospitals for which we have CMS 2552-10 reports data
+          puts "!! No record of ##{row["PROVIDER_NUMBER"]} in our DB"
+        end
+      end
+
+    end
+  end
 
   #desc "Calculate HCAHPS national averages for each value and store in a hcahps_averages collection"
   #task :calculate_national_averages do

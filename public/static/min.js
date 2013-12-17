@@ -210,7 +210,32 @@ this._circleLoc.setStyle({fill:false,stroke:false});return this;},animate:functi
 numShown++;}else{if(li.style.display!="none"){li.style.display="none";}}}
 callback(numShown);return false;}).keydown(function(){clearTimeout(keyTimeout);keyTimeout=setTimeout(function(){input.change();},timeout);});return this;}
 L.Control.ZoomDisplay=L.Control.extend({options:{position:'topleft'},onAdd:function(map){this._map=map;this._container=L.DomUtil.create('div','leaflet-control-zoom-display leaflet-bar-part leaflet-bar');this.updateMapZoom(map.getZoom());map.on('zoomend',this.onMapZoomEnd,this);return this._container;},onRemove:function(map){map.off('zoomend',this.onMapZoomEnd,this);},onMapZoomEnd:function(e){this.updateMapZoom(this._map.getZoom());},updateMapZoom:function(zoom){if(typeof(zoom)==="undefined"){zoom=""}
-this._container.innerHTML=zoom;}});L.Map.mergeOptions({zoomDisplayControl:true});L.Map.addInitHook(function(){if(this.options.zoomDisplayControl){this.zoomDisplayControl=new L.Control.ZoomDisplay();this.addControl(this.zoomDisplayControl);}});L.control.zoomDisplay=function(options){return new L.Control.ZoomDisplay(options);};var map,markers;var hospitals_clicked=[]
+this._container.innerHTML=zoom;}});L.Map.mergeOptions({zoomDisplayControl:true});L.Map.addInitHook(function(){if(this.options.zoomDisplayControl){this.zoomDisplayControl=new L.Control.ZoomDisplay();this.addControl(this.zoomDisplayControl);}});L.control.zoomDisplay=function(options){return new L.Control.ZoomDisplay(options);};﻿
+jQuery.fn.showLoading=function(options){var indicatorID;var settings={'addClass':'','beforeShow':'','afterShow':'','hPos':'center','vPos':'center','indicatorZIndex':5001,'overlayZIndex':5000,'parent':'','marginTop':0,'marginLeft':0,'overlayWidth':null,'overlayHeight':null};jQuery.extend(settings,options);var loadingDiv=jQuery('<div></div>');var overlayDiv=jQuery('<div></div>');if(settings.indicatorID){indicatorID=settings.indicatorID;}
+else{indicatorID=jQuery(this).attr('id');}
+jQuery(loadingDiv).attr('id','loading-indicator-'+indicatorID);jQuery(loadingDiv).addClass('loading-indicator');if(settings.addClass){jQuery(loadingDiv).addClass(settings.addClass);}
+jQuery(overlayDiv).css('display','none');jQuery(document.body).append(overlayDiv);jQuery(overlayDiv).attr('id','loading-indicator-'+indicatorID+'-overlay');jQuery(overlayDiv).addClass('loading-indicator-overlay');if(settings.addClass){jQuery(overlayDiv).addClass(settings.addClass+'-overlay');}
+var overlay_width;var overlay_height;var border_top_width=jQuery(this).css('border-top-width');var border_left_width=jQuery(this).css('border-left-width');border_top_width=isNaN(parseInt(border_top_width))?0:border_top_width;border_left_width=isNaN(parseInt(border_left_width))?0:border_left_width;var overlay_left_pos=jQuery(this).offset().left+parseInt(border_left_width);var overlay_top_pos=jQuery(this).offset().top+parseInt(border_top_width);if(settings.overlayWidth!==null){overlay_width=settings.overlayWidth;}
+else{overlay_width=parseInt(jQuery(this).width())+parseInt(jQuery(this).css('padding-right'))+parseInt(jQuery(this).css('padding-left'));}
+if(settings.overlayHeight!==null){overlay_height=settings.overlayWidth;}
+else{overlay_height=parseInt(jQuery(this).height())+parseInt(jQuery(this).css('padding-top'))+parseInt(jQuery(this).css('padding-bottom'));}
+jQuery(overlayDiv).css('width',overlay_width.toString()+'px');jQuery(overlayDiv).css('height',overlay_height.toString()+'px');jQuery(overlayDiv).css('left',overlay_left_pos.toString()+'px');jQuery(overlayDiv).css('position','absolute');jQuery(overlayDiv).css('top',overlay_top_pos.toString()+'px');jQuery(overlayDiv).css('z-index',settings.overlayZIndex);if(settings.overlayCSS){jQuery(overlayDiv).css(settings.overlayCSS);}
+jQuery(loadingDiv).css('display','none');jQuery(document.body).append(loadingDiv);jQuery(loadingDiv).css('position','absolute');jQuery(loadingDiv).css('z-index',settings.indicatorZIndex);var indicatorTop=overlay_top_pos;if(settings.marginTop){indicatorTop+=parseInt(settings.marginTop);}
+var indicatorLeft=overlay_left_pos;if(settings.marginLeft){indicatorLeft+=parseInt(settings.marginTop);}
+if(settings.hPos.toString().toLowerCase()=='center'){jQuery(loadingDiv).css('left',(indicatorLeft+((jQuery(overlayDiv).width()-parseInt(jQuery(loadingDiv).width()))/2)).toString()+'px');}
+else if(settings.hPos.toString().toLowerCase()=='left'){jQuery(loadingDiv).css('left',(indicatorLeft+parseInt(jQuery(overlayDiv).css('margin-left'))).toString()+'px');}
+else if(settings.hPos.toString().toLowerCase()=='right'){jQuery(loadingDiv).css('left',(indicatorLeft+(jQuery(overlayDiv).width()-parseInt(jQuery(loadingDiv).width()))).toString()+'px');}
+else{jQuery(loadingDiv).css('left',(indicatorLeft+parseInt(settings.hPos)).toString()+'px');}
+if(settings.vPos.toString().toLowerCase()=='center'){jQuery(loadingDiv).css('top',(indicatorTop+((jQuery(overlayDiv).height()-parseInt(jQuery(loadingDiv).height()))/2)).toString()+'px');}
+else if(settings.vPos.toString().toLowerCase()=='top'){jQuery(loadingDiv).css('top',indicatorTop.toString()+'px');}
+else if(settings.vPos.toString().toLowerCase()=='bottom'){jQuery(loadingDiv).css('top',(indicatorTop+(jQuery(overlayDiv).height()-parseInt(jQuery(loadingDiv).height()))).toString()+'px');}
+else{jQuery(loadingDiv).css('top',(indicatorTop+parseInt(settings.vPos)).toString()+'px');}
+if(settings.css){jQuery(loadingDiv).css(settings.css);}
+var callback_options={'overlay':overlayDiv,'indicator':loadingDiv,'element':this};if(typeof(settings.beforeShow)=='function'){settings.beforeShow(callback_options);}
+jQuery(overlayDiv).show();jQuery(loadingDiv).show();if(typeof(settings.afterShow)=='function'){settings.afterShow(callback_options);}
+return this;};jQuery.fn.hideLoading=function(options){var settings={};jQuery.extend(settings,options);if(settings.indicatorID){indicatorID=settings.indicatorID;}
+else{indicatorID=jQuery(this).attr('id');}
+jQuery(document.body).find('#loading-indicator-'+indicatorID).remove();jQuery(document.body).find('#loading-indicator-'+indicatorID+'-overlay').remove();return this;};var map,markers;var hospitals_clicked=[]
 var incentiveTrueIcon=L.icon({iconUrl:PUBLIC_HOST+'/mapicons.nicolasmollet.com/hospital-building-green.png',iconSize:[32,37],iconAnchor:[15,37],popupAnchor:[2,-37]});var incentiveFalseIcon=L.icon({iconUrl:PUBLIC_HOST+'/mapicons.nicolasmollet.com/hospital-building-red.png',iconSize:[32,37],iconAnchor:[15,37],popupAnchor:[2,-37]});var years_of_incentives=['2011','2012','2013'];function load_geojson_as_cluster(data_url,fit_bounds){$("#map").showLoading();$.getJSON(data_url,function(data){if(typeof(markers)!="undefined"){map.removeLayer(markers);}
 if(typeof(searchControl)!="undefined"){map.removeControl(searchControl)}
 markers=new L.MarkerClusterGroup({maxClusterRadius:30})
@@ -367,8 +392,15 @@ return html;}
 function linkForNPI(npi){return"http://www.bloomapi.com/search#/npis/"+npi;}
 function linkForCCN(ccn){return"http://www.medicare.gov/hospitalcompare/profile.html#profTab=0&ID="+ccn;}
 function linkForJC(jc_id){return"http://www.qualitycheck.org/consumer/searchresults.aspx?nm="+jc_id;}
-function filterGeoJSON(feature,layer){if($('input[name=switch-paid-2013]:checked').val()=="true"&&feature.properties.incentives_received["year_2013"]==true){return true;}
-else if($('input[name=switch-paid-2012]:checked').val()=="true"&&feature.properties.incentives_received["year_2012"]==true){return true;}
-else if($('input[name=switch-paid-2011]:checked').val()=="true"&&feature.properties.incentives_received["year_2011"]==true){return true;}
-else if($('input[name=switch-paid-never]:checked').val()=="true"&&feature.properties.incentives_received["year_2013"]==false&&feature.properties.incentives_received["year_2012"]==false&&feature.properties.incentives_received["year_2011"]==false){return true;}
-else{return false;}}
+function currency_str_to_float(str){return parseFloat(str.replace(/(,|\$)/g,""))}
+function filterGeoJSON(feature,layer){show=true;if($('input[name=switch-paid-2013]:checked').val()=="true"&&feature.properties.incentives_received["year_2013"]==true){show=true;}
+else if($('input[name=switch-paid-2012]:checked').val()=="true"&&feature.properties.incentives_received["year_2012"]==true){show=true;}
+else if($('input[name=switch-paid-2011]:checked').val()=="true"&&feature.properties.incentives_received["year_2011"]==true){show=true;}
+else if($('input[name=switch-paid-never]:checked').val()=="true"&&feature.properties.incentives_received["year_2013"]==false&&feature.properties.incentives_received["year_2012"]==false&&feature.properties.incentives_received["year_2011"]==false){show=true;}else{show=false;}
+pmt_min=currency_str_to_float($('input[name=filter-calc-payment-min]').val())
+pmt_max=currency_str_to_float($('input[name=filter-calc-payment-max]').val())
+if(!isNaN(pmt_min)&&!isNaN(pmt_max)){$.each(years_of_incentives,function(index,year){if(feature.properties.incentives_received['year_'+year+'_amt']){pmt=currency_str_to_float(feature.properties.incentives_received['year_'+year+'_amt'])
+console.log(pmt_min,pmt_max,pmt)
+if(pmt<pmt_min||pmt>pmt_max){console.log("excluding",pmt,"for not being within range")
+show=false;}}});}
+return show;}

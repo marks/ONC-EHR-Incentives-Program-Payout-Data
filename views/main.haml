@@ -4,18 +4,13 @@
 %html.no-js{:lang => "en"}
   / <![endif]
   %head
-    %title US Healthcare Provider Mashup
+    %title US Healthcare Hospital and Provider Comparison Mashup by Social Health Insights (the creators of CheckQM)
     %meta{:charset => "utf-8"}/
     %meta{:content => "width=device-width, initial-scale=1.0", :name => "viewport"}/
     :javascript
       var PUBLIC_HOST = "#{settings.public_host}"
-    / %script{:src => "http://code.jquery.com/jquery-1.9.1.js"}
     %script{:src => "http://code.jquery.com/ui/1.10.3/jquery-ui.js"}
-    %link{:href => "http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css"}
-    
-    / %script{:src => "http://s3.amazonaws.com/mappyhealth-public/showLoading/jquery.showLoading.min.js"}    
-    / %link{:href => "http://s3.amazonaws.com/mappyhealth-public/showLoading/showLoading.css", :rel => "stylesheet"}
-    
+    %link{:href => "http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css"}    
     - if settings.production?
       %link{:href => "#{settings.public_host}/static/min.css", :rel => "stylesheet"}
       %script{:src => "#{settings.public_host}/static/foundation_all.min.js"}
@@ -377,5 +372,5 @@
       %a{:href => "http://socialhealthinsights.com/contact-us/", :target => "blank"} please let us know.
       We're here to make this better. You can even
       %a{:href => "http://github.com/marks/ONC-EHR-Incentives-Program-Payout-Data", :target => "blank"}contribute a fix on Github
-      but we certainly don't expect you to. We'll dig into it if you bring the problem to our attention.
+      but we certainly don't expect you to. We'll dig into it if you bring a problem to our attention.
     %a.close-reveal-modal ×

@@ -9,11 +9,13 @@
     %meta{:content => "width=device-width, initial-scale=1.0", :name => "viewport"}/
     :javascript
       var PUBLIC_HOST = "#{settings.public_host}"
-    %script{:src => "http://code.jquery.com/jquery-1.9.1.js"}
+    / %script{:src => "http://code.jquery.com/jquery-1.9.1.js"}
     %script{:src => "http://code.jquery.com/ui/1.10.3/jquery-ui.js"}
     %link{:href => "http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css"}
-    %script{:src => "http://s3.amazonaws.com/mappyhealth-public/showLoading/jquery.showLoading.min.js"}    
-    %link{:href => "http://s3.amazonaws.com/mappyhealth-public/showLoading/showLoading.css", :rel => "stylesheet"}
+    
+    / %script{:src => "http://s3.amazonaws.com/mappyhealth-public/showLoading/jquery.showLoading.min.js"}    
+    / %link{:href => "http://s3.amazonaws.com/mappyhealth-public/showLoading/showLoading.css", :rel => "stylesheet"}
+    
     - if settings.production?
       %link{:href => "#{settings.public_host}/static/min.css", :rel => "stylesheet"}
       %script{:src => "#{settings.public_host}/static/foundation_all.min.js"}
@@ -37,22 +39,23 @@
           var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
         })();
         
-    :plain
-      <!-- AddThis Smart Layers BEGIN -->
-      <!-- Go to http://www.addthis.com/get/smart-layers to customize -->
-      <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5230cc743dc0c326"></script>
-      <script type="text/javascript">
-        addthis.layers({
-          'theme' : 'transparent',
-          'share' : {
-            'position' : 'left',
-            'numPreferredServices' : 4,
-            'services': 'twitter,linkedin,facebook',
-            'postShareRecommendedMsg':'Check out our other work at http://socialhealthinsights.com/'
-          },
-        });
-      </script>
-      <!-- AddThis Smart Layers END -->
+    - if settings.production?
+      :plain
+        <!-- AddThis Smart Layers BEGIN -->
+        <!-- Go to http://www.addthis.com/get/smart-layers to customize -->
+        <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5230cc743dc0c326"></script>
+        <script type="text/javascript">
+          addthis.layers({
+            'theme' : 'transparent',
+            'share' : {
+              'position' : 'left',
+              'numPreferredServices' : 4,
+              'services': 'twitter,linkedin,facebook',
+              'postShareRecommendedMsg':'Check out our other work at http://socialhealthinsights.com/'
+            },
+          });
+        </script>
+        <!-- AddThis Smart Layers END -->
 
   %body
     %nav.top-bar
@@ -207,17 +210,17 @@
                     %td
                       Hide additional details
 
-          %section
-            %p.title{"data-section-title" => "legend"}
-              %a{:href => "#"} Metadata
-            .content{"data-section-content" => ""}
-              .alert-box.alert{:style => "padding-top:10px"} Work in progress
-              %h4 Hospital (EH) Data Summary
-              %script{:src => "https://gist.github.com/marks/6563510.js"}
-              %hr
-              %h4 Provider (EP) Data Summary
-              %p
-                %em Coming soon
+          / %section
+          /   %p.title{"data-section-title" => "legend"}
+          /     %a{:href => "#"} Metadata
+          /   .content{"data-section-content" => ""}
+          /     .alert-box.alert{:style => "padding-top:10px"} Work in progress
+          /     %h4 Hospital (EH) Data Summary
+          /     %script{:src => "https://gist.github.com/marks/6563510.js"}
+          /     %hr
+          /     %h4 Provider (EP) Data Summary
+          /     %p
+          /       %em Coming soon
 
 
           %section
@@ -275,10 +278,13 @@
               %h6 Filter by EH/EP's Calcuated Incentive Payment
               .large-4.columns
                 %label Minimum
-                %input{:id => "filter-calc-payment-min", :type => "text", :value => "0", :name => "filter-calc-payment-min"}
+                %input{:id => "filter-calc-payment-min", :type => "text", :value => "$0.00", :name => "filter-calc-payment-min"}
               .large-4.columns
                 %label Maximum 
-                %input{:id => "filter-calc-payment-max", :type => "text", :value => "999,999,999", :name => "filter-calc-payment-max"}
+                %input{:id => "filter-calc-payment-max", :type => "text", :value => "$999,999,999.99", :name => "filter-calc-payment-max"}
+              .large-1.columns
+                %label _
+                %input{:type => "submit", :class => "small button", :id => "filter-calc-payment", :value => "Apply"}
               
               %hr
               %h6 Looking for more filtering and reporting options?
@@ -336,7 +342,10 @@
         load_geojson_as_cluster("#{@all_hospitals_with_geo_url}",true)
       });
 
-      $("#dropdown,.switch-paid").change(function(){
+      $("#dropdown,.switch-paid,#filter-calc-payment").change(function(){
+        load_geojson_as_cluster($("#dropdown").val(),true)
+      });
+      $("#filter-calc-payment").click(function(){
         load_geojson_as_cluster($("#dropdown").val(),true)
       });
 

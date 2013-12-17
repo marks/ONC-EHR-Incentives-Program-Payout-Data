@@ -31,6 +31,7 @@ assets do
     '/Leaflet.markercluster/dist/MarkerCluster.css',
     '/Leaflet.markercluster/dist/MarkerCluster.Default.css',
     '/stefanocudini-leaflet-search/leaflet-search.css',
+    '/showLoading/showLoading.css',
     '/app/main.css'
   ]
 
@@ -41,10 +42,12 @@ assets do
     '/stefanocudini-leaflet-search/leaflet-search.js',
     '/jquery.fastLiveFilter.js',
     '/leaflet.zoomdisplay.js',
+    '/showLoading/jquery.showLoading.min.js',
     '/app/main.js'
   ]
 
   js :foundation_all, '/static/foundation_all.min.js', [
+    "/zurb-foundation-4.3.1/js/vendor/jquery.js",
     "/zurb-foundation-4.3.1/js/foundation.min.js",
     "/zurb-foundation-4.3.1/js/foundation/foundation.js",
     "/zurb-foundation-4.3.1/js/foundation/foundation.alerts.js",

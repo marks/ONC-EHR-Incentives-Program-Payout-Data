@@ -11,6 +11,7 @@ namespace :hospitals do
       year = attrs["PROGRAM YEAR"]
       attrs["PROGRAM YEAR #{year}"] = row["PROGRAM YEAR"] == "#{year}"
       attrs["PROGRAM YEAR #{year} CALC PAYMENT"] = row["CALC PAYMENT  AMT ($)"]
+      attrs["PROGRAM YEAR #{year} CALC PAYMENT"] = 0 if attrs["PROGRAM YEAR #{year} CALC PAYMENT"].nil?
       attrs.delete("PROGRAM YEAR")
       attrs.delete("CALC PAYMENT  AMT ($)")
 

@@ -411,8 +411,13 @@ function linkForJC(jc_id){
   return "http://www.qualitycheck.org/consumer/searchresults.aspx?nm="+jc_id;
 }
 
+function currency_str_to_float(str){
+  return parseFloat(str.replace(/(,|\$)/g,""))
+}
+
 function filterGeoJSON(feature, layer){
-  show = false;
+  // start by assuming we want to include the feature
+  show = true; 
 
   // Year switches
   if($('input[name=switch-paid-2013]:checked').val() == "true" && feature.properties.incentives_received["year_2013"] == true){
@@ -426,9 +431,25 @@ function filterGeoJSON(feature, layer){
   }
   else if($('input[name=switch-paid-never]:checked').val() == "true" && feature.properties.incentives_received["year_2013"] == false && feature.properties.incentives_received["year_2012"] == false && feature.properties.incentives_received["year_2011"] == false){
     show = true;
+  } else {
+    show = false;
   }
 
-  // Payment switches
+  // Payment min/max filter
+  pmt_min = currency_str_to_float($('input[name=filter-calc-payment-min]').val())
+  pmt_max = currency_str_to_float($('input[name=filter-calc-payment-max]').val())
+  if(!isNaN(pmt_min) && !isNaN(pmt_max)){
+    $.each(years_of_incentives, function( index, year ) {
+      if(feature.properties.incentives_received['year_'+year+'_amt']){
+        pmt = currency_str_to_float(feature.properties.incentives_received['year_'+year+'_amt'])
+        console.log(pmt_min,pmt_max,pmt)
+        if(pmt < pmt_min || pmt > pmt_max){
+          console.log("excluding",pmt,"for not being within range")
+          show = false;
+        } 
+      }
+    });
+  }
 
   return show;
 }

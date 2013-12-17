@@ -411,8 +411,12 @@ function linkForJC(jc_id){
   return "http://www.qualitycheck.org/consumer/searchresults.aspx?nm="+jc_id;
 }
 
-function currency_str_to_float(str){
-  return parseFloat(str.replace(/(,|\$)/g,""))
+function currency_str_to_float(x){
+  if(typeof(x) == "number"){
+    return x;
+  } else {
+    return parseFloat(x.replace(/(,|\$)/g,""))
+  }
 }
 
 function filterGeoJSON(feature, layer){
@@ -440,14 +444,17 @@ function filterGeoJSON(feature, layer){
   pmt_max = currency_str_to_float($('input[name=filter-calc-payment-max]').val())
   if(!isNaN(pmt_min) && !isNaN(pmt_max)){
     $.each(years_of_incentives, function( index, year ) {
-      if(feature.properties.incentives_received['year_'+year+'_amt']){
+      // if(feature.properties.incentives_received['year_'+year+'_amt']){
         pmt = currency_str_to_float(feature.properties.incentives_received['year_'+year+'_amt'])
-        console.log(pmt_min,pmt_max,pmt)
+        // console.log(pmt_min,pmt_max,pmt)
         if(pmt < pmt_min || pmt > pmt_max){
           console.log("excluding",pmt,"for not being within range")
           show = false;
         } 
-      }
+      // }
+      // else if(pmt_min <= 0 && pmt == 0 ){
+      //   show = false;
+      // }
     });
   }
 

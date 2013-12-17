@@ -70,7 +70,7 @@ Procedure
         # Refresh the minified static assets
         rm public/static/*
         bundle exec rake assetpack:build
-        # Clear AWS Cloudfront caches for static assets and root route.
+        # Don't forget to clear AWS Cloudfront caches for static assets and root route.
 
 **EP: Providers Paid By EHR Program: June 2013 Eligible Providers**
   

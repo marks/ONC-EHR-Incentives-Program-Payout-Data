@@ -71,6 +71,13 @@ Procedure
         # Refresh the minified static assets
         rm public/static/*
         bundle exec rake assetpack:build
+
+        # Push the code to Heroku or similar
+        git push heroku master
+
+        # Send updated mongodb database to MongoHQ or similar
+        bundle exec rake mongodb:export_to_mongohq
+
         # Don't forget to clear AWS Cloudfront caches for static assets and root route.
 
 **EP: Providers Paid By EHR Program: June 2013 Eligible Providers**
@@ -80,7 +87,6 @@ Procedure
         mkdir -p public/data/ProvidersPaidByEHRProgram_June2013_EP/
 
   2. Download data file:
-
 
         curl http://www.cms.gov/Regulations-and-Guidance/Legislation/EHRIncentivePrograms/Downloads/ProvidersPaidByEHRProgram_June2013_EP.zip -o public/data/ProvidersPaidByEHRProgram_June2013_EP/ProvidersPaidByEHRProgram_June2013_EP.zip
 

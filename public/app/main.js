@@ -421,7 +421,7 @@ function currency_str_to_float(x){
 
 function filterGeoJSON(feature, layer){
   // start by assuming we want to include the feature
-  show = true; 
+  var show = true; 
 
   // Year switches
   if($('input[name=switch-paid-2013]:checked').val() == "true" && feature.properties.incentives_received["year_2013"] == true){
@@ -439,23 +439,26 @@ function filterGeoJSON(feature, layer){
     show = false;
   }
 
-  // Payment min/max filter
-  pmt_min = currency_str_to_float($('input[name=filter-calc-payment-min]').val())
-  pmt_max = currency_str_to_float($('input[name=filter-calc-payment-max]').val())
-  if(!isNaN(pmt_min) && !isNaN(pmt_max)){
-    $.each(years_of_incentives, function( index, year ) {
-      // if(feature.properties.incentives_received['year_'+year+'_amt']){
+  // Payment min/max filter (only run if the check boxes are )
+  if(show == true){
+    pmt_min = currency_str_to_float($('input[name=filter-calc-payment-min]').val())
+    pmt_max = currency_str_to_float($('input[name=filter-calc-payment-max]').val())
+    if(!isNaN(pmt_min) && !isNaN(pmt_max)){
+      // create array of show values
+      show_pmt_array = $.map(years_of_incentives, function( year, index ) {
         pmt = currency_str_to_float(feature.properties.incentives_received['year_'+year+'_amt'])
-        // console.log(pmt_min,pmt_max,pmt)
         if(pmt < pmt_min || pmt > pmt_max){
-          console.log("excluding",pmt,"for not being within range")
-          show = false;
-        } 
-      // }
-      // else if(pmt_min <= 0 && pmt == 0 ){
-      //   show = false;
-      // }
-    });
+          return false;
+        } else {
+          return true;
+        }
+      });
+      // check if any of the array values are true
+      // set show to true if any of them are true
+      show = show_pmt_array.some(function ( val ) {
+         return val === true;
+      });
+    }
   }
 
   return show;

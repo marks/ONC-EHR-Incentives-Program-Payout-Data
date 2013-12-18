@@ -9,8 +9,6 @@
     %meta{:content => "width=device-width, initial-scale=1.0", :name => "viewport"}/
     :javascript
       var PUBLIC_HOST = "#{settings.public_host}"
-    %script{:src => "http://code.jquery.com/ui/1.10.3/jquery-ui.js"}
-    %link{:href => "http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css"}    
     - if settings.production?
       %link{:href => "#{settings.public_host}/static/min.css", :rel => "stylesheet"}
       %script{:src => "#{settings.public_host}/static/foundation_all.min.js"}
@@ -271,6 +269,8 @@
                     %span
               %hr
               %h6 Filter by EH/EP's Calcuated Incentive Payment
+              %p
+                %em Note: entity will be included in the map if any of the incentive payments it has received fell within the range specified below. 
               .large-4.columns
                 %label Minimum
                 %input{:id => "filter-calc-payment-min", :type => "text", :value => "$0.00", :name => "filter-calc-payment-min"}
@@ -278,8 +278,8 @@
                 %label Maximum 
                 %input{:id => "filter-calc-payment-max", :type => "text", :value => "$999,999,999.99", :name => "filter-calc-payment-max"}
               .large-1.columns
-                %label _
-                %input{:type => "submit", :class => "small button", :id => "filter-calc-payment", :value => "Apply"}
+                %label{:style => "color:white;"} _
+                %a{:type => "submit", :class => "small button", :id => "filter-calc-payment", :value => "Apply"}
               
               %hr
               %h6 Looking for more filtering and reporting options?

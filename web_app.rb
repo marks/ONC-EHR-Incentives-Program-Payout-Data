@@ -32,6 +32,7 @@ assets do
     '/Leaflet.markercluster/dist/MarkerCluster.Default.css',
     '/stefanocudini-leaflet-search/leaflet-search.css',
     '/showLoading/showLoading.css',
+    '/jquery-ui/jquery-ui.css',
     '/app/main.css'
   ]
 
@@ -43,6 +44,7 @@ assets do
     '/jquery.fastLiveFilter.js',
     '/leaflet.zoomdisplay.js',
     '/showLoading/jquery.showLoading.min.js',
+    '/jquery-ui/jquery-ui.js',
     '/app/main.js'
   ]
 

@@ -13,3 +13,4 @@ production:
   public_host: ''
   cache_time: 7200 # used for static assets and all routes
   bloom_api_db_url: false
+  bloom_api_base_url: false

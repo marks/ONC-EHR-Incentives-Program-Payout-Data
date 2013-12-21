@@ -3,7 +3,7 @@ Mongoid.load!("config/mongoid.yml")
 Mongoid.raise_not_found_error = false
 
 # Initialize PostgreSQL connection (for BloomAPI integration) using ActiveRecord
-if settings.bloom_api_db_url
+if settings.bloom_api_db_url && !settings.production?
   db = URI.parse(settings.bloom_api_db_url)
   ActiveRecord::Base.establish_connection(
     :adapter  => db.scheme == 'postgres' ? 'postgresql' : db.scheme,

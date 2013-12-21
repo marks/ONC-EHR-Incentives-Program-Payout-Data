@@ -4,9 +4,11 @@ development: &common_settings
   leaflet_key: 'ed5940a5e0724173aba9da0d77368912'
   socrata_key: 'c1qN0TO6e65zh9oxVD6XrVJyT'
   dstk_host: www.datasciencetoolkit.org
+  bloom_api_db_url: 'postgres://bloomapi:bloomapi@localhost/bloomapi'
 
 production:
   <<: *common_settings
   google_analytics_id: 'UA-31592977-6' # override the default value
   public_host: ''
   cache_time: 7200 # used for static assets and all routes
+  bloom_api_db_url: false

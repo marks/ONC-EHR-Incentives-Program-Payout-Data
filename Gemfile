@@ -11,3 +11,7 @@ gem 'haml'
 gem 'rake'
 gem 'sinatra-assetpack', :require => 'sinatra/assetpack'
 gem 'mongoid-cached-json'
+
+gem "pg"
+gem "activerecord"
+gem "sinatra-activerecord"

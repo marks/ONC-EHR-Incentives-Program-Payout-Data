@@ -185,6 +185,10 @@ function renderHospitalComparison(){
                 object_content += "<p><br /><a target='blank' href='https://data.medicare.gov/Hospital-Compare/Survey-of-Patients-Hospital-Experiences-HCAHPS-Nat/89u8-shx4'>See National Averages</a></p>"
                 object_content += renderHcahpsObject(v)
                 break;
+              case 'cms255210':
+                object_content += "</p><h6><a href='http://www.cms.gov/Research-Statistics-Data-and-Systems/Files-for-Order/CostReports/Hospital-2010-form.html' target='blank'>Hospital Form 2552-10 (Cost Report Data Files via CMS)</a></h6>"
+                object_content += renderCms255210Object(v)
+                break;
               default:
                 object_content += "</p><h6>"+key+"</h6><p>"
                 object_content += renderKeyValueObject(v)
@@ -359,10 +363,37 @@ function renderHcahpsObject(obj){
   return html         
 }
 
+function renderCms255210Object(obj){
+  html = "<ul class='filterable'>"
+  $.each(obj, function(year,values){
+    console.log(year,values)
+    html += "<li><u>"+year+": </u>"
+    if(values === null){
+      html += "N/A"
+    } else {
+      html += "<ul>"
+      $.each(values, function(k,v){
+        key = formatKey(k)
+        value = formatKey(v)
+        html += "<li>"+key+": "+value+"</li>"
+      })    
+      html += "</ul>"
+
+    }
+    html += "</li>"
+  })    
+  html += "</ul>"
+  return html         
+}
+
 
 function formatKey(input){
-  string = String(input)
-  return string.toLowerCase().split("_").join(" ")
+  if(input === null){
+    string = "N/A"
+  } else {
+    string = String(input).toLowerCase().split("_").join(" ")    
+  }
+  return string
 }
 
 function formatSource(input){

@@ -1,5 +1,43 @@
+# Initialize MongoDB connection using Mongoid
 Mongoid.load!("config/mongoid.yml")
 Mongoid.raise_not_found_error = false
+
+# Initialize PostgreSQL connection (for BloomAPI integration) using ActiveRecord
+if settings.bloom_api_db_url
+  db = URI.parse(settings.bloom_api_db_url)
+  ActiveRecord::Base.establish_connection(
+    :adapter  => db.scheme == 'postgres' ? 'postgresql' : db.scheme,
+    :host     => db.host,
+    :username => db.user,
+    :password => db.password,
+    :database => db.path[1..-1],
+    :encoding => 'utf8'
+  )
+
+  class NPI < ActiveRecord::Base
+    self.table_name = 'npis'
+
+    def self.array_of_npis(limit = 100000)
+      received = 0
+      total_count = NPI.count
+      file = File.open("public/data/list_of_npis_from_bloom_api.txt", "w")
+
+      until received == total_count
+        npis = self.select(:npi).limit(limit).offset(received).map(&:npi)
+        file.write(npis.join("\n")) 
+        received += npis.size
+        puts "Received #{received} of #{total_count} (#{(received/total_count.to_f)*100}%)"
+      end
+
+      file.close
+      puts "Done!"
+
+      return received
+    end
+
+  end
+
+end
 
 module ModelHelpers
   def incentives_received
@@ -129,7 +167,12 @@ class Hospital
   def cms255210
     data = {}
     (2010..2013).each do |year|
-      data[year] = self["CMS255210_#{year}"]
+      key = "CMS255210_#{year}"
+      if self[key]
+        data[year] = self[key].select{|k,v| !["PROVIDER_NUMBER","HOSPITAL_Name","State","City","County","Street_Addr","Po_BOx","Zip_Code"].include?(k) }
+      else
+        data[year] = nil
+      end
     end
     return data
   end
@@ -262,3 +305,5 @@ STATES = ["Alabama",  "Alaska", "Arizona",  "Arkansas", "California", "Colorado"
 #      }
 #    , finalize: function(out){ out.avg = out.sum / out.count_not_null }
 # } );
+
+

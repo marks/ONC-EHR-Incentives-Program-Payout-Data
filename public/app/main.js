@@ -366,8 +366,7 @@ function renderHcahpsObject(obj){
 function renderCms255210Object(obj){
   html = "<ul class='filterable'>"
   $.each(obj, function(year,values){
-    console.log(year,values)
-    html += "<li><u>"+year+": </u>"
+    html += "<li><u>"+year+":</u> "
     if(values === null){
       html += "N/A"
     } else {

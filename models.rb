@@ -17,10 +17,11 @@ if settings.bloom_api_db_url
   class NPI < ActiveRecord::Base
     self.table_name = 'npis'
 
-    def self.array_of_npis(limit = 100000)
+    # Collect all NPIs in BloomAPI database into a text file
+    def self.file_of_npis(filename = "public/data/list_of_npis_from_bloom_api.txt", limit = 100000)
       received = 0
       total_count = NPI.count
-      file = File.open("public/data/list_of_npis_from_bloom_api.txt", "w")
+      file = File.open(filename, "w")
 
       until received == total_count
         npis = self.select(:npi).limit(limit).offset(received).map(&:npi)

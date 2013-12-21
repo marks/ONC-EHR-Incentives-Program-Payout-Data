@@ -36,5 +36,26 @@ namespace :providers do
     end
   end
 
+  task :ingest_all_individual_providers_from_bloom_api do
+    if settings.bloom_api_db_url && settings.bloom_api_base_url 
+      filename = "public/data/list_of_npis_from_bloom_api.txt"
+      puts "Running: NPI.file_of_npis => #{filename}"
+      # NPI.file_of_npis(filename)
+      CSV.foreach(filename) do |row|
+        npi = row[0].to_i
+        bloom_data = JSON.parse(RestClient.get("#{settings.bloom_api_base_url}/api/npis/#{npi}"))
+        if bloom_data["result"]["type"] == "individual"
+          puts "Processing #{npi}"
+          provider = Provider.find_or_create_by("PROVIDER NPI" => npi)
+          bloom_data["result"]["_fetched_at"] = Time.now
+          provider.update_attributes!(:bloom => bloom_data["result"])
+        end
+      end
+
+
+    else
+      puts "!! Cannot run this rake task with `bloom_api_db_url` and `bloom_api_base_url` not set in config/app.yml"
+    end
+  end
 
 end

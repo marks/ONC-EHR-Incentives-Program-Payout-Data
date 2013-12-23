@@ -25,7 +25,7 @@ if settings.bloom_api_db_url
 
       until received == total_count
         npis = self.select(:npi).limit(limit).offset(received).map(&:npi)
-        file.write(npis.join("\n")) 
+        file.write(npis.join("\n")+"\n") 
         received += npis.size
         puts "Received #{received} of #{total_count} (#{(received/total_count.to_f)*100}%)"
       end
@@ -133,8 +133,7 @@ class Hospital
   scope :with_hc_hacs, where("hc_hacs" => {"$ne" => nil})
   scope :without_hc_hacs, where("hc_hacs" => nil)
 
-  scope :received_any_incentives, any_of([{"PROGRAM YEAR 2011" => "TRUE"},{"PROGRAM YEAR 2012" => "TRUE"},{"PROGRAM YEAR 2013" => "TRUE"}])
-  scope :received_2011_incentive, where("PROGRAM YEAR 2011" => "TRUE")
+  scope :received_any_incentives, any_of([{"PROGRAM YEAR 2011" => true},{"PROGRAM YEAR 2012" => true},{"PROGRAM YEAR 2013" => true}])
   scope :never_received_any_incentives, where({"PROGRAM YEAR 2012" => nil, "PROGRAM YEAR 2011" => nil, "PROGRAM YEAR 2013" => nil})
 
   def self.exclude_from_geojson
@@ -271,6 +270,11 @@ class Provider
 
   scope :with_geo, where("geo" => {"$ne" => nil})
   scope :without_geo, where("geo" => nil)
+  scope :with_bloom, where("bloom" => {"$ne" => nil})
+  scope :without_bloom, where("bloom" => nil)
+  scope :received_any_incentives, any_of([{"PROGRAM YEAR 2011" => true},{"PROGRAM YEAR 2012" => true},{"PROGRAM YEAR 2013" => true}])
+  scope :never_received_any_incentives, where({"PROGRAM YEAR 2012" => nil, "PROGRAM YEAR 2011" => nil, "PROGRAM YEAR 2013" => nil})
+
 
   json_fields \
     :id => {:type => :reference, :definiton => :_id}, :incentives_received => {:type => :reference},

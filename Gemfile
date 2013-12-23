@@ -12,8 +12,8 @@ gem 'rake'
 gem 'sinatra-assetpack', :require => 'sinatra/assetpack'
 gem 'mongoid-cached-json'
 
-group :development do 
+# group :development do 
   gem "pg"
   gem "activerecord"
   gem "sinatra-activerecord"
-end
+# end

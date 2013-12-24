@@ -65,10 +65,14 @@ namespace :providers do
     puts "  # received an incentive* (* in any of 2011, 2012, _or_ 2013) = #{Provider.received_any_incentives.count}"
     puts "    # received an incentive* and we were able to geocode = #{Provider.received_any_incentives.with_geo.count}"
     puts "    # received an incentive* and we found NPPES/BloomAPI data = #{Provider.received_any_incentives.with_bloom.count}"
+    puts "    # received an incentive* and NPI data has business address state = #{Provider.received_any_incentives.has_business_address_state.count}"
+    puts "    # received an incentive* and NPI data has practice address state = #{Provider.received_any_incentives.has_practice_address_state.count}"
     # Hospitals that DID NOT receive incentives
     puts "  # did not received an incentive*  = #{Provider.never_received_any_incentives.count}"
     puts "    # did not received an incentive* and we were able to geocode = #{Provider.never_received_any_incentives.with_geo.count}"
     puts "    # did not received an incentive* and we found NPPES/BloomAPI data = #{Provider.never_received_any_incentives.with_bloom.count}"
+    puts "    # did not received an incentive* and NPI data has business address state = #{Provider.never_received_any_incentives.has_business_address_state.count}"
+    puts "    # did not received an incentive* and NPI data has practice address state = #{Provider.never_received_any_incentives.has_practice_address_state.count}"
 
     puts "TOTAL PROVIDERS IN DB = #{Provider.count} (# received any incentives* + # never received an incentive)\n\n"
 

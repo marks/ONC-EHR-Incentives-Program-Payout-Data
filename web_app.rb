@@ -5,8 +5,9 @@ require "sinatra/config_file"
 config_file './config/app.yml'
 require "sinatra/reloader" if development?
 
-require './helpers'
-require './models'
+
+require './lib/helpers'
+require './lib/models'
 
 configure :production do
   enable :sessions
@@ -17,6 +18,7 @@ configure :production do
   use Rack::Deflater
 
   before do
+    # Always set an expiration time
     expires settings.cache_time, :public
   end
 end
@@ -69,13 +71,13 @@ assets do
 end
 
 get '/' do
-  # if settings.production?
+  if settings.production? or params[:act_like_production]
     @all_hospitals_with_geo_url = "#{settings.public_host}/data/ProvidersPaidByEHRProgram_Sep2013_EH/geojson/all.geojson"
     @state_providers_url = "#{settings.public_host}/data/ProvidersPaidByEHRProgram_Sep2013_EP/geojson/"
-  # else
-  #   @all_hospitals_with_geo_url = "/db/cms_incentives/EH/all.geojson"
-  #   @state_providers_url = "/db/cms_incentives/EP/"    
-  # end
+  else
+    @all_hospitals_with_geo_url = "/db/cms_incentives/EH/all.geojson"
+    @state_providers_url = "/db/cms_incentives/EP/"    
+  end
   haml :main
 end
 

@@ -1,5 +1,3 @@
-require 'csv'
-
 namespace :hospitals do
 
   task :ingest_latest_payments_csv do
@@ -264,3 +262,34 @@ namespace :hospitals do
   end
 
 end
+
+class HcHai
+  include Mongoid::Document
+  embedded_in :hospital
+  index({ "measure" => 1})
+  index({ "measure" => 1, "score" => -1})
+  field :measure
+  field :score
+  field :footnote
+end
+
+class HcHac
+  include Mongoid::Document
+  embedded_in :hospital
+  index({ "measure" => 1})
+  index({ "measure" => 1, "rate_per_1_000_discharges_" => -1})
+  field :measure
+  field :rate_per_1_000_discharges_
+end
+
+# // find average of a given embedded field; missing values do not count
+# db.ProvidersPaidByEHRProgram_Dec2012_HOSP_FINAL.group(
+#    { cond: {"hcahps": {"$ne":null}}
+#    , initial: {count_not_null: 0, count_null: 0, sum:0}
+#    , reduce: function(doc, out){
+#       x = doc.hcahps["percent_of_patients_who_reported_that_the_area_around_their_room_was_always_quiet_at_night_"];
+#       if(x){out.count_not_null++; out.sum += parseInt(x);}
+#       else{out.count_null++;}
+#      }
+#    , finalize: function(out){ out.avg = out.sum / out.count_not_null }
+# } );

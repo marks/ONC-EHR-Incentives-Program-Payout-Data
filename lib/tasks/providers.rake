@@ -9,7 +9,7 @@ namespace :providers do
 
   desc "Write state provider GeoJSON files to public/data"
   task :output_provider_geojson_by_state do
-    STATES.each do |state|
+    settings.states.each do |state|
       filename = "public/data/ProvidersPaidByEHRProgram_Sep2013_EP/geojson/#{state}.geojson"
       print "Starting #{state} geojson export to #{filename} "
       geojson = Provider.where("PROVIDER STATE" => state, "geo" => {"$ne" => nil}).map {|p| p.to_geojson}

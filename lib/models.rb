@@ -1,7 +1,7 @@
 require 'csv'
 
 # Initialize MongoDB connection using Mongoid
-Mongoid.load!("config/mongoid.yml")
+Mongoid.load!(settings.mongoid_config_file)
 Mongoid.raise_not_found_error = false
 
 require_relative 'models/model_helpers.rb'

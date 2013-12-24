@@ -65,7 +65,7 @@ Procedure
   10. *If you intend to run the visualization in a production environemnt:*
 
         # You will want to create a static `.geojson` 
-        bundle exec ruby web_app.rb -p 4567 -e development
+        bundle exec ruby app.rb -p 4567 -e development
         curl http://localhost:4567/db/cms_incentives/EH/all.geojson -o public/data/ProvidersPaidByEHRProgram_Sep2013_EH/geojson/all.geojson
 
         # Refresh the minified static assets

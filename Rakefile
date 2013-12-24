@@ -1,7 +1,7 @@
-APP_FILE  = 'web_app.rb'
+APP_FILE  = 'app.rb'
 APP_CLASS = 'Sinatra::Application'
 
-require './web_app.rb'
+require APP_FILE
 require 'sinatra/assetpack/rake'
 
 # Load rake tasks from the lib/tasks/ files/folders

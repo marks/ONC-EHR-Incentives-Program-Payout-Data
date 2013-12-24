@@ -1,2 +1,2 @@
-web: bundle exec ruby web_app.rb -p $PORT
-console: bundle exec irb -r ./web_app.rb
+web: bundle exec ruby app.rb -p $PORT
+console: bundle exec irb -r ./app.rb

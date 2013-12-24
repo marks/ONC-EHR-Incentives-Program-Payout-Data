@@ -1347,8 +1347,7 @@ if(array.length===0){array.push("<li>None</li>")}
 html+=array.join("")+"</ul>"
 return html}
 function renderCms255210Object(obj){html="<ul class='filterable'>"
-$.each(obj,function(year,values){console.log(year,values)
-html+="<li><u>"+year+": </u>"
+$.each(obj,function(year,values){html+="<li><u>"+year+":</u> "
 if(values===null){html+="N/A"}else{html+="<ul>"
 $.each(values,function(k,v){key=formatKey(k)
 value=formatKey(v)

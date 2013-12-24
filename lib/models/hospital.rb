@@ -14,10 +14,10 @@ class Hospital
   embeds_many :hc_hacs
 
   json_fields \
-    :"PROVIDER CCN" => { }, :id => {:type => :reference, :definiton => :_id}, :incentives_received => {:type => :reference}, :cms255210 => {:type => :reference},
+    :"PROVIDER CCN" => { }, :id => {:type => :reference, :definiton => :_id}, :incentives_received => {:type => :reference},
     :phone_number => {:type => :reference}, :geo => {},
     :address => {:type => :reference}, :name => {:type => :reference}, :npi => {:type => :reference},
-    :hc_hais => { :type => :reference}, :hc_hacs => { :type => :reference}, :general => {:type => :reference, :definition => :general_or_not}, :hcahps => {:type => :reference, :definition => :hcahps_or_not}, :jc_id => {:type => :reference, :definition => :jc_id_or_not}, :ahrq_m => {:type => :reference, :definition => :ahrq_m_or_not}, :ooc => {:type => :reference, :definition => :ooc_or_not}
+    :cms255210 => {:type => :reference}, :hc_hais => { :type => :reference}, :hc_hacs => { :type => :reference}, :general => {:type => :reference, :definition => :general_or_not}, :hcahps => {:type => :reference, :definition => :hcahps_or_not}, :jc_id => {:type => :reference, :definition => :jc_id_or_not}, :ahrq_m => {:type => :reference, :definition => :ahrq_m_or_not}, :ooc => {:type => :reference, :definition => :ooc_or_not}
 
   scope :without_hcahps, where("hcahps" => nil)
   scope :with_hcahps, where("hcahps" => {"$ne" => nil})

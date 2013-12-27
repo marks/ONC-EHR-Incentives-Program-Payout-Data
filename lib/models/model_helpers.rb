@@ -51,4 +51,5 @@ module ModelHelpers
   def full_address
     "#{address[:address]}, #{address[:city]}, #{address[:state]} #{address[:zip]}"
   end
+
 end

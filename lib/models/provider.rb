@@ -1,7 +1,15 @@
+    # { $group : {
+    #     _id : "$author",
+    #     docsPerAuthor : { $sum : 1 },
+    #     viewsPerAuthor : { $sum : "$pageViews" }
+    # }}
+
+
 class Provider
   include Mongoid::Document
   include Mongoid::CachedJson
   include ModelHelpers 
+  
   index({ "PROVIDER NPI" => 1},{ unique: true, name: "PROVIDER_NPI_index" })
   index({ "PROVIDER STATE" => 1})
   index({ "PROVIDER STATE" => 1})
@@ -34,5 +42,15 @@ class Provider
     keys_to_exclude.each{|k| hash.delete(k)}
     {"type" => "Feature", "id" => hash[:id].to_s, "properties" => hash, "geometry" => {"type" => "Point", "coordinates" => coordinates}}
   end
+
+  def self.count_of_distinct_values(field)
+    self.collection.aggregate(
+      {'$group' => {
+        '_id' => field,
+        'count' => { '$sum' => 1 } }
+      }
+    ) 
+  end
+
 
 end
